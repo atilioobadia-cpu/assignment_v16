@@ -104,6 +104,7 @@ def create_dashboard_charts():
 			"group_by_type": "Count",
 			"group_by_based_on": "service_line",
 			"type": "Donut",
+			"filters_json": "[]",
 		},
 		{
 			"chart_name": "Assignments by Status",
@@ -112,6 +113,7 @@ def create_dashboard_charts():
 			"group_by_type": "Count",
 			"group_by_based_on": "acceptance_status",
 			"type": "Donut",
+			"filters_json": "[]",
 		},
 		{
 			"chart_name": "SLA Health Overview",
@@ -120,6 +122,7 @@ def create_dashboard_charts():
 			"group_by_type": "Count",
 			"group_by_based_on": "status",
 			"type": "Donut",
+			"filters_json": "[]",
 		},
 	]
 	for chart in charts:
