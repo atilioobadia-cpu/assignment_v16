@@ -11,15 +11,9 @@ bench --site yoursite install-app alpha_assignment_mgmt
 bench --site yoursite migrate
 ```
 
-`install-app` runs `after_install` automatically, which creates all roles, naming series, project types, activity types, dashboard charts, number cards, and workspace.
+`install-app` runs `after_install` automatically, which creates all roles, naming series, project types, and activity types.
 
 ## What Gets Installed
-
-### Workspace
-**Alpha Assignment Desk** — available under the Alpha Assignment Management module with:
-- 4 Number Cards: Active Assignments, Active Projects, Pending Reviews, Overdue SLAs
-- 3 Dashboard Charts: Assignments by Service Line, Assignments by Status, SLA Health Overview
-- Shortcuts & links to all DocTypes, reports, and core ERPNext records
 
 ### 9 Roles
 Alpha Partner/Director, Alpha Engagement Manager, Alpha Branch Manager, Alpha Client Owner, Alpha Reviewer, Alpha Staff, Alpha HR Admin, Alpha Tax Officer, Alpha Managing Director
@@ -42,8 +36,6 @@ Tax Compliance, TRA Support, Audit Readiness, Monthly Bookkeeping, Accounting Re
 Tax Preparation, Tax Review, Tax Filing, Audit Fieldwork, Audit Review, Bookkeeping Entry, Bookkeeping Review, Reconciliation, Advisory Call, Advisory Report, ERPNext Setup, ERPNext Training, Client Communication, Internal Meeting, Training/CPD, Administrative
 
 ### Custom Fields on Core DocTypes
-Custom fields are organized in a 3-column layout on the relevant forms:
-
 - **Project** (8 fields): Assignment Origination, Engagement SLA, Branch Manager, Engagement Manager, Client Owner, Risk Rating, Service Line, Closure Certificate
 - **Task** (5 fields): Requires Review, Evidence Attached, Evidence Exception, Review Gate, Client Delay Log
 - **Goal** (6 fields): Related Project, Related Task, Assignment Origination, Metric Type, Target Value, Actual Value
@@ -73,12 +65,11 @@ Alpha Assignment Origination: Draft → Submitted → Under Review → Approved/
 ## Quick Start
 
 1. Assign roles to users (System Manager → Role Permission Manager)
-2. Open the **Alpha Assignment Desk** workspace
-3. Create an **Alpha Assignment Origination** (Draft)
-4. Submit → workflow progresses through Under Review → Approved
-5. Create a **Project** linked to the approved Origination (Project Type required)
-6. SLA is auto-created on save
-7. Staff work tasks with evidence and review gates
-8. Close: Create **Assignment Closure Certificate** → set Project = Completed
+2. Create an **Alpha Assignment Origination** (Draft)
+3. Submit → workflow progresses through Under Review → Approved
+4. Create a **Project** linked to the approved Origination (Project Type required)
+5. SLA is auto-created on save
+6. Staff work tasks with evidence and review gates
+7. Close: Create **Assignment Closure Certificate** → set Project = Completed
 
 For detailed step-by-step workflow, see `docs/OPERATIONAL_GUIDE.md`.
