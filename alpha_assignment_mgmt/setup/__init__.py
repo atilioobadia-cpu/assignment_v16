@@ -103,7 +103,7 @@ def create_dashboard_charts():
 			"document_type": "Alpha Assignment Origination",
 			"group_by_type": "Count",
 			"group_by_based_on": "service_line",
-			"type": "Donut",
+			"type": "Bar",
 			"filters_json": "[]",
 		},
 		{
@@ -112,7 +112,7 @@ def create_dashboard_charts():
 			"document_type": "Alpha Assignment Origination",
 			"group_by_type": "Count",
 			"group_by_based_on": "acceptance_status",
-			"type": "Donut",
+			"type": "Bar",
 			"filters_json": "[]",
 		},
 		{
@@ -122,6 +122,17 @@ def create_dashboard_charts():
 			"group_by_type": "Count",
 			"group_by_based_on": "status",
 			"type": "Donut",
+			"filters_json": "[]",
+		},
+		{
+			"chart_name": "Assignments Trend (Last 12 Months)",
+			"chart_type": "Count",
+			"document_type": "Alpha Assignment Origination",
+			"based_on": "creation",
+			"type": "Line",
+			"timespan": "Last Year",
+			"timeseries_based_on": "creation",
+			"time_interval": "Monthly",
 			"filters_json": "[]",
 		},
 	]
@@ -177,48 +188,96 @@ def update_workspace_with_charts():
 	if not frappe.db.exists("Workspace", ws_name):
 		return
 
-	ws = frappe.get_doc("Workspace", ws_name)
+	content = [
+		{
+			"id": "h1",
+			"type": "header",
+			"data": {
+				"text": '<span class="h4"><b>Alpha Assignment Desk</b></span>',
+				"col": 12
+			}
+		},
+		{
+			"id": "p1",
+			"type": "paragraph",
+			"data": {
+				"text": "Manage client assignments from origination to closure. Track SLAs, reviews, document requests, and team productivity.",
+				"col": 12
+			}
+		},
+	]
 
-	ws.charts = []
-	for name in ["Assignments by Service Line", "Assignments by Status", "SLA Health Overview"]:
-		if frappe.db.exists("Dashboard Chart", name):
-			ws.append("charts", {"chart_name": name, "label": name})
-
-	ws.number_cards = []
-	for name in ["Active Assignments", "Active Projects", "Pending Reviews", "Overdue SLAs"]:
-		if frappe.db.exists("Number Card", name):
-			ws.append("number_cards", {"number_card_name": name, "label": name})
-
-	content = json.loads(ws.content)
-
-	card_ids = ["nc1", "nc2", "nc3", "nc4"]
 	card_names = ["Active Assignments", "Active Projects", "Pending Reviews", "Overdue SLAs"]
-	card_content = []
-	for cid, cname in zip(card_ids, card_names):
+	card_items = []
+	for i, cname in enumerate(card_names):
 		if frappe.db.exists("Number Card", cname):
-			card_content.append({
-				"id": cid, "type": "number_card",
+			card_items.append({
+				"id": f"nc{i+1}", "type": "number_card",
 				"data": {"number_card_name": cname, "col": 3}
 			})
 
-	chart_ids = ["c1", "c2", "c3"]
-	chart_names = ["Assignments by Service Line", "Assignments by Status", "SLA Health Overview"]
-	chart_content = []
-	for cid, cname in zip(chart_ids, chart_names):
+	chart_names = [
+		"Assignments by Service Line",
+		"Assignments by Status",
+		"SLA Health Overview",
+		"Assignments Trend (Last 12 Months)",
+	]
+	chart_items = []
+	for i, cname in enumerate(chart_names):
 		if frappe.db.exists("Dashboard Chart", cname):
-			chart_content.append({
-				"id": cid, "type": "chart",
+			chart_items.append({
+				"id": f"c{i+1}", "type": "chart",
 				"data": {"chart_name": cname, "col": 4}
 			})
 
-	spacer = {"id": "sp1", "type": "spacer", "data": {"col": 12}}
+	content += card_items + chart_items
 
-	insert_at = 2
-	if card_content:
-		content[insert_at:insert_at] = card_content
-		content.insert(insert_at + len(card_content), spacer)
-	if chart_content:
-		content[insert_at + len(card_content) + 1:insert_at + len(card_content) + 1] = chart_content
+	content += [
+		{"id": "sp1", "type": "spacer", "data": {"col": 12}},
+		{
+			"id": "sh2",
+			"type": "header",
+			"data": {
+				"text": '<span class="h5"><b>Quick Actions</b></span>',
+				"col": 12
+			}
+		},
+	]
 
-	ws.content = json.dumps(content)
-	ws.save(ignore_permissions=True)
+	shortcuts = [
+		("s1", "New Assignment Origination"), ("s2", "All Assignments"),
+		("s3", "Active Projects"), ("s4", "Engagement SLAs"),
+		("s5", "Review Queue"), ("s6", "Document Requests"),
+		("s7", "Closure Certificates"), ("s8", "Client Delays"),
+		("s9", "My Tasks"), ("s10", "My Timesheets"),
+		("s11", "Staff Productivity"), ("s12", "SLA Compliance"),
+	]
+	for sid, sname in shortcuts:
+		content.append({
+			"id": sid, "type": "shortcut",
+			"data": {"shortcut_name": sname, "col": 3}
+		})
+
+	frappe.db.set_value("Workspace", ws_name, "content", json.dumps(content))
+
+	frappe.db.delete("Workspace Chart", {"parent": ws_name, "parenttype": "Workspace"})
+	for cname in chart_names:
+		if frappe.db.exists("Dashboard Chart", cname):
+			frappe.db.sql("""
+				INSERT INTO `tabWorkspace Chart`
+				(name, creation, modified, owner, modified_by, parent, parenttype,
+				 parentfield, chart_name, label)
+				VALUES (%s, NOW(), NOW(), 'Administrator', 'Administrator', %s,
+				        'Workspace', 'charts', %s, %s)
+			""", (frappe.generate_hash(length=10), ws_name, cname, cname))
+
+	frappe.db.delete("Workspace Number Card", {"parent": ws_name, "parenttype": "Workspace"})
+	for cname in card_names:
+		if frappe.db.exists("Number Card", cname):
+			frappe.db.sql("""
+				INSERT INTO `tabWorkspace Number Card`
+				(name, creation, modified, owner, modified_by, parent, parenttype,
+				 parentfield, number_card_name, label)
+				VALUES (%s, NOW(), NOW(), 'Administrator', 'Administrator', %s,
+				        'Workspace', 'number_cards', %s, %s)
+			""", (frappe.generate_hash(length=10), ws_name, cname, cname))

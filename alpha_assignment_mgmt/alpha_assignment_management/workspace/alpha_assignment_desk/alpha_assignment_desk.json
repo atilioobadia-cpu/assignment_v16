@@ -109,26 +109,6 @@
   },
   {
    "type": "Link",
-   "label": "Staff Productivity Report",
-   "link_to": "Staff Productivity",
-   "link_type": "Report",
-   "onboard": 0,
-   "hidden": 0,
-   "is_query_report": 1,
-   "dependencies": ""
-  },
-  {
-   "type": "Link",
-   "label": "SLA Compliance Overview",
-   "link_to": "SLA Compliance Overview",
-   "link_type": "Report",
-   "onboard": 0,
-   "hidden": 0,
-   "is_query_report": 1,
-   "dependencies": ""
-  },
-  {
-   "type": "Link",
    "label": "My Tasks",
    "link_to": "Task",
    "link_type": "DocType",
@@ -196,6 +176,26 @@
    "hidden": 0,
    "is_query_report": 0,
    "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Staff Productivity Report",
+   "link_to": "Staff Productivity",
+   "link_type": "Report",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 1,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "SLA Compliance Overview",
+   "link_to": "SLA Compliance Overview",
+   "link_type": "Report",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 1,
+   "dependencies": ""
   }
  ],
  "shortcuts": [
@@ -221,6 +221,41 @@
    "icon": "project"
   },
   {
+   "label": "Engagement SLAs",
+   "type": "DocType",
+   "link_to": "Alpha Engagement SLA",
+   "doc_type": "Alpha Engagement SLA",
+   "icon": "deadline"
+  },
+  {
+   "label": "Review Queue",
+   "type": "DocType",
+   "link_to": "Review Gate Register",
+   "doc_type": "Review Gate Register",
+   "icon": "review"
+  },
+  {
+   "label": "Document Requests",
+   "type": "DocType",
+   "link_to": "Document Request Register",
+   "doc_type": "Document Request Register",
+   "icon": "file"
+  },
+  {
+   "label": "Client Delays",
+   "type": "DocType",
+   "link_to": "Client Delay Log",
+   "doc_type": "Client Delay Log",
+   "icon": "warn"
+  },
+  {
+   "label": "Closure Certificates",
+   "type": "DocType",
+   "link_to": "Assignment Closure Certificate",
+   "doc_type": "Assignment Closure Certificate",
+   "icon": "certificate"
+  },
+  {
    "label": "My Tasks",
    "type": "DocType",
    "link_to": "Task",
@@ -233,20 +268,6 @@
    "link_to": "Timesheet",
    "doc_type": "Timesheet",
    "icon": "clock"
-  },
-  {
-   "label": "Review Queue",
-   "type": "DocType",
-   "link_to": "Review Gate Register",
-   "doc_type": "Review Gate Register",
-   "icon": "review"
-  },
-  {
-   "label": "Engagement SLAs",
-   "type": "DocType",
-   "link_to": "Alpha Engagement SLA",
-   "doc_type": "Alpha Engagement SLA",
-   "icon": "deadline"
   },
   {
    "label": "Staff Productivity",
@@ -263,5 +284,5 @@
    "icon": "chart"
   }
  ],
- "content": "[{\"id\": \"h1\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Alpha Assignment Desk</b></span>\", \"col\": 12}}, {\"id\": \"p1\", \"type\": \"paragraph\", \"data\": {\"text\": \"Manage client assignments from origination to closure. Track SLAs, reviews, document requests, and team productivity.\", \"col\": 12}}, {\"id\": \"s1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Assignment Origination\", \"col\": 3}}, {\"id\": \"s2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"All Assignments\", \"col\": 3}}, {\"id\": \"s3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Active Projects\", \"col\": 3}}, {\"id\": \"s4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Engagement SLAs\", \"col\": 3}}, {\"id\": \"s5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Review Queue\", \"col\": 3}}, {\"id\": \"s6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"My Tasks\", \"col\": 3}}, {\"id\": \"s7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"My Timesheets\", \"col\": 3}}, {\"id\": \"s8\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Staff Productivity\", \"col\": 3}}, {\"id\": \"s9\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SLA Compliance\", \"col\": 3}}]"
+ "content": "[{\"id\":\"h1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Alpha Assignment Desk</b></span>\",\"col\":12}},{\"id\":\"p1\",\"type\":\"paragraph\",\"data\":{\"text\":\"Manage client assignments from origination to closure. Track SLAs, reviews, document requests, and team productivity.\",\"col\":12}},{\"id\":\"sh1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h5\\\"><b>Dashboard Overview</b></span>\",\"col\":12}},{\"id\":\"s1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Assignment Origination\",\"col\":3}},{\"id\":\"s2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"All Assignments\",\"col\":3}},{\"id\":\"s3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Active Projects\",\"col\":3}},{\"id\":\"s4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Engagement SLAs\",\"col\":3}},{\"id\":\"s5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Review Queue\",\"col\":3}},{\"id\":\"s6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Document Requests\",\"col\":3}},{\"id\":\"s7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Closure Certificates\",\"col\":3}},{\"id\":\"s8\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Tasks\",\"col\":3}},{\"id\":\"s9\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Timesheets\",\"col\":3}},{\"id\":\"s10\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Staff Productivity\",\"col\":3}},{\"id\":\"s11\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"SLA Compliance\",\"col\":3}},{\"id\":\"s12\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Client Delays\",\"col\":3}}]"
 }
