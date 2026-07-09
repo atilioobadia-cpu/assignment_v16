@@ -1,0 +1,26 @@
+# Byte-compiled
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment
+.env
+.venv
+env/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Frappe
+*.backup
+*.sql.gz
+node_modules/
+dist/

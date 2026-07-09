@@ -1,0 +1,208 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-07-09 00:00:00.000000",
+ "default_view": "List",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "task",
+  "project",
+  "customer",
+  "missing_information",
+  "column_break_details",
+  "date_requested",
+  "ageing_days",
+  "expected_response_date",
+  "escalation_level",
+  "impact",
+  "section_resolution",
+  "status",
+  "resolved_date",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "task",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Task",
+   "options": "Task",
+   "reqd": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "missing_information",
+   "fieldtype": "Small Text",
+   "label": "Missing Information"
+  },
+  {
+   "fieldname": "column_break_details",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "date_requested",
+   "fieldtype": "Date",
+   "label": "Date Requested"
+  },
+  {
+   "fieldname": "ageing_days",
+   "fieldtype": "Int",
+   "label": "Ageing (Days)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "expected_response_date",
+   "fieldtype": "Date",
+   "label": "Expected Response Date"
+  },
+  {
+   "fieldname": "escalation_level",
+   "fieldtype": "Select",
+   "label": "Escalation Level",
+   "options": "Level 1 - Staff\nLevel 2 - Engagement Manager\nLevel 3 - Branch Manager\nLevel 4 - Management"
+  },
+  {
+   "fieldname": "impact",
+   "fieldtype": "Select",
+   "label": "Impact",
+   "options": "Low\nMedium\nHigh\nCritical"
+  },
+  {
+   "fieldname": "section_resolution",
+   "fieldtype": "Section Break",
+   "label": "Resolution"
+  },
+  {
+   "default": "Open",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Open\nFollowed Up\nResolved\nEscalated\nClosed"
+  },
+  {
+   "fieldname": "resolved_date",
+   "fieldtype": "Date",
+   "label": "Resolved Date"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "links": [],
+ "modified": "2026-07-09 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Alpha Assignment Management",
+ "name": "Client Delay Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "create": 1,
+   "read": 1,
+   "write": 1,
+   "submit": 0,
+   "cancel": 0,
+   "delete": 1,
+   "amend": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Alpha Partner/Director",
+   "create": 1,
+   "read": 1,
+   "write": 1,
+   "submit": 0,
+   "cancel": 0,
+   "delete": 1,
+   "amend": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Alpha Engagement Manager",
+   "create": 1,
+   "read": 1,
+   "write": 1,
+   "submit": 0,
+   "cancel": 0,
+   "delete": 0,
+   "amend": 0,
+   "email": 1,
+   "export": 0,
+   "print": 1,
+   "report": 1,
+   "share": 0
+  },
+  {
+   "role": "Alpha Staff",
+   "create": 1,
+   "read": 1,
+   "write": 1,
+   "submit": 0,
+   "cancel": 0,
+   "delete": 0,
+   "amend": 0,
+   "email": 0,
+   "export": 0,
+   "print": 0,
+   "report": 0,
+   "share": 0
+  },
+  {
+   "role": "Alpha Branch Manager",
+   "create": 0,
+   "read": 1,
+   "write": 0,
+   "submit": 0,
+   "cancel": 0,
+   "delete": 0,
+   "amend": 0,
+   "email": 1,
+   "export": 0,
+   "print": 1,
+   "report": 0,
+   "share": 0
+  },
+  {
+   "role": "Alpha HR Admin",
+   "create": 0,
+   "read": 1,
+   "write": 0,
+   "submit": 0,
+   "cancel": 0,
+   "delete": 0,
+   "amend": 0,
+   "email": 0,
+   "export": 0,
+   "print": 0,
+   "report": 0,
+   "share": 0
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

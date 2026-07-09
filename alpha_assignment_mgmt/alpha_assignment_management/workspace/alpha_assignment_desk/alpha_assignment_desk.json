@@ -1,0 +1,224 @@
+{
+ "doctype": "Workspace",
+ "name": "Alpha Assignment Desk",
+ "label": "Alpha Assignment Desk",
+ "module": "Alpha Assignment Management",
+ "icon": "checklist",
+ "is_standard": 1,
+ "public": 1,
+ "title": "Alpha Assignment Desk",
+ "sequence_id": 1.0,
+ "charts": [],
+ "number_cards": [],
+ "custom_blocks": [],
+ "quick_lists": [],
+ "roles": [],
+ "for_user": "",
+ "hide_custom": 0,
+ "is_hidden": 0,
+ "parent_page": "",
+ "links": [
+  {
+   "type": "Link",
+   "label": "New Assignment Origination",
+   "link_to": "Alpha Assignment Origination",
+   "link_type": "DocType",
+   "onboard": 1,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "All Assignments",
+   "link_to": "Alpha Assignment Origination",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Active Projects",
+   "link_to": "Project",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Engagement SLAs",
+   "link_to": "Alpha Engagement SLA",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Review Queue",
+   "link_to": "Review Gate Register",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Document Requests",
+   "link_to": "Document Request Register",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Client Delays",
+   "link_to": "Client Delay Log",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Risk Register",
+   "link_to": "Client Risk Register",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Closure Certificates",
+   "link_to": "Assignment Closure Certificate",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "SLA Breaches",
+   "link_to": "Alpha Engagement SLA",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "My Tasks",
+   "link_to": "Task",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "My Timesheets",
+   "link_to": "Timesheet",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Customers",
+   "link_to": "Customer",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Sales Orders",
+   "link_to": "Sales Order",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Sales Invoices",
+   "link_to": "Sales Invoice",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  }
+ ],
+ "shortcuts": [
+  {
+   "label": "New Assignment Origination",
+   "type": "DocType",
+   "link_to": "Alpha Assignment Origination",
+   "doc_type": "Alpha Assignment Origination",
+   "icon": "add"
+  },
+  {
+   "label": "All Assignments",
+   "type": "DocType",
+   "link_to": "Alpha Assignment Origination",
+   "doc_type": "Alpha Assignment Origination",
+   "icon": "list"
+  },
+  {
+   "label": "My Tasks",
+   "type": "DocType",
+   "link_to": "Task",
+   "doc_type": "Task",
+   "icon": "task"
+  },
+  {
+   "label": "My Timesheets",
+   "type": "DocType",
+   "link_to": "Timesheet",
+   "doc_type": "Timesheet",
+   "icon": "clock"
+  },
+  {
+   "label": "Review Queue",
+   "type": "DocType",
+   "link_to": "Review Gate Register",
+   "doc_type": "Review Gate Register",
+   "icon": "review"
+  },
+  {
+   "label": "Engagement SLAs",
+   "type": "DocType",
+   "link_to": "Alpha Engagement SLA",
+   "doc_type": "Alpha Engagement SLA",
+   "icon": "deadline"
+  },
+  {
+   "label": "Active Projects",
+   "type": "DocType",
+   "link_to": "Project",
+   "doc_type": "Project",
+   "icon": "project"
+  }
+ ],
+ "content": "[{\"id\": \"h1\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Alpha Assignment Desk</b></span>\", \"col\": 12}}, {\"id\": \"p1\", \"type\": \"paragraph\", \"data\": {\"text\": \"Manage client assignments from origination to closure. Track SLAs, reviews, document requests, and team productivity.\", \"col\": 12}}, {\"id\": \"s1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Assignment Origination\", \"col\": 3}}, {\"id\": \"s2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"All Assignments\", \"col\": 3}}, {\"id\": \"s3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"My Tasks\", \"col\": 3}}, {\"id\": \"s4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"My Timesheets\", \"col\": 3}}, {\"id\": \"s5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Review Queue\", \"col\": 3}}, {\"id\": \"s6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Engagement SLAs\", \"col\": 3}}, {\"id\": \"s7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Active Projects\", \"col\": 3}}]"
+}

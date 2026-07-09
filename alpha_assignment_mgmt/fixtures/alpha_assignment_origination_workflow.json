@@ -1,0 +1,92 @@
+[
+ {
+  "doctype": "Workflow",
+  "name": "Alpha Assignment Origination Workflow",
+  "document_type": "Alpha Assignment Origination",
+  "workflow_name": "Alpha Assignment Origination Workflow",
+  "workflow_state_field": "workflow_state",
+  "is_active": 1,
+  "send_email_alert": 0,
+  "states": [
+   {
+    "state": "Draft",
+    "doc_status": "0",
+    "allow_edit": "Alpha Tax Officer"
+   },
+   {
+    "state": "Submitted",
+    "doc_status": "1",
+    "allow_edit": "Alpha Engagement Manager"
+   },
+   {
+    "state": "Under Review",
+    "doc_status": "1",
+    "allow_edit": "Alpha Branch Manager"
+   },
+   {
+    "state": "Approved",
+    "doc_status": "1",
+    "allow_edit": "Alpha Managing Director"
+   },
+   {
+    "state": "Rejected",
+    "doc_status": "1",
+    "allow_edit": "System Manager"
+   },
+   {
+    "state": "Project Created",
+    "doc_status": "1",
+    "allow_edit": "Alpha Engagement Manager"
+   },
+   {
+    "state": "Closed",
+    "doc_status": "1",
+    "allow_edit": "System Manager"
+   }
+  ],
+  "transitions": [
+   {
+    "state": "Draft",
+    "action": "Submit",
+    "next_state": "Submitted",
+    "allowed": "Alpha Tax Officer"
+   },
+   {
+    "state": "Submitted",
+    "action": "Send to Review",
+    "next_state": "Under Review",
+    "allowed": "Alpha Engagement Manager"
+   },
+   {
+    "state": "Under Review",
+    "action": "Approve",
+    "next_state": "Approved",
+    "allowed": "Alpha Branch Manager"
+   },
+   {
+    "state": "Under Review",
+    "action": "Reject",
+    "next_state": "Rejected",
+    "allowed": "Alpha Branch Manager"
+   },
+   {
+    "state": "Approved",
+    "action": "Create Project",
+    "next_state": "Project Created",
+    "allowed": "Alpha Engagement Manager"
+   },
+   {
+    "state": "Rejected",
+    "action": "Re-submit",
+    "next_state": "Submitted",
+    "allowed": "Alpha Tax Officer"
+   },
+   {
+    "state": "Project Created",
+    "action": "Close Assignment",
+    "next_state": "Closed",
+    "allowed": "Alpha Managing Director"
+   }
+  ]
+ }
+]
