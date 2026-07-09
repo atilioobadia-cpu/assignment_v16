@@ -1,7 +1,6 @@
 import json
 import frappe
-from frappe.utils import today, now_datetime
-from frappe.utils.data import getdate
+from frappe.utils import today, add_days, now_datetime
 
 
 def daily_overdue_task_notification():
@@ -116,11 +115,3 @@ def weekly_productivity_report():
 				subject=f"Weekly Productivity Report ({today()})",
 				message=table,
 			)
-
-
-def add_days(date, days):
-	"""Add days to a date string."""
-	from datetime import timedelta
-	if isinstance(date, str):
-		date = getdate(date)
-	return (date + timedelta(days=days)).isoformat()

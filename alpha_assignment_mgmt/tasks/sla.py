@@ -1,12 +1,12 @@
 import frappe
 from frappe.utils import now_datetime
 
+DEFAULT_THRESHOLD_HOURS = 24
+
 
 def daily_sla_breach_check():
 	"""Daily scheduler: check all active SLAs for impending breach."""
-	threshold_hours = frappe.db.get_single_value(
-		"Alpha Engagement SLA Settings", "breach_notification_threshold_hours"
-	) or 24
+	threshold_hours = DEFAULT_THRESHOLD_HOURS
 
 	active_slas = frappe.get_all(
 		"Alpha Engagement SLA",

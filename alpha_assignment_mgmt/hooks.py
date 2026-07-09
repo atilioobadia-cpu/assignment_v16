@@ -57,18 +57,4 @@ fixtures = [
 			]]
 		]
 	},
-	{
-		"doctype": "Project Type",
-		"filters": [
-			["name", "in", [
-				"Tax Compliance",
-				"TRA Support",
-				"Audit Readiness",
-				"Monthly Bookkeeping",
-				"Accounting Reconstruction",
-				"ERPNext Implementation",
-				"Advisory"
-			]]
-		]
-	},
 ]

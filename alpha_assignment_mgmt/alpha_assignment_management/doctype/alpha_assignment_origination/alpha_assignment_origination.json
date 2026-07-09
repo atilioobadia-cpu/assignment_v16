@@ -54,6 +54,7 @@
   "client_delay_flag",
   "evidence_quality_rating",
   "section_workflow",
+  "workflow_state",
   "acceptance_status",
   "approval_date",
   "project_created",
@@ -326,6 +327,13 @@
    "fieldname": "section_workflow",
    "fieldtype": "Section Break",
    "label": "Workflow Control"
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "label": "Workflow State",
+   "options": "Workflow State",
+   "read_only": 1
   },
   {
    "fieldname": "acceptance_status",
