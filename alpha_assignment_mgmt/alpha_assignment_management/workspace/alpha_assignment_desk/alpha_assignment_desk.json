@@ -7,11 +7,10 @@
  "is_standard": 1,
  "public": 1,
  "title": "Alpha Assignment Desk",
+ "type": "Workspace",
  "sequence_id": 1.0,
  "charts": [],
  "number_cards": [],
- "custom_blocks": [],
- "quick_lists": [],
  "roles": [],
  "for_user": "",
  "hide_custom": 0,
@@ -110,12 +109,22 @@
   },
   {
    "type": "Link",
-   "label": "SLA Breaches",
-   "link_to": "Alpha Engagement SLA",
-   "link_type": "DocType",
+   "label": "Staff Productivity Report",
+   "link_to": "Staff Productivity",
+   "link_type": "Report",
    "onboard": 0,
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "SLA Compliance Overview",
+   "link_to": "SLA Compliance Overview",
+   "link_type": "Report",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 1,
    "dependencies": ""
   },
   {
@@ -142,6 +151,26 @@
    "type": "Link",
    "label": "Customers",
    "link_to": "Customer",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Staff Goals",
+   "link_to": "Goal",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Appraisals",
+   "link_to": "Appraisal",
    "link_type": "DocType",
    "onboard": 0,
    "hidden": 0,
@@ -185,6 +214,13 @@
    "icon": "list"
   },
   {
+   "label": "Active Projects",
+   "type": "DocType",
+   "link_to": "Project",
+   "doc_type": "Project",
+   "icon": "project"
+  },
+  {
    "label": "My Tasks",
    "type": "DocType",
    "link_to": "Task",
@@ -213,12 +249,19 @@
    "icon": "deadline"
   },
   {
-   "label": "Active Projects",
-   "type": "DocType",
-   "link_to": "Project",
-   "doc_type": "Project",
-   "icon": "project"
+   "label": "Staff Productivity",
+   "type": "Report",
+   "link_to": "Staff Productivity",
+   "doc_type": "Staff Productivity",
+   "icon": "chart"
+  },
+  {
+   "label": "SLA Compliance",
+   "type": "Report",
+   "link_to": "SLA Compliance Overview",
+   "doc_type": "SLA Compliance Overview",
+   "icon": "chart"
   }
  ],
- "content": "[{\"id\": \"h1\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Alpha Assignment Desk</b></span>\", \"col\": 12}}, {\"id\": \"p1\", \"type\": \"paragraph\", \"data\": {\"text\": \"Manage client assignments from origination to closure. Track SLAs, reviews, document requests, and team productivity.\", \"col\": 12}}, {\"id\": \"s1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Assignment Origination\", \"col\": 3}}, {\"id\": \"s2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"All Assignments\", \"col\": 3}}, {\"id\": \"s3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"My Tasks\", \"col\": 3}}, {\"id\": \"s4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"My Timesheets\", \"col\": 3}}, {\"id\": \"s5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Review Queue\", \"col\": 3}}, {\"id\": \"s6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Engagement SLAs\", \"col\": 3}}, {\"id\": \"s7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Active Projects\", \"col\": 3}}]"
+ "content": "[{\"id\": \"h1\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Alpha Assignment Desk</b></span>\", \"col\": 12}}, {\"id\": \"p1\", \"type\": \"paragraph\", \"data\": {\"text\": \"Manage client assignments from origination to closure. Track SLAs, reviews, document requests, and team productivity.\", \"col\": 12}}, {\"id\": \"s1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Assignment Origination\", \"col\": 3}}, {\"id\": \"s2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"All Assignments\", \"col\": 3}}, {\"id\": \"s3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Active Projects\", \"col\": 3}}, {\"id\": \"s4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Engagement SLAs\", \"col\": 3}}, {\"id\": \"s5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Review Queue\", \"col\": 3}}, {\"id\": \"s6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"My Tasks\", \"col\": 3}}, {\"id\": \"s7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"My Timesheets\", \"col\": 3}}, {\"id\": \"s8\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Staff Productivity\", \"col\": 3}}, {\"id\": \"s9\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SLA Compliance\", \"col\": 3}}]"
 }
