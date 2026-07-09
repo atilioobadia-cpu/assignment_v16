@@ -49,28 +49,11 @@ fixtures = [
 	{
 		"doctype": "Custom Field",
 		"filters": [
-			["fieldname", "in", [
-				"custom_assignment_origination",
-				"custom_engagement_sla",
-				"custom_branch_manager",
-				"custom_engagement_manager",
-				"custom_client_owner",
-				"custom_risk_rating",
-				"custom_service_line",
-				"custom_closure_certificate",
-				"custom_requires_review",
-				"custom_evidence_attachment",
-				"custom_evidence_exception",
-				"custom_review_gate",
-				"custom_client_delay_log",
-				"custom_related_project",
-				"custom_related_task",
-				"custom_metric_type",
-				"custom_target_value",
-				"custom_actual_value",
-				"custom_assignments_completed",
-				"custom_sla_compliance_rate",
-				"custom_utilization_rate"
+			["dt", "in", [
+				"Project",
+				"Task",
+				"Goal",
+				"Appraisal"
 			]]
 		]
 	},
@@ -79,10 +62,10 @@ fixtures = [
 		"filters": [
 			["name", "in", [
 				"Tax Compliance",
-				"Audit Readiness",
-				"Accounting Reconstruction",
-				"Monthly Bookkeeping",
 				"TRA Support",
+				"Audit Readiness",
+				"Monthly Bookkeeping",
+				"Accounting Reconstruction",
 				"ERPNext Implementation",
 				"Advisory"
 			]]

@@ -1,14 +1,31 @@
 [
  {
   "doctype": "Custom Field",
+  "name": "Project-custom_section_break_assign",
+  "dt": "Project",
+  "fieldname": "custom_section_break_assign",
+  "fieldtype": "Section Break",
+  "label": "Assignment References",
+  "insert_after": "project_type"
+ },
+ {
+  "doctype": "Custom Field",
   "name": "Project-custom_assignment_origination",
   "dt": "Project",
   "fieldname": "custom_assignment_origination",
   "fieldtype": "Link",
   "label": "Assignment Origination",
-  "insert_after": "project_type",
+  "insert_after": "custom_section_break_assign",
   "options": "Alpha Assignment Origination",
   "read_only": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Project-custom_column_break_assign",
+  "dt": "Project",
+  "fieldname": "custom_column_break_assign",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_assignment_origination"
  },
  {
   "doctype": "Custom Field",
@@ -17,9 +34,18 @@
   "fieldname": "custom_engagement_sla",
   "fieldtype": "Link",
   "label": "Engagement SLA",
-  "insert_after": "custom_assignment_origination",
+  "insert_after": "custom_column_break_assign",
   "options": "Alpha Engagement SLA",
   "read_only": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Project-custom_section_break_team",
+  "dt": "Project",
+  "fieldname": "custom_section_break_team",
+  "fieldtype": "Section Break",
+  "label": "Assignment Team",
+  "insert_after": "custom_engagement_sla"
  },
  {
   "doctype": "Custom Field",
@@ -28,8 +54,16 @@
   "fieldname": "custom_branch_manager",
   "fieldtype": "Link",
   "label": "Branch Manager",
-  "insert_after": "custom_engagement_sla",
+  "insert_after": "custom_section_break_team",
   "options": "User"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Project-custom_column_break_team",
+  "dt": "Project",
+  "fieldname": "custom_column_break_team",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_branch_manager"
  },
  {
   "doctype": "Custom Field",
@@ -38,8 +72,16 @@
   "fieldname": "custom_engagement_manager",
   "fieldtype": "Link",
   "label": "Engagement Manager",
-  "insert_after": "custom_branch_manager",
+  "insert_after": "custom_column_break_team",
   "options": "User"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Project-custom_section_break_team2",
+  "dt": "Project",
+  "fieldname": "custom_section_break_team2",
+  "fieldtype": "Section Break",
+  "insert_after": "custom_engagement_manager"
  },
  {
   "doctype": "Custom Field",
@@ -48,8 +90,16 @@
   "fieldname": "custom_client_owner",
   "fieldtype": "Link",
   "label": "Client Owner",
-  "insert_after": "custom_engagement_manager",
+  "insert_after": "custom_section_break_team2",
   "options": "User"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Project-custom_column_break_team2",
+  "dt": "Project",
+  "fieldname": "custom_column_break_team2",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_client_owner"
  },
  {
   "doctype": "Custom Field",
@@ -58,8 +108,17 @@
   "fieldname": "custom_risk_rating",
   "fieldtype": "Select",
   "label": "Risk Rating",
-  "insert_after": "custom_client_owner",
+  "insert_after": "custom_column_break_team2",
   "options": "Low\nMedium\nHigh\nCritical"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Project-custom_section_break_class",
+  "dt": "Project",
+  "fieldname": "custom_section_break_class",
+  "fieldtype": "Section Break",
+  "label": "Classification",
+  "insert_after": "custom_risk_rating"
  },
  {
   "doctype": "Custom Field",
@@ -68,8 +127,16 @@
   "fieldname": "custom_service_line",
   "fieldtype": "Link",
   "label": "Service Line",
-  "insert_after": "custom_risk_rating",
+  "insert_after": "custom_section_break_class",
   "options": "Project Type"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Project-custom_column_break_class",
+  "dt": "Project",
+  "fieldname": "custom_column_break_class",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_service_line"
  },
  {
   "doctype": "Custom Field",
@@ -78,9 +145,18 @@
   "fieldname": "custom_closure_certificate",
   "fieldtype": "Link",
   "label": "Closure Certificate",
-  "insert_after": "custom_service_line",
+  "insert_after": "custom_column_break_class",
   "options": "Assignment Closure Certificate",
   "read_only": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Task-custom_section_break_track",
+  "dt": "Task",
+  "fieldname": "custom_section_break_track",
+  "fieldtype": "Section Break",
+  "label": "Assignment Tracking",
+  "insert_after": "description"
  },
  {
   "doctype": "Custom Field",
@@ -89,7 +165,15 @@
   "fieldname": "custom_requires_review",
   "fieldtype": "Check",
   "label": "Requires Review",
-  "insert_after": "description"
+  "insert_after": "custom_section_break_track"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Task-custom_column_break_track",
+  "dt": "Task",
+  "fieldname": "custom_column_break_track",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_requires_review"
  },
  {
   "doctype": "Custom Field",
@@ -98,7 +182,16 @@
   "fieldname": "custom_evidence_attachment",
   "fieldtype": "Check",
   "label": "Evidence Attached",
-  "insert_after": "custom_requires_review"
+  "insert_after": "custom_column_break_track"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Task-custom_section_break_evidence",
+  "dt": "Task",
+  "fieldname": "custom_section_break_evidence",
+  "fieldtype": "Section Break",
+  "label": "Evidence Exception",
+  "insert_after": "custom_evidence_attachment"
  },
  {
   "doctype": "Custom Field",
@@ -107,7 +200,16 @@
   "fieldname": "custom_evidence_exception",
   "fieldtype": "Small Text",
   "label": "Evidence Exception",
-  "insert_after": "custom_evidence_attachment"
+  "insert_after": "custom_section_break_evidence"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Task-custom_section_break_links",
+  "dt": "Task",
+  "fieldname": "custom_section_break_links",
+  "fieldtype": "Section Break",
+  "label": "Related Records",
+  "insert_after": "custom_evidence_exception"
  },
  {
   "doctype": "Custom Field",
@@ -116,106 +218,190 @@
   "fieldname": "custom_review_gate",
   "fieldtype": "Link",
   "label": "Review Gate",
-  "insert_after": "custom_evidence_exception",
+  "insert_after": "custom_section_break_links",
   "options": "Review Gate Register"
  },
-  {
-   "doctype": "Custom Field",
-   "name": "Task-custom_client_delay_log",
-   "dt": "Task",
-   "fieldname": "custom_client_delay_log",
-   "fieldtype": "Link",
-   "label": "Client Delay Log",
-   "insert_after": "custom_review_gate",
-   "options": "Client Delay Log"
-  },
-  {
-   "doctype": "Custom Field",
-   "name": "Goal-custom_related_project",
-   "dt": "Goal",
-   "fieldname": "custom_related_project",
-   "fieldtype": "Link",
-   "label": "Related Project",
-   "insert_after": "description",
-   "options": "Project"
-  },
-  {
-   "doctype": "Custom Field",
-   "name": "Goal-custom_related_task",
-   "dt": "Goal",
-   "fieldname": "custom_related_task",
-   "fieldtype": "Link",
-   "label": "Related Task",
-   "insert_after": "custom_related_project",
-   "options": "Task"
-  },
-  {
-   "doctype": "Custom Field",
-   "name": "Goal-custom_assignment_origination",
-   "dt": "Goal",
-   "fieldname": "custom_assignment_origination",
-   "fieldtype": "Link",
-   "label": "Assignment Origination",
-   "insert_after": "custom_related_task",
-   "options": "Alpha Assignment Origination"
-  },
-  {
-   "doctype": "Custom Field",
-   "name": "Goal-custom_metric_type",
-   "dt": "Goal",
-   "fieldname": "custom_metric_type",
-   "fieldtype": "Select",
-   "label": "Metric Type",
-   "insert_after": "custom_assignment_origination",
-   "options": "\nTask Completion\nSLA Compliance\nUtilization Rate\nRevenue Target\nQuality Score"
-  },
-  {
-   "doctype": "Custom Field",
-   "name": "Goal-custom_target_value",
-   "dt": "Goal",
-   "fieldname": "custom_target_value",
-   "fieldtype": "Float",
-   "label": "Target Value",
-   "insert_after": "custom_metric_type"
-  },
-  {
-   "doctype": "Custom Field",
-   "name": "Goal-custom_actual_value",
-   "dt": "Goal",
-   "fieldname": "custom_actual_value",
-   "fieldtype": "Float",
-   "label": "Actual Value",
-   "insert_after": "custom_target_value",
-   "read_only": 1
-  },
-  {
-   "doctype": "Custom Field",
-   "name": "Appraisal-custom_assignments_completed",
-   "dt": "Appraisal",
-   "fieldname": "custom_assignments_completed",
-   "fieldtype": "Int",
-   "label": "Assignments Completed",
-   "insert_after": "final_score",
-   "read_only": 1
-  },
-  {
-   "doctype": "Custom Field",
-   "name": "Appraisal-custom_sla_compliance_rate",
-   "dt": "Appraisal",
-   "fieldname": "custom_sla_compliance_rate",
-   "fieldtype": "Percent",
-   "label": "SLA Compliance Rate",
-   "insert_after": "custom_assignments_completed",
-   "read_only": 1
-  },
-  {
-   "doctype": "Custom Field",
-   "name": "Appraisal-custom_utilization_rate",
-   "dt": "Appraisal",
-   "fieldname": "custom_utilization_rate",
-   "fieldtype": "Percent",
-   "label": "Utilization Rate",
-   "insert_after": "custom_sla_compliance_rate",
-   "read_only": 1
-  }
- ]
+ {
+  "doctype": "Custom Field",
+  "name": "Task-custom_column_break_links",
+  "dt": "Task",
+  "fieldname": "custom_column_break_links",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_review_gate"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Task-custom_client_delay_log",
+  "dt": "Task",
+  "fieldname": "custom_client_delay_log",
+  "fieldtype": "Link",
+  "label": "Client Delay Log",
+  "insert_after": "custom_column_break_links",
+  "options": "Client Delay Log"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Goal-custom_section_break_assign",
+  "dt": "Goal",
+  "fieldname": "custom_section_break_assign",
+  "fieldtype": "Section Break",
+  "label": "Assignment References",
+  "insert_after": "description"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Goal-custom_related_project",
+  "dt": "Goal",
+  "fieldname": "custom_related_project",
+  "fieldtype": "Link",
+  "label": "Related Project",
+  "insert_after": "custom_section_break_assign",
+  "options": "Project"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Goal-custom_column_break_assign",
+  "dt": "Goal",
+  "fieldname": "custom_column_break_assign",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_related_project"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Goal-custom_related_task",
+  "dt": "Goal",
+  "fieldname": "custom_related_task",
+  "fieldtype": "Link",
+  "label": "Related Task",
+  "insert_after": "custom_column_break_assign",
+  "options": "Task"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Goal-custom_section_break_meta",
+  "dt": "Goal",
+  "fieldname": "custom_section_break_meta",
+  "fieldtype": "Section Break",
+  "label": "Assignment Metrics",
+  "insert_after": "custom_related_task"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Goal-custom_assignment_origination",
+  "dt": "Goal",
+  "fieldname": "custom_assignment_origination",
+  "fieldtype": "Link",
+  "label": "Assignment Origination",
+  "insert_after": "custom_section_break_meta",
+  "options": "Alpha Assignment Origination"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Goal-custom_column_break_meta",
+  "dt": "Goal",
+  "fieldname": "custom_column_break_meta",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_assignment_origination"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Goal-custom_metric_type",
+  "dt": "Goal",
+  "fieldname": "custom_metric_type",
+  "fieldtype": "Select",
+  "label": "Metric Type",
+  "insert_after": "custom_column_break_meta",
+  "options": "\nTask Completion\nSLA Compliance\nUtilization Rate\nRevenue Target\nQuality Score"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Goal-custom_section_break_values",
+  "dt": "Goal",
+  "fieldname": "custom_section_break_values",
+  "fieldtype": "Section Break",
+  "label": "Target vs Actual",
+  "insert_after": "custom_metric_type"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Goal-custom_target_value",
+  "dt": "Goal",
+  "fieldname": "custom_target_value",
+  "fieldtype": "Float",
+  "label": "Target Value",
+  "insert_after": "custom_section_break_values"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Goal-custom_column_break_values",
+  "dt": "Goal",
+  "fieldname": "custom_column_break_values",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_target_value"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Goal-custom_actual_value",
+  "dt": "Goal",
+  "fieldname": "custom_actual_value",
+  "fieldtype": "Float",
+  "label": "Actual Value",
+  "insert_after": "custom_column_break_values",
+  "read_only": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Appraisal-custom_section_break_perf",
+  "dt": "Appraisal",
+  "fieldname": "custom_section_break_perf",
+  "fieldtype": "Section Break",
+  "label": "Performance Metrics",
+  "insert_after": "final_score"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Appraisal-custom_assignments_completed",
+  "dt": "Appraisal",
+  "fieldname": "custom_assignments_completed",
+  "fieldtype": "Int",
+  "label": "Assignments Completed",
+  "insert_after": "custom_section_break_perf",
+  "read_only": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Appraisal-custom_column_break_perf",
+  "dt": "Appraisal",
+  "fieldname": "custom_column_break_perf",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_assignments_completed"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Appraisal-custom_sla_compliance_rate",
+  "dt": "Appraisal",
+  "fieldname": "custom_sla_compliance_rate",
+  "fieldtype": "Percent",
+  "label": "SLA Compliance Rate",
+  "insert_after": "custom_column_break_perf",
+  "read_only": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Appraisal-custom_section_break_util",
+  "dt": "Appraisal",
+  "fieldname": "custom_section_break_util",
+  "fieldtype": "Section Break",
+  "insert_after": "custom_sla_compliance_rate"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Appraisal-custom_utilization_rate",
+  "dt": "Appraisal",
+  "fieldname": "custom_utilization_rate",
+  "fieldtype": "Percent",
+  "label": "Utilization Rate",
+  "insert_after": "custom_section_break_util",
+  "read_only": 1
+ }
+]
