@@ -101,33 +101,6 @@ def create_activity_types():
 def create_dashboard_charts():
 	charts = [
 		{
-			"chart_name": "Assignments by Service Line",
-			"chart_type": "Group By",
-			"document_type": "Alpha Assignment Origination",
-			"group_by_type": "Count",
-			"group_by_based_on": "service_line",
-			"type": "Bar",
-			"filters_json": "[]",
-		},
-		{
-			"chart_name": "Assignments by Status",
-			"chart_type": "Group By",
-			"document_type": "Alpha Assignment Origination",
-			"group_by_type": "Count",
-			"group_by_based_on": "acceptance_status",
-			"type": "Bar",
-			"filters_json": "[]",
-		},
-		{
-			"chart_name": "SLA Health Overview",
-			"chart_type": "Group By",
-			"document_type": "Alpha Engagement SLA",
-			"group_by_type": "Count",
-			"group_by_based_on": "status",
-			"type": "Donut",
-			"filters_json": "[]",
-		},
-		{
 			"chart_name": "Assignments Trend (Last 12 Months)",
 			"chart_type": "Count",
 			"document_type": "Alpha Assignment Origination",
@@ -334,9 +307,6 @@ def update_workspace_with_charts():
 			})
 
 	chart_names = [
-		"Assignments by Service Line",
-		"Assignments by Status",
-		"SLA Health Overview",
 		"Assignments Trend (Last 12 Months)",
 	]
 	chart_items = []
@@ -383,7 +353,27 @@ def update_workspace_with_charts():
 def update_ceo_dashboard_with_charts():
 	ws_name = "CEO Assignment Dashboard"
 	if not frappe.db.exists("Workspace", ws_name):
-		return
+		try:
+			ws = frappe.get_doc({
+				"doctype": "Workspace",
+				"workspace_name": ws_name,
+				"label": ws_name,
+				"module": "Alpha Assignment Management",
+				"icon": "dashboard",
+				"is_standard": 1,
+				"public": 1,
+				"title": ws_name,
+				"type": "Workspace",
+				"sequence_id": 2.0,
+				"for_user": "",
+				"hide_custom": 0,
+				"is_hidden": 0,
+				"parent_page": "",
+			})
+			ws.flags.ignore_permissions = True
+			ws.insert()
+		except Exception as e:
+			frappe.log_error(f"Failed to create CEO Dashboard: {e}")
 
 	content = [
 		{
@@ -442,9 +432,7 @@ def update_ceo_dashboard_with_charts():
 	]
 
 	shortcuts = [
-		("s1", "New Assignment"), ("s2", "All Assignments"),
-		("s3", "Active Projects"), ("s4", "Risk Register"),
-		("s5", "Staff Productivity"), ("s6", "Employee Performance"),
+		("s1", "Staff Productivity"), ("s2", "Employee Performance"),
 	]
 	for sid, sname in shortcuts:
 		content.append({
