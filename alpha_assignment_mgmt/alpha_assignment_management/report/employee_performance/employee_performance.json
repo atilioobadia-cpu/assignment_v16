@@ -1,0 +1,27 @@
+{
+ "doctype": "Report",
+ "name": "Employee Performance",
+ "report_name": "Employee Performance",
+ "ref_doctype": "Employee",
+ "report_type": "Query Report",
+ "is_standard": "Yes",
+ "query": "SELECT\n    `tabEmployee`.`name` AS \"Employee ID:Data:120\",\n    `tabEmployee`.`employee_name` AS \"Employee Name:Data:200\",\n    `tabEmployee`.`designation` AS \"Designation:Data:150\",\n    `tabEmployee`.`branch` AS \"Branch:Link/Branch:120\",\n    COALESCE(`tabEmployee`.`custom_hours_logged_30d`, 0) AS \"Hours Logged (30d):Float:100\",\n    COALESCE(`tabEmployee`.`custom_tasks_completed_30d`, 0) AS \"Tasks Completed (30d):Int:100\",\n    COALESCE(`tabEmployee`.`custom_active_assignments`, 0) AS \"Active Assignments:Int:100\",\n    COALESCE(`tabEmployee`.`custom_sla_compliance_rate`, 100) AS \"SLA Compliance Rate (%):Percent:120\",\n    COALESCE(`tabEmployee`.`custom_utilization_rate_30d`, 0) AS \"Utilization Rate (%):Percent:120\"\nFROM\n    `tabEmployee`\nWHERE\n    `tabEmployee`.`status` = 'Active'\n    AND `tabEmployee`.`employee_name` IS NOT NULL\nORDER BY\n    `tabEmployee`.`custom_hours_logged_30d` DESC",
+ "json": "{}",
+ "add_total_row": 0,
+ "color": "#2563EB",
+ "icon": "chart",
+ "roles": [
+  {
+   "role": "Alpha Managing Director"
+  },
+  {
+   "role": "Alpha Partner/Director"
+  },
+  {
+   "role": "Alpha Engagement Manager"
+  },
+  {
+   "role": "System Manager"
+  }
+ ]
+}

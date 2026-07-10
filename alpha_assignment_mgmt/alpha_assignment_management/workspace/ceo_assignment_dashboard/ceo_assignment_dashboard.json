@@ -1,0 +1,175 @@
+{
+ "doctype": "Workspace",
+ "name": "CEO Assignment Dashboard",
+ "label": "CEO Assignment Dashboard",
+ "module": "Alpha Assignment Management",
+ "icon": "dashboard",
+ "is_standard": 1,
+ "public": 1,
+ "title": "CEO Assignment Dashboard",
+ "type": "Workspace",
+ "sequence_id": 2.0,
+ "charts": [],
+ "number_cards": [],
+ "roles": [{"role": "Alpha Managing Director"}, {"role": "Alpha Partner/Director"}, {"role": "System Manager"}],
+ "for_user": "",
+ "hide_custom": 0,
+ "is_hidden": 0,
+ "parent_page": "",
+ "links": [
+  {
+   "type": "Link",
+   "label": "All Assignments",
+   "link_to": "Alpha Assignment Origination",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Active Projects",
+   "link_to": "Project",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Engagement SLAs",
+   "link_to": "Alpha Engagement SLA",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Risk Register",
+   "link_to": "Client Risk Register",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Employees",
+   "link_to": "Employee",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Staff Productivity Report",
+   "link_to": "Staff Productivity",
+   "link_type": "Report",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 1,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Employee Performance Report",
+   "link_to": "Employee Performance",
+   "link_type": "Report",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 1,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "SLA Compliance Overview",
+   "link_to": "SLA Compliance Overview",
+   "link_type": "Report",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 1,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Sales Invoices",
+   "link_to": "Sales Invoice",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Sales Orders",
+   "link_to": "Sales Order",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Customers",
+   "link_to": "Customer",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  }
+ ],
+ "shortcuts": [
+  {
+   "label": "New Assignment",
+   "type": "DocType",
+   "link_to": "Alpha Assignment Origination",
+   "doc_type": "Alpha Assignment Origination",
+   "icon": "add"
+  },
+  {
+   "label": "All Assignments",
+   "type": "DocType",
+   "link_to": "Alpha Assignment Origination",
+   "doc_type": "Alpha Assignment Origination",
+   "icon": "list"
+  },
+  {
+   "label": "Active Projects",
+   "type": "DocType",
+   "link_to": "Project",
+   "doc_type": "Project",
+   "icon": "project"
+  },
+  {
+   "label": "Risk Register",
+   "type": "DocType",
+   "link_to": "Client Risk Register",
+   "doc_type": "Client Risk Register",
+   "icon": "warn"
+  },
+  {
+   "label": "Staff Productivity",
+   "type": "Report",
+   "link_to": "Staff Productivity",
+   "doc_type": "Staff Productivity",
+   "icon": "chart"
+  },
+  {
+   "label": "Employee Performance",
+   "type": "Report",
+   "link_to": "Employee Performance",
+   "doc_type": "Employee Performance",
+   "icon": "chart"
+  }
+ ]
+}

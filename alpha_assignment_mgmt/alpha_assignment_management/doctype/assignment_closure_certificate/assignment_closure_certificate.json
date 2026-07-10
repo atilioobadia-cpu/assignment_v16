@@ -1,245 +1,259 @@
 {
- "actions": [],
- "autoname": "hash",
- "creation": "2026-07-09 00:00:00.000000",
- "default_view": "List",
- "doctype": "DocType",
- "engine": "InnoDB",
- "field_order": [
-  "project",
-  "assignment_origination",
-  "customer",
-  "closure_date",
-  "column_break_checks",
-  "all_tasks_complete",
-  "all_timesheets_submitted",
-  "evidence_archived",
-  "client_deliverables_issued",
-  "billing_complete",
-  "client_sign_off_obtained",
-  "section_approval",
-  "prepared_by",
-  "reviewed_by",
-  "approved_by",
-  "approval_date",
-  "status",
-  "section_notes",
-  "final_notes"
- ],
- "fields": [
-  {
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Project",
-   "options": "Project",
-   "reqd": 1
-  },
-  {
-   "fieldname": "assignment_origination",
-   "fieldtype": "Link",
-   "label": "Assignment Origination",
-   "options": "Alpha Assignment Origination"
-  },
-  {
-   "fieldname": "customer",
-   "fieldtype": "Link",
-   "label": "Customer",
-   "options": "Customer"
-  },
-  {
-   "fieldname": "closure_date",
-   "fieldtype": "Date",
-   "label": "Closure Date"
-  },
-  {
-   "fieldname": "column_break_checks",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "all_tasks_complete",
-   "fieldtype": "Check",
-   "label": "All Tasks Complete"
-  },
-  {
-   "default": "0",
-   "fieldname": "all_timesheets_submitted",
-   "fieldtype": "Check",
-   "label": "All Timesheets Submitted"
-  },
-  {
-   "default": "0",
-   "fieldname": "evidence_archived",
-   "fieldtype": "Check",
-   "label": "Evidence Archived"
-  },
-  {
-   "default": "0",
-   "fieldname": "client_deliverables_issued",
-   "fieldtype": "Check",
-   "label": "Client Deliverables Issued"
-  },
-  {
-   "default": "0",
-   "fieldname": "billing_complete",
-   "fieldtype": "Check",
-   "label": "Billing Complete"
-  },
-  {
-   "default": "0",
-   "fieldname": "client_sign_off_obtained",
-   "fieldtype": "Check",
-   "label": "Client Sign-off Obtained"
-  },
-  {
-   "fieldname": "section_approval",
-   "fieldtype": "Section Break",
-   "label": "Approval"
-  },
-  {
-   "fieldname": "prepared_by",
-   "fieldtype": "Link",
-   "label": "Prepared By",
-   "options": "User"
-  },
-  {
-   "fieldname": "reviewed_by",
-   "fieldtype": "Link",
-   "label": "Reviewed By",
-   "options": "User"
-  },
-  {
-   "fieldname": "approved_by",
-   "fieldtype": "Link",
-   "label": "Approved By",
-   "options": "User"
-  },
-  {
-   "fieldname": "approval_date",
-   "fieldtype": "Date",
-   "label": "Approval Date"
-  },
-  {
-   "default": "Draft",
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Status",
-   "options": "Draft\nPending Review\nApproved\nRejected"
-  },
-  {
-   "fieldname": "section_notes",
-   "fieldtype": "Section Break",
-   "label": "Notes"
-  },
-  {
-   "fieldname": "final_notes",
-   "fieldtype": "Small Text",
-   "label": "Final Notes"
-  }
- ],
- "is_submittable": 1,
- "links": [],
- "modified": "2026-07-09 00:00:00.000000",
- "modified_by": "Administrator",
- "module": "Alpha Assignment Management",
- "name": "Assignment Closure Certificate",
- "owner": "Administrator",
- "permissions": [
-  {
-   "role": "System Manager",
-   "create": 1,
-   "read": 1,
-   "write": 1,
-   "submit": 1,
-   "cancel": 1,
-   "delete": 1,
-   "amend": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "report": 1,
-   "share": 1
-  },
-  {
-   "role": "Alpha Partner/Director",
-   "create": 1,
-   "read": 1,
-   "write": 1,
-   "submit": 1,
-   "cancel": 1,
-   "delete": 1,
-   "amend": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "report": 1,
-   "share": 1
-  },
-  {
-   "role": "Alpha Engagement Manager",
-   "create": 1,
-   "read": 1,
-   "write": 1,
-   "submit": 1,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 1,
-   "export": 0,
-   "print": 1,
-   "report": 1,
-   "share": 0
-  },
-  {
-   "role": "Alpha Branch Manager",
-   "create": 0,
-   "read": 1,
-   "write": 0,
-   "submit": 0,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 1,
-   "export": 0,
-   "print": 1,
-   "report": 0,
-   "share": 0
-  },
-  {
-   "role": "Alpha Client Owner",
-   "create": 0,
-   "read": 1,
-   "write": 0,
-   "submit": 0,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 1,
-   "export": 0,
-   "print": 1,
-   "report": 0,
-   "share": 0
-  },
-  {
-   "role": "Alpha HR Admin",
-   "create": 0,
-   "read": 1,
-   "write": 0,
-   "submit": 0,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 0,
-   "export": 0,
-   "print": 0,
-   "report": 0,
-   "share": 0
-  }
- ],
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": [],
- "track_changes": 1
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-07-09 00:00:00.000000",
+  "default_view": "List",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "section_closure",
+    "project",
+    "assignment_origination",
+    "customer",
+    "closure_date",
+    "closure_cb_1",
+    "all_tasks_complete",
+    "all_timesheets_submitted",
+    "evidence_archived",
+    "client_deliverables_issued",
+    "billing_complete",
+    "client_sign_off_obtained",
+    "section_approval",
+    "prepared_by",
+    "reviewed_by",
+    "approved_by",
+    "approval_cb_1",
+    "approval_date",
+    "status",
+    "section_notes",
+    "final_notes"
+  ],
+  "fields": [
+    {
+      "fieldname": "section_closure",
+      "fieldtype": "Section Break",
+      "label": "Closure Details"
+    },
+    {
+      "fieldname": "project",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Project",
+      "options": "Project",
+      "reqd": 1
+    },
+    {
+      "fieldname": "assignment_origination",
+      "fieldtype": "Link",
+      "label": "Assignment Origination",
+      "options": "Alpha Assignment Origination"
+    },
+    {
+      "fieldname": "customer",
+      "fieldtype": "Link",
+      "label": "Customer",
+      "options": "Customer"
+    },
+    {
+      "fieldname": "closure_date",
+      "fieldtype": "Date",
+      "label": "Closure Date",
+      "default": "Today"
+    },
+    {
+      "fieldname": "closure_cb_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "default": "0",
+      "fieldname": "all_tasks_complete",
+      "fieldtype": "Check",
+      "label": "All Tasks Complete"
+    },
+    {
+      "default": "0",
+      "fieldname": "all_timesheets_submitted",
+      "fieldtype": "Check",
+      "label": "All Timesheets Submitted"
+    },
+    {
+      "default": "0",
+      "fieldname": "evidence_archived",
+      "fieldtype": "Check",
+      "label": "Evidence Archived"
+    },
+    {
+      "default": "0",
+      "fieldname": "client_deliverables_issued",
+      "fieldtype": "Check",
+      "label": "Client Deliverables Issued"
+    },
+    {
+      "default": "0",
+      "fieldname": "billing_complete",
+      "fieldtype": "Check",
+      "label": "Billing Complete"
+    },
+    {
+      "default": "0",
+      "fieldname": "client_sign_off_obtained",
+      "fieldtype": "Check",
+      "label": "Client Sign-off Obtained"
+    },
+    {
+      "fieldname": "section_approval",
+      "fieldtype": "Section Break",
+      "label": "Approval",
+      "collapsible": 1
+    },
+    {
+      "fieldname": "prepared_by",
+      "fieldtype": "Link",
+      "label": "Prepared By",
+      "options": "User"
+    },
+    {
+      "fieldname": "reviewed_by",
+      "fieldtype": "Link",
+      "label": "Reviewed By",
+      "options": "User"
+    },
+    {
+      "fieldname": "approved_by",
+      "fieldtype": "Link",
+      "label": "Approved By",
+      "options": "User"
+    },
+    {
+      "fieldname": "approval_cb_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "approval_date",
+      "fieldtype": "Date",
+      "label": "Approval Date"
+    },
+    {
+      "default": "Draft",
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "Status",
+      "options": "Draft\nPending Review\nApproved\nRejected"
+    },
+    {
+      "fieldname": "section_notes",
+      "fieldtype": "Section Break",
+      "label": "Notes",
+      "collapsible": 1
+    },
+    {
+      "fieldname": "final_notes",
+      "fieldtype": "Small Text",
+      "label": "Final Notes"
+    }
+  ],
+  "is_submittable": 1,
+  "links": [],
+  "modified": "2026-07-10 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Alpha Assignment Management",
+  "name": "Assignment Closure Certificate",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "role": "System Manager",
+      "create": 1,
+      "read": 1,
+      "write": 1,
+      "submit": 1,
+      "cancel": 1,
+      "delete": 1,
+      "amend": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "report": 1,
+      "share": 1
+    },
+    {
+      "role": "Alpha Partner/Director",
+      "create": 1,
+      "read": 1,
+      "write": 1,
+      "submit": 1,
+      "cancel": 1,
+      "delete": 1,
+      "amend": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "report": 1,
+      "share": 1
+    },
+    {
+      "role": "Alpha Engagement Manager",
+      "create": 1,
+      "read": 1,
+      "write": 1,
+      "submit": 1,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 1,
+      "export": 0,
+      "print": 1,
+      "report": 1,
+      "share": 0
+    },
+    {
+      "role": "Alpha Branch Manager",
+      "create": 0,
+      "read": 1,
+      "write": 0,
+      "submit": 0,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 1,
+      "export": 0,
+      "print": 1,
+      "report": 0,
+      "share": 0
+    },
+    {
+      "role": "Alpha Client Owner",
+      "create": 0,
+      "read": 1,
+      "write": 0,
+      "submit": 0,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 1,
+      "export": 0,
+      "print": 1,
+      "report": 0,
+      "share": 0
+    },
+    {
+      "role": "Alpha HR Admin",
+      "create": 0,
+      "read": 1,
+      "write": 0,
+      "submit": 0,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 0,
+      "export": 0,
+      "print": 0,
+      "report": 0,
+      "share": 0
+    }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 1
 }
