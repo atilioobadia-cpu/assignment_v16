@@ -374,6 +374,7 @@ def update_ceo_dashboard_with_charts():
 			ws.insert()
 		except Exception as e:
 			frappe.log_error(f"Failed to create CEO Dashboard: {e}")
+		return
 
 	content = [
 		{
