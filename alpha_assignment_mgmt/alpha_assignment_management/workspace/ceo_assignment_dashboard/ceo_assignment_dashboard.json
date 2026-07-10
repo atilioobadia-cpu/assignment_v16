@@ -6,7 +6,6 @@
  "icon": "dashboard",
  "is_standard": 1,
  "public": 1,
- "route": "ceo-assignment-dashboard",
  "title": "CEO",
  "type": "Workspace",
  "sequence_id": 2.0,

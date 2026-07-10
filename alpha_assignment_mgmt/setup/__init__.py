@@ -280,7 +280,6 @@ def update_workspace_with_charts():
 
 	frappe.db.set_value("Workspace", ws_name, "label", "AIMS Desk")
 	frappe.db.set_value("Workspace", ws_name, "title", "AIMS Desk")
-	frappe.db.set_value("Workspace", ws_name, "route", "alpha-assignment-desk")
 
 	content = [
 		{
@@ -361,7 +360,6 @@ def update_ceo_dashboard_with_charts():
 
 	frappe.db.set_value("Workspace", ws_name, "label", "CEO")
 	frappe.db.set_value("Workspace", ws_name, "title", "CEO")
-	frappe.db.set_value("Workspace", ws_name, "route", "ceo-assignment-dashboard")
 
 	content = [
 		{

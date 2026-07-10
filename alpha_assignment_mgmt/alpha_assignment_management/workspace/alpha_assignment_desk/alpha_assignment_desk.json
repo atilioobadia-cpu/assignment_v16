@@ -6,7 +6,6 @@
  "icon": "checklist",
  "is_standard": 1,
  "public": 1,
- "route": "alpha-assignment-desk",
  "title": "AIMS Desk",
  "type": "Workspace",
  "sequence_id": 1.0,
