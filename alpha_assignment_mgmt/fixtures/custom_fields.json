@@ -451,5 +451,97 @@
   "label": "Utilization Rate",
   "insert_after": "custom_column_break_perf_2",
   "read_only": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Employee-custom_section_break_perf",
+  "dt": "Employee",
+  "fieldname": "custom_section_break_perf",
+  "fieldtype": "Section Break",
+  "label": "Performance Metrics",
+  "insert_after": "status"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Employee-custom_hours_logged_30d",
+  "dt": "Employee",
+  "fieldname": "custom_hours_logged_30d",
+  "fieldtype": "Float",
+  "label": "Hours Logged (30d)",
+  "insert_after": "custom_section_break_perf",
+  "read_only": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Employee-custom_column_break_perf_1",
+  "dt": "Employee",
+  "fieldname": "custom_column_break_perf_1",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_hours_logged_30d"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Employee-custom_tasks_completed_30d",
+  "dt": "Employee",
+  "fieldname": "custom_tasks_completed_30d",
+  "fieldtype": "Int",
+  "label": "Tasks Completed (30d)",
+  "insert_after": "custom_column_break_perf_1",
+  "read_only": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Employee-custom_column_break_perf_2",
+  "dt": "Employee",
+  "fieldname": "custom_column_break_perf_2",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_tasks_completed_30d"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Employee-custom_active_assignments",
+  "dt": "Employee",
+  "fieldname": "custom_active_assignments",
+  "fieldtype": "Int",
+  "label": "Active Assignments",
+  "insert_after": "custom_column_break_perf_2",
+  "read_only": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Employee-custom_section_break_sla",
+  "dt": "Employee",
+  "fieldname": "custom_section_break_sla",
+  "fieldtype": "Section Break",
+  "label": "SLA & Utilization",
+  "insert_after": "custom_active_assignments"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Employee-custom_sla_compliance_rate",
+  "dt": "Employee",
+  "fieldname": "custom_sla_compliance_rate",
+  "fieldtype": "Percent",
+  "label": "SLA Compliance Rate",
+  "insert_after": "custom_section_break_sla",
+  "read_only": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Employee-custom_column_break_sla_1",
+  "dt": "Employee",
+  "fieldname": "custom_column_break_sla_1",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_sla_compliance_rate"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Employee-custom_utilization_rate_30d",
+  "dt": "Employee",
+  "fieldname": "custom_utilization_rate_30d",
+  "fieldtype": "Percent",
+  "label": "Utilization Rate (30d)",
+  "insert_after": "custom_column_break_sla_1",
+  "read_only": 1
  }
 ]
