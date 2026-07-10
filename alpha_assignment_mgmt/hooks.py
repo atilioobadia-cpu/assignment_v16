@@ -38,6 +38,9 @@ doc_events = {
 	"Appraisal": {
 		"validate": "alpha_assignment_mgmt.overrides.appraisal.validate",
 	},
+	"Alpha Assignment Origination": {
+		"on_update": "alpha_assignment_mgmt.overrides.assignment_origination.on_update",
+	},
 }
 
 permission_query_conditions = {
