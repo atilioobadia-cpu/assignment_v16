@@ -10,17 +10,20 @@
   "naming_series",
   "assignment_title",
   "date_received",
+  "identity_cb_1",
   "received_by",
   "source_of_request",
   "service_line",
+  "identity_cb_2",
   "urgency_level",
   "statutory_deadline",
-  "column_break_client",
   "client_identity_section",
   "customer",
   "client_focal_person",
+  "column_break_client",
   "contact_number",
   "email",
+  "column_break_risk",
   "branch",
   "sector",
   "tin_reference",
@@ -29,13 +32,14 @@
   "billing_method",
   "deposit_required",
   "fee_approval_status",
+  "commercial_cb_2",
   "scope_limitations",
   "out_of_pocket_treatment",
-  "column_break_risk",
   "risk_control_section",
   "risk_rating",
   "tax_exposure",
   "audit_exposure",
+  "risk_cb_2",
   "missing_records",
   "litigation_risk",
   "regulatory_deadline",
@@ -47,6 +51,7 @@
   "preparer_team",
   "reviewer",
   "technical_approver",
+  "evidence_cb_2",
   "section_evidence",
   "documents_received",
   "documents_pending",
@@ -59,6 +64,7 @@
   "approval_date",
   "project_created",
   "project_reference",
+  "workflow_cb_2",
   "sla_reference",
   "task_template_applied",
   "closure_status",
@@ -92,6 +98,10 @@
    "reqd": 1
   },
   {
+   "fieldname": "identity_cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "received_by",
    "fieldtype": "Link",
    "label": "Received By",
@@ -110,6 +120,10 @@
    "options": "Project Type"
   },
   {
+   "fieldname": "identity_cb_2",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "urgency_level",
    "fieldtype": "Select",
    "label": "Urgency Level",
@@ -119,10 +133,6 @@
    "fieldname": "statutory_deadline",
    "fieldtype": "Date",
    "label": "Statutory Deadline"
-  },
-  {
-   "fieldname": "column_break_client",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "client_identity_section",
@@ -143,6 +153,10 @@
    "label": "Client Focal Person"
   },
   {
+   "fieldname": "column_break_client",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "contact_number",
    "fieldtype": "Data",
    "label": "Contact Number"
@@ -152,6 +166,10 @@
    "fieldtype": "Data",
    "label": "Email",
    "options": "Email"
+  },
+  {
+   "fieldname": "column_break_risk",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "branch",
@@ -197,6 +215,10 @@
    "options": "Pending\nApproved\nRejected\nNegotiating"
   },
   {
+   "fieldname": "commercial_cb_2",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "scope_limitations",
    "fieldtype": "Small Text",
    "label": "Scope Limitations"
@@ -205,10 +227,6 @@
    "fieldname": "out_of_pocket_treatment",
    "fieldtype": "Small Text",
    "label": "Out of Pocket Cost Treatment"
-  },
-  {
-   "fieldname": "column_break_risk",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "risk_control_section",
@@ -230,6 +248,10 @@
    "fieldname": "audit_exposure",
    "fieldtype": "Small Text",
    "label": "Audit Exposure"
+  },
+  {
+   "fieldname": "risk_cb_2",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "missing_records",
@@ -291,6 +313,10 @@
    "fieldtype": "Link",
    "label": "Technical Approver",
    "options": "User"
+  },
+  {
+   "fieldname": "evidence_cb_2",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "section_evidence",
@@ -358,6 +384,10 @@
    "label": "Project Reference",
    "options": "Project",
    "read_only": 1
+  },
+  {
+   "fieldname": "workflow_cb_2",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "sla_reference",
