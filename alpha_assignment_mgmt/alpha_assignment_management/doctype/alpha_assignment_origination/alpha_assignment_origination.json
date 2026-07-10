@@ -1,509 +1,522 @@
 {
- "actions": [],
- "autoname": "naming_series:",
- "creation": "2026-07-09 00:00:00.000000",
- "default_view": "List",
- "doctype": "DocType",
- "engine": "InnoDB",
- "field_order": [
-  "assignment_identity_section",
-  "naming_series",
-  "assignment_title",
-  "date_received",
-  "received_by",
-  "source_of_request",
-  "service_line",
-  "urgency_level",
-  "statutory_deadline",
-  "column_break_client",
-  "client_identity_section",
-  "customer",
-  "client_focal_person",
-  "contact_number",
-  "email",
-  "branch",
-  "sector",
-  "tin_reference",
-  "section_commercial",
-  "proposed_fee",
-  "billing_method",
-  "deposit_required",
-  "fee_approval_status",
-  "scope_limitations",
-  "out_of_pocket_treatment",
-  "column_break_risk",
-  "risk_control_section",
-  "risk_rating",
-  "tax_exposure",
-  "audit_exposure",
-  "missing_records",
-  "litigation_risk",
-  "regulatory_deadline",
-  "confidentiality_sensitivity",
-  "section_team",
-  "lead_branch_manager",
-  "engagement_manager",
-  "client_owner",
-  "preparer_team",
-  "reviewer",
-  "technical_approver",
-  "section_evidence",
-  "documents_received",
-  "documents_pending",
-  "document_request_date",
-  "client_delay_flag",
-  "evidence_quality_rating",
-  "section_workflow",
-  "workflow_state",
-  "acceptance_status",
-  "approval_date",
-  "project_created",
-  "project_reference",
-  "sla_reference",
-  "task_template_applied",
-  "closure_status",
-  "amended_from"
- ],
- "fields": [
-  {
-   "fieldname": "assignment_identity_section",
-   "fieldtype": "Section Break",
-   "label": "Assignment Identity"
-  },
-  {
-   "default": "AOR-.YYYY.-.#####",
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "label": "Naming Series",
-   "options": "AOR-.YYYY.-.#####"
-  },
-  {
-   "fieldname": "assignment_title",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Assignment Title",
-   "reqd": 1
-  },
-  {
-   "fieldname": "date_received",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Date Received",
-   "reqd": 1
-  },
-  {
-   "fieldname": "received_by",
-   "fieldtype": "Link",
-   "label": "Received By",
-   "options": "User"
-  },
-  {
-   "fieldname": "source_of_request",
-   "fieldtype": "Select",
-   "label": "Source of Request",
-   "options": "Client Email\nPhone Instruction\nClient Meeting\nTRA Notice\nBoard Request\nInternal Management\nRecurring Monthly Service\nOther"
-  },
-  {
-   "fieldname": "service_line",
-   "fieldtype": "Link",
-   "label": "Service Line",
-   "options": "Project Type"
-  },
-  {
-   "fieldname": "urgency_level",
-   "fieldtype": "Select",
-   "label": "Urgency Level",
-   "options": "Low\nMedium\nHigh\nCritical"
-  },
-  {
-   "fieldname": "statutory_deadline",
-   "fieldtype": "Date",
-   "label": "Statutory Deadline"
-  },
-  {
-   "fieldname": "column_break_client",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "client_identity_section",
-   "fieldtype": "Section Break",
-   "label": "Client Identity"
-  },
-  {
-   "fieldname": "customer",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Customer",
-   "options": "Customer",
-   "reqd": 1
-  },
-  {
-   "fieldname": "client_focal_person",
-   "fieldtype": "Data",
-   "label": "Client Focal Person"
-  },
-  {
-   "fieldname": "contact_number",
-   "fieldtype": "Data",
-   "label": "Contact Number"
-  },
-  {
-   "fieldname": "email",
-   "fieldtype": "Data",
-   "label": "Email",
-   "options": "Email"
-  },
-  {
-   "fieldname": "branch",
-   "fieldtype": "Link",
-   "label": "Branch",
-   "options": "Branch"
-  },
-  {
-   "fieldname": "sector",
-   "fieldtype": "Data",
-   "label": "Sector"
-  },
-  {
-   "fieldname": "tin_reference",
-   "fieldtype": "Data",
-   "label": "TIN/Registration Reference"
-  },
-  {
-   "fieldname": "section_commercial",
-   "fieldtype": "Section Break",
-   "label": "Commercial Control"
-  },
-  {
-   "fieldname": "proposed_fee",
-   "fieldtype": "Currency",
-   "label": "Proposed Fee"
-  },
-  {
-   "fieldname": "billing_method",
-   "fieldtype": "Select",
-   "label": "Billing Method",
-   "options": "Fixed Fee\nTime Based\nMilestone Based\nRetainer"
-  },
-  {
-   "fieldname": "deposit_required",
-   "fieldtype": "Currency",
-   "label": "Deposit Required"
-  },
-  {
-   "fieldname": "fee_approval_status",
-   "fieldtype": "Select",
-   "label": "Fee Approval Status",
-   "options": "Pending\nApproved\nRejected\nNegotiating"
-  },
-  {
-   "fieldname": "scope_limitations",
-   "fieldtype": "Small Text",
-   "label": "Scope Limitations"
-  },
-  {
-   "fieldname": "out_of_pocket_treatment",
-   "fieldtype": "Small Text",
-   "label": "Out of Pocket Cost Treatment"
-  },
-  {
-   "fieldname": "column_break_risk",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "risk_control_section",
-   "fieldtype": "Section Break",
-   "label": "Risk Control"
-  },
-  {
-   "fieldname": "risk_rating",
-   "fieldtype": "Select",
-   "label": "Risk Rating",
-   "options": "Low\nMedium\nHigh\nCritical"
-  },
-  {
-   "fieldname": "tax_exposure",
-   "fieldtype": "Small Text",
-   "label": "Tax Exposure"
-  },
-  {
-   "fieldname": "audit_exposure",
-   "fieldtype": "Small Text",
-   "label": "Audit Exposure"
-  },
-  {
-   "fieldname": "missing_records",
-   "fieldtype": "Small Text",
-   "label": "Missing Records"
-  },
-  {
-   "fieldname": "litigation_risk",
-   "fieldtype": "Small Text",
-   "label": "Litigation Risk"
-  },
-  {
-   "fieldname": "regulatory_deadline",
-   "fieldtype": "Date",
-   "label": "Regulatory Deadline"
-  },
-  {
-   "fieldname": "confidentiality_sensitivity",
-   "fieldtype": "Select",
-   "label": "Confidentiality Sensitivity",
-   "options": "Standard\nConfidential\nHighly Confidential"
-  },
-  {
-   "fieldname": "section_team",
-   "fieldtype": "Section Break",
-   "label": "Team Control"
-  },
-  {
-   "fieldname": "lead_branch_manager",
-   "fieldtype": "Link",
-   "label": "Lead Branch Manager",
-   "options": "User"
-  },
-  {
-   "fieldname": "engagement_manager",
-   "fieldtype": "Link",
-   "label": "Engagement Manager",
-   "options": "User"
-  },
-  {
-   "fieldname": "client_owner",
-   "fieldtype": "Link",
-   "label": "Client Owner",
-   "options": "User"
-  },
-  {
-   "fieldname": "preparer_team",
-   "fieldtype": "Small Text",
-   "label": "Preparer Team"
-  },
-  {
-   "fieldname": "reviewer",
-   "fieldtype": "Link",
-   "label": "Reviewer",
-   "options": "User"
-  },
-  {
-   "fieldname": "technical_approver",
-   "fieldtype": "Link",
-   "label": "Technical Approver",
-   "options": "User"
-  },
-  {
-   "fieldname": "section_evidence",
-   "fieldtype": "Section Break",
-   "label": "Evidence Control"
-  },
-  {
-   "fieldname": "documents_received",
-   "fieldtype": "Small Text",
-   "label": "Documents Received"
-  },
-  {
-   "fieldname": "documents_pending",
-   "fieldtype": "Small Text",
-   "label": "Documents Pending"
-  },
-  {
-   "fieldname": "document_request_date",
-   "fieldtype": "Date",
-   "label": "Document Request Date"
-  },
-  {
-   "fieldname": "client_delay_flag",
-   "fieldtype": "Check",
-   "label": "Client Delay Flag"
-  },
-  {
-   "fieldname": "evidence_quality_rating",
-   "fieldtype": "Select",
-   "label": "Evidence Quality Rating",
-   "options": "Adequate\nPartial\nInsufficient\nNot Available"
-  },
-  {
-   "fieldname": "section_workflow",
-   "fieldtype": "Section Break",
-   "label": "Workflow Control"
-  },
-  {
-   "fieldname": "workflow_state",
-   "fieldtype": "Link",
-   "label": "Workflow State",
-   "options": "Workflow State",
-   "read_only": 1
-  },
-  {
-   "fieldname": "acceptance_status",
-   "fieldtype": "Select",
-   "label": "Acceptance Status",
-   "options": "Draft\nSubmitted\nUnder Review\nApproved\nRejected"
-  },
-  {
-   "fieldname": "approval_date",
-   "fieldtype": "Date",
-   "label": "Approval Date"
-  },
-  {
-   "fieldname": "project_created",
-   "fieldtype": "Check",
-   "label": "Project Created",
-   "read_only": 1
-  },
-  {
-   "fieldname": "project_reference",
-   "fieldtype": "Link",
-   "label": "Project Reference",
-   "options": "Project",
-   "read_only": 1
-  },
-  {
-   "fieldname": "sla_reference",
-   "fieldtype": "Link",
-   "label": "SLA Reference",
-   "options": "Alpha Engagement SLA",
-   "read_only": 1
-  },
-  {
-   "fieldname": "task_template_applied",
-   "fieldtype": "Data",
-   "label": "Task Template Applied"
-  },
-  {
-   "fieldname": "closure_status",
-   "fieldtype": "Select",
-   "label": "Closure Status",
-   "options": "Open\nIn Progress\nCompleted\nClosed"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Alpha Assignment Origination",
-   "print_hide": 1,
-   "read_only": 1
-  }
- ],
- "is_submittable": 1,
- "links": [],
- "modified": "2026-07-09 00:00:00.000000",
- "modified_by": "Administrator",
- "module": "Alpha Assignment Management",
- "name": "Alpha Assignment Origination",
- "naming_rule": "By \"Naming Series\" field",
- "owner": "Administrator",
- "permissions": [
-  {
-   "role": "System Manager",
-   "create": 1,
-   "read": 1,
-   "write": 1,
-   "submit": 1,
-   "cancel": 1,
-   "delete": 1,
-   "amend": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "report": 1,
-   "share": 1
-  },
-  {
-   "role": "Alpha Partner/Director",
-   "create": 1,
-   "read": 1,
-   "write": 1,
-   "submit": 1,
-   "cancel": 1,
-   "delete": 1,
-   "amend": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "report": 1,
-   "share": 1
-  },
-  {
-   "role": "Alpha Engagement Manager",
-   "create": 1,
-   "read": 1,
-   "write": 1,
-   "submit": 1,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 1,
-   "export": 0,
-   "print": 1,
-   "report": 1,
-   "share": 1
-  },
-  {
-   "role": "Alpha Branch Manager",
-   "create": 1,
-   "read": 1,
-   "write": 1,
-   "submit": 0,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 1,
-   "export": 0,
-   "print": 1,
-   "report": 1,
-   "share": 0
-  },
-  {
-   "role": "Alpha Client Owner",
-   "create": 0,
-   "read": 1,
-   "write": 0,
-   "submit": 0,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 1,
-   "export": 0,
-   "print": 1,
-   "report": 0,
-   "share": 0
-  },
-  {
-   "role": "Alpha Reviewer",
-   "create": 0,
-   "read": 1,
-   "write": 0,
-   "submit": 0,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 1,
-   "export": 0,
-   "print": 1,
-   "report": 0,
-   "share": 0
-  },
-  {
-   "role": "Alpha HR Admin",
-   "create": 0,
-   "read": 1,
-   "write": 0,
-   "submit": 0,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 0,
-   "export": 0,
-   "print": 0,
-   "report": 0,
-   "share": 0
-  }
- ],
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": [],
- "track_changes": 1
+  "actions": [],
+  "autoname": "naming_series:",
+  "creation": "2026-07-09 00:00:00.000000",
+  "default_view": "List",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "assignment_identity_section",
+    "naming_series",
+    "assignment_title",
+    "date_received",
+    "identity_cb_1",
+    "received_by",
+    "source_of_request",
+    "service_line",
+    "identity_cb_2",
+    "urgency_level",
+    "statutory_deadline",
+    "client_identity_section",
+    "customer",
+    "client_focal_person",
+    "column_break_client",
+    "contact_number",
+    "email",
+    "column_break_risk",
+    "branch",
+    "sector",
+    "tin_reference",
+    "section_commercial",
+    "proposed_fee",
+    "billing_method",
+    "deposit_required",
+    "fee_approval_status",
+    "commercial_cb_2",
+    "scope_limitations",
+    "out_of_pocket_treatment",
+    "risk_control_section",
+    "risk_rating",
+    "tax_exposure",
+    "audit_exposure",
+    "risk_cb_2",
+    "missing_records",
+    "litigation_risk",
+    "regulatory_deadline",
+    "confidentiality_sensitivity",
+    "section_team",
+    "lead_branch_manager",
+    "engagement_manager",
+    "client_owner",
+    "evidence_cb_2",
+    "preparer_team",
+    "reviewer",
+    "technical_approver",
+    "section_evidence",
+    "evidence_attachments",
+    "client_delay_flag",
+    "section_workflow",
+    "workflow_state",
+    "acceptance_status",
+    "approval_date",
+    "project_created",
+    "project_reference",
+    "workflow_cb_2",
+    "sla_reference",
+    "task_template_applied",
+    "closure_status",
+    "amended_from"
+  ],
+  "fields": [
+    {
+      "fieldname": "assignment_identity_section",
+      "fieldtype": "Section Break",
+      "label": "Assignment Identity"
+    },
+    {
+      "default": "AOR-.YYYY.-.#####",
+      "fieldname": "naming_series",
+      "fieldtype": "Select",
+      "label": "Naming Series",
+      "options": "AOR-.YYYY.-.#####"
+    },
+    {
+      "fieldname": "assignment_title",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Assignment Title",
+      "reqd": 1
+    },
+    {
+      "fieldname": "date_received",
+      "fieldtype": "Date",
+      "in_list_view": 1,
+      "label": "Date Received",
+      "reqd": 1
+    },
+    {
+      "fieldname": "identity_cb_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "received_by",
+      "fieldtype": "Link",
+      "label": "Received By",
+      "options": "User"
+    },
+    {
+      "fieldname": "source_of_request",
+      "fieldtype": "Select",
+      "label": "Source of Request",
+      "options": "Client Email\nPhone Instruction\nClient Meeting\nTRA Notice\nBoard Request\nInternal Management\nRecurring Monthly Service\nOther"
+    },
+    {
+      "fieldname": "service_line",
+      "fieldtype": "Link",
+      "label": "Service Line",
+      "options": "Project Type"
+    },
+    {
+      "fieldname": "identity_cb_2",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "urgency_level",
+      "fieldtype": "Select",
+      "label": "Urgency Level",
+      "options": "Low\nMedium\nHigh\nCritical"
+    },
+    {
+      "fieldname": "statutory_deadline",
+      "fieldtype": "Date",
+      "label": "Statutory Deadline"
+    },
+    {
+      "fieldname": "client_identity_section",
+      "fieldtype": "Section Break",
+      "label": "Client Identity"
+    },
+    {
+      "fieldname": "customer",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Customer",
+      "options": "Customer",
+      "reqd": 1
+    },
+    {
+      "fieldname": "client_focal_person",
+      "fieldtype": "Data",
+      "label": "Client Focal Person"
+    },
+    {
+      "fieldname": "column_break_client",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "contact_number",
+      "fieldtype": "Data",
+      "label": "Contact Number"
+    },
+    {
+      "fieldname": "email",
+      "fieldtype": "Data",
+      "label": "Email",
+      "options": "Email"
+    },
+    {
+      "fieldname": "column_break_risk",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "branch",
+      "fieldtype": "Link",
+      "label": "Branch",
+      "options": "Branch"
+    },
+    {
+      "fieldname": "sector",
+      "fieldtype": "Data",
+      "label": "Sector"
+    },
+    {
+      "fieldname": "tin_reference",
+      "fieldtype": "Data",
+      "label": "TIN/Registration Reference"
+    },
+    {
+      "fieldname": "section_commercial",
+      "fieldtype": "Section Break",
+      "label": "Commercial Control"
+    },
+    {
+      "fieldname": "proposed_fee",
+      "fieldtype": "Currency",
+      "label": "Proposed Fee"
+    },
+    {
+      "fieldname": "billing_method",
+      "fieldtype": "Select",
+      "label": "Billing Method",
+      "options": "Fixed Fee\nTime Based\nMilestone Based\nRetainer"
+    },
+    {
+      "fieldname": "deposit_required",
+      "fieldtype": "Currency",
+      "label": "Deposit Required"
+    },
+    {
+      "fieldname": "fee_approval_status",
+      "fieldtype": "Select",
+      "label": "Fee Approval Status",
+      "options": "Pending\nApproved\nRejected\nNegotiating"
+    },
+    {
+      "fieldname": "commercial_cb_2",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "scope_limitations",
+      "fieldtype": "Small Text",
+      "label": "Scope Limitations"
+    },
+    {
+      "fieldname": "out_of_pocket_treatment",
+      "fieldtype": "Small Text",
+      "label": "Out of Pocket Cost Treatment"
+    },
+    {
+      "fieldname": "risk_control_section",
+      "fieldtype": "Section Break",
+      "label": "Risk Control"
+    },
+    {
+      "fieldname": "risk_rating",
+      "fieldtype": "Select",
+      "label": "Risk Rating",
+      "options": "Low\nMedium\nHigh\nCritical"
+    },
+    {
+      "fieldname": "tax_exposure",
+      "fieldtype": "Small Text",
+      "label": "Tax Exposure"
+    },
+    {
+      "fieldname": "audit_exposure",
+      "fieldtype": "Small Text",
+      "label": "Audit Exposure"
+    },
+    {
+      "fieldname": "risk_cb_2",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "missing_records",
+      "fieldtype": "Small Text",
+      "label": "Missing Records"
+    },
+    {
+      "fieldname": "litigation_risk",
+      "fieldtype": "Small Text",
+      "label": "Litigation Risk"
+    },
+    {
+      "fieldname": "regulatory_deadline",
+      "fieldtype": "Date",
+      "label": "Regulatory Deadline"
+    },
+    {
+      "fieldname": "confidentiality_sensitivity",
+      "fieldtype": "Select",
+      "label": "Confidentiality Sensitivity",
+      "options": "Standard\nConfidential\nHighly Confidential"
+    },
+    {
+      "fieldname": "section_team",
+      "fieldtype": "Section Break",
+      "label": "Team Control"
+    },
+    {
+      "fieldname": "lead_branch_manager",
+      "fieldtype": "Link",
+      "label": "Lead Branch Manager",
+      "options": "User"
+    },
+    {
+      "fieldname": "engagement_manager",
+      "fieldtype": "Link",
+      "label": "Engagement Manager",
+      "options": "User"
+    },
+    {
+      "fieldname": "client_owner",
+      "fieldtype": "Link",
+      "label": "Client Owner",
+      "options": "User"
+    },
+    {
+      "fieldname": "evidence_cb_2",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "preparer_team",
+      "fieldtype": "Small Text",
+      "label": "Preparer Team"
+    },
+    {
+      "fieldname": "reviewer",
+      "fieldtype": "Link",
+      "label": "Reviewer",
+      "options": "User"
+    },
+    {
+      "fieldname": "technical_approver",
+      "fieldtype": "Link",
+      "label": "Technical Approver",
+      "options": "User"
+    },
+    {
+      "fieldname": "section_evidence",
+      "fieldtype": "Section Break",
+      "label": "Evidence Attachments",
+      "collapsible": 1
+    },
+    {
+      "fieldname": "evidence_attachments",
+      "fieldtype": "Table",
+      "label": "Evidence Attachments",
+      "options": "Alpha Evidence Attachment"
+    },
+    {
+      "fieldname": "client_delay_flag",
+      "fieldtype": "Check",
+      "label": "Client Delay Flag"
+    },
+    {
+      "fieldname": "section_workflow",
+      "fieldtype": "Section Break",
+      "label": "Workflow Control"
+    },
+    {
+      "fieldname": "workflow_state",
+      "fieldtype": "Link",
+      "label": "Workflow State",
+      "options": "Workflow State",
+      "read_only": 1
+    },
+    {
+      "fieldname": "acceptance_status",
+      "fieldtype": "Select",
+      "label": "Acceptance Status",
+      "options": "Draft\nSubmitted\nUnder Review\nApproved\nRejected"
+    },
+    {
+      "fieldname": "approval_date",
+      "fieldtype": "Date",
+      "label": "Approval Date"
+    },
+    {
+      "fieldname": "project_created",
+      "fieldtype": "Check",
+      "label": "Project Created",
+      "read_only": 1
+    },
+    {
+      "fieldname": "project_reference",
+      "fieldtype": "Link",
+      "label": "Project Reference",
+      "options": "Project",
+      "read_only": 1
+    },
+    {
+      "fieldname": "workflow_cb_2",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "sla_reference",
+      "fieldtype": "Link",
+      "label": "SLA Reference",
+      "options": "Alpha Engagement SLA",
+      "read_only": 1
+    },
+    {
+      "fieldname": "task_template_applied",
+      "fieldtype": "Data",
+      "label": "Task Template Applied"
+    },
+    {
+      "fieldname": "closure_status",
+      "fieldtype": "Select",
+      "label": "Closure Status",
+      "options": "Open\nIn Progress\nCompleted\nClosed"
+    },
+    {
+      "fieldname": "amended_from",
+      "fieldtype": "Link",
+      "label": "Amended From",
+      "no_copy": 1,
+      "options": "Alpha Assignment Origination",
+      "print_hide": 1,
+      "read_only": 1
+    }
+  ],
+  "is_submittable": 1,
+  "links": [],
+  "modified": "2026-07-10 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Alpha Assignment Management",
+  "name": "Alpha Assignment Origination",
+  "naming_rule": "By \"Naming Series\" field",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "role": "System Manager",
+      "create": 1,
+      "read": 1,
+      "write": 1,
+      "submit": 1,
+      "cancel": 1,
+      "delete": 1,
+      "amend": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "report": 1,
+      "share": 1
+    },
+    {
+      "role": "Alpha Partner/Director",
+      "create": 1,
+      "read": 1,
+      "write": 1,
+      "submit": 1,
+      "cancel": 1,
+      "delete": 1,
+      "amend": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "report": 1,
+      "share": 1
+    },
+    {
+      "role": "Alpha Engagement Manager",
+      "create": 1,
+      "read": 1,
+      "write": 1,
+      "submit": 1,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 1,
+      "export": 0,
+      "print": 1,
+      "report": 1,
+      "share": 1
+    },
+    {
+      "role": "Alpha Branch Manager",
+      "create": 1,
+      "read": 1,
+      "write": 1,
+      "submit": 0,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 1,
+      "export": 0,
+      "print": 1,
+      "report": 1,
+      "share": 0
+    },
+    {
+      "role": "Alpha Client Owner",
+      "create": 0,
+      "read": 1,
+      "write": 0,
+      "submit": 0,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 1,
+      "export": 0,
+      "print": 1,
+      "report": 0,
+      "share": 0
+    },
+    {
+      "role": "Alpha Reviewer",
+      "create": 0,
+      "read": 1,
+      "write": 0,
+      "submit": 0,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 1,
+      "export": 0,
+      "print": 1,
+      "report": 0,
+      "share": 0
+    },
+    {
+      "role": "Alpha HR Admin",
+      "create": 0,
+      "read": 1,
+      "write": 0,
+      "submit": 0,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 0,
+      "export": 0,
+      "print": 0,
+      "report": 0,
+      "share": 0
+    }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 1
 }

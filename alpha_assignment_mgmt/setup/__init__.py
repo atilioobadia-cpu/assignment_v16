@@ -9,7 +9,10 @@ def after_install():
 	create_activity_types()
 	create_dashboard_charts()
 	create_number_cards()
+	create_ceo_dashboard_charts()
+	create_ceo_number_cards()
 	update_workspace_with_charts()
+	update_ceo_dashboard_with_charts()
 
 
 def create_roles():
@@ -98,33 +101,6 @@ def create_activity_types():
 def create_dashboard_charts():
 	charts = [
 		{
-			"chart_name": "Assignments by Service Line",
-			"chart_type": "Group By",
-			"document_type": "Alpha Assignment Origination",
-			"group_by_type": "Count",
-			"group_by_based_on": "service_line",
-			"type": "Bar",
-			"filters_json": "[]",
-		},
-		{
-			"chart_name": "Assignments by Status",
-			"chart_type": "Group By",
-			"document_type": "Alpha Assignment Origination",
-			"group_by_type": "Count",
-			"group_by_based_on": "acceptance_status",
-			"type": "Bar",
-			"filters_json": "[]",
-		},
-		{
-			"chart_name": "SLA Health Overview",
-			"chart_type": "Group By",
-			"document_type": "Alpha Engagement SLA",
-			"group_by_type": "Count",
-			"group_by_based_on": "status",
-			"type": "Donut",
-			"filters_json": "[]",
-		},
-		{
 			"chart_name": "Assignments Trend (Last 12 Months)",
 			"chart_type": "Count",
 			"document_type": "Alpha Assignment Origination",
@@ -183,6 +159,120 @@ def create_number_cards():
 			}).insert(ignore_permissions=True)
 
 
+def create_ceo_dashboard_charts():
+	charts = [
+		{
+			"chart_name": "Monthly Assignment Intake",
+			"chart_type": "Count",
+			"document_type": "Alpha Assignment Origination",
+			"based_on": "creation",
+			"type": "Bar",
+			"timespan": "Last Year",
+			"timeseries_based_on": "creation",
+			"time_interval": "Monthly",
+			"filters_json": "[]",
+		},
+		{
+			"chart_name": "Risk Distribution",
+			"chart_type": "Group By",
+			"document_type": "Alpha Assignment Origination",
+			"group_by_type": "Count",
+			"group_by_based_on": "risk_rating",
+			"type": "Pie",
+			"filters_json": "[]",
+		},
+		{
+			"chart_name": "Client Delays by Impact",
+			"chart_type": "Group By",
+			"document_type": "Client Delay Log",
+			"group_by_type": "Count",
+			"group_by_based_on": "impact",
+			"type": "Bar",
+			"filters_json": "[]",
+		},
+		{
+			"chart_name": "Open Risks by Type",
+			"chart_type": "Group By",
+			"document_type": "Client Risk Register",
+			"group_by_type": "Count",
+			"group_by_based_on": "risk_type",
+			"type": "Bar",
+			"filters_json": '[["Client Risk Register","status","!=","Closed"]]',
+		},
+	]
+	for chart in charts:
+		if not frappe.db.exists("Dashboard Chart", chart["chart_name"]):
+			frappe.get_doc({
+				"doctype": "Dashboard Chart",
+				**chart,
+			}).insert(ignore_permissions=True)
+
+
+def create_ceo_number_cards():
+	cards = [
+		{
+			"label": "Total Assignments YTD",
+			"type": "Document Type",
+			"document_type": "Alpha Assignment Origination",
+			"function": "Count",
+			"filters_json": '[]',
+		},
+		{
+			"label": "Open Risks",
+			"type": "Document Type",
+			"document_type": "Client Risk Register",
+			"function": "Count",
+			"filters_json": '[["Client Risk Register","status","!=","Closed"]]',
+		},
+		{
+			"label": "Active Staff",
+			"type": "Document Type",
+			"document_type": "Employee",
+			"function": "Count",
+			"filters_json": '[["Employee","status","=","Active"]]',
+		},
+		{
+			"label": "Active Clients",
+			"type": "Document Type",
+			"document_type": "Customer",
+			"function": "Count",
+			"filters_json": '[["Customer","disabled","=",0]]',
+		},
+	]
+	for card in cards:
+		if not frappe.db.exists("Number Card", card["label"]):
+			frappe.get_doc({
+				"doctype": "Number Card",
+				**card,
+			}).insert(ignore_permissions=True)
+
+
+def _insert_workspace_charts(ws_name, chart_names):
+	frappe.db.delete("Workspace Chart", {"parent": ws_name, "parenttype": "Workspace"})
+	for cname in chart_names:
+		if frappe.db.exists("Dashboard Chart", cname):
+			frappe.db.sql("""
+				INSERT INTO `tabWorkspace Chart`
+				(name, creation, modified, owner, modified_by, parent, parenttype,
+				 parentfield, chart_name, label)
+				VALUES (%s, NOW(), NOW(), 'Administrator', 'Administrator', %s,
+				        'Workspace', 'charts', %s, %s)
+			""", (frappe.generate_hash(length=10), ws_name, cname, cname))
+
+
+def _insert_workspace_number_cards(ws_name, card_names):
+	frappe.db.delete("Workspace Number Card", {"parent": ws_name, "parenttype": "Workspace"})
+	for cname in card_names:
+		if frappe.db.exists("Number Card", cname):
+			frappe.db.sql("""
+				INSERT INTO `tabWorkspace Number Card`
+				(name, creation, modified, owner, modified_by, parent, parenttype,
+				 parentfield, number_card_name, label)
+				VALUES (%s, NOW(), NOW(), 'Administrator', 'Administrator', %s,
+				        'Workspace', 'number_cards', %s, %s)
+			""", (frappe.generate_hash(length=10), ws_name, cname, cname))
+
+
 def update_workspace_with_charts():
 	ws_name = "Alpha Assignment Desk"
 	if not frappe.db.exists("Workspace", ws_name):
@@ -217,9 +307,6 @@ def update_workspace_with_charts():
 			})
 
 	chart_names = [
-		"Assignments by Service Line",
-		"Assignments by Status",
-		"SLA Health Overview",
 		"Assignments Trend (Last 12 Months)",
 	]
 	chart_items = []
@@ -259,29 +346,107 @@ def update_workspace_with_charts():
 		})
 
 	frappe.db.set_value("Workspace", ws_name, "content", json.dumps(content))
+	_insert_workspace_charts(ws_name, chart_names)
+	_insert_workspace_number_cards(ws_name, card_names)
 
-	frappe.db.delete("Workspace Chart", {"parent": ws_name, "parenttype": "Workspace"})
-	for cname in chart_names:
-		if frappe.db.exists("Dashboard Chart", cname):
-			frappe.db.sql("""
-				INSERT INTO `tabWorkspace Chart`
-				(name, creation, modified, owner, modified_by, parent, parenttype,
-				 parentfield, chart_name, label)
-				VALUES (%s, NOW(), NOW(), 'Administrator', 'Administrator', %s,
-				        'Workspace', 'charts', %s, %s)
-			""", (frappe.generate_hash(length=10), ws_name, cname, cname))
 
-	frappe.db.delete("Workspace Number Card", {"parent": ws_name, "parenttype": "Workspace"})
-	for cname in card_names:
+def update_ceo_dashboard_with_charts():
+	ws_name = "CEO Assignment Dashboard"
+	if not frappe.db.exists("Workspace", ws_name):
+		try:
+			ws = frappe.get_doc({
+				"doctype": "Workspace",
+				"workspace_name": ws_name,
+				"label": ws_name,
+				"module": "Alpha Assignment Management",
+				"icon": "dashboard",
+				"is_standard": 1,
+				"public": 1,
+				"title": ws_name,
+				"type": "Workspace",
+				"sequence_id": 2.0,
+				"for_user": "",
+				"hide_custom": 0,
+				"is_hidden": 0,
+				"parent_page": "",
+			})
+			ws.flags.ignore_permissions = True
+			ws.insert()
+		except Exception as e:
+			frappe.log_error(f"Failed to create CEO Dashboard: {e}")
+
+	content = [
+		{
+			"id": "h1",
+			"type": "header",
+			"data": {
+				"text": '<span class="h4"><b>CEO Assignment Dashboard</b></span>',
+				"col": 12
+			}
+		},
+		{
+			"id": "p1",
+			"type": "paragraph",
+			"data": {
+				"text": "High-level overview of firm performance, risk exposure, and staff productivity.",
+				"col": 12
+			}
+		},
+	]
+
+	card_names = ["Total Assignments YTD", "Open Risks", "Active Staff", "Active Clients"]
+	card_items = []
+	for i, cname in enumerate(card_names):
 		if frappe.db.exists("Number Card", cname):
-			frappe.db.sql("""
-				INSERT INTO `tabWorkspace Number Card`
-				(name, creation, modified, owner, modified_by, parent, parenttype,
-				 parentfield, number_card_name, label)
-				VALUES (%s, NOW(), NOW(), 'Administrator', 'Administrator', %s,
-				        'Workspace', 'number_cards', %s, %s)
-			""", (frappe.generate_hash(length=10), ws_name, cname, cname))
+			card_items.append({
+				"id": f"nc{i+1}", "type": "number_card",
+				"data": {"number_card_name": cname, "col": 3}
+			})
+
+	chart_names = [
+		"Monthly Assignment Intake",
+		"Risk Distribution",
+		"Client Delays by Impact",
+		"Open Risks by Type",
+	]
+	chart_items = []
+	for i, cname in enumerate(chart_names):
+		if frappe.db.exists("Dashboard Chart", cname):
+			chart_items.append({
+				"id": f"c{i+1}", "type": "chart",
+				"data": {"chart_name": cname, "col": 4}
+			})
+
+	content += card_items + chart_items
+
+	content += [
+		{"id": "sp1", "type": "spacer", "data": {"col": 12}},
+		{
+			"id": "sh2",
+			"type": "header",
+			"data": {
+				"text": '<span class="h5"><b>CEO Quick Actions</b></span>',
+				"col": 12
+			}
+		},
+	]
+
+	shortcuts = [
+		("s1", "New Assignment"), ("s2", "All Assignments"),
+		("s3", "Active Projects"), ("s4", "Risk Register"),
+		("s5", "Staff Productivity"), ("s6", "Employee Performance"),
+	]
+	for sid, sname in shortcuts:
+		content.append({
+			"id": sid, "type": "shortcut",
+			"data": {"shortcut_name": sname, "col": 3}
+		})
+
+	frappe.db.set_value("Workspace", ws_name, "content", json.dumps(content))
+	_insert_workspace_charts(ws_name, chart_names)
+	_insert_workspace_number_cards(ws_name, card_names)
 
 
 def after_migrate():
 	update_workspace_with_charts()
+	update_ceo_dashboard_with_charts()

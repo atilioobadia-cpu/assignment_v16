@@ -15,6 +15,7 @@ scheduler_events = {
 	"daily": [
 		"alpha_assignment_mgmt.tasks.sla.daily_sla_breach_check",
 		"alpha_assignment_mgmt.tasks.notifications.daily_overdue_task_notification",
+		"alpha_assignment_mgmt.tasks.performance.daily_performance_computation",
 	],
 	"weekly": [
 		"alpha_assignment_mgmt.tasks.notifications.weekly_productivity_report",
@@ -39,6 +40,10 @@ doc_events = {
 	},
 }
 
+permission_query_conditions = {
+	"Task": "alpha_assignment_mgmt.overrides.task.get_permission_query_conditions"
+}
+
 fixtures = [
 	{
 		"doctype": "Workflow",
@@ -53,8 +58,15 @@ fixtures = [
 				"Project",
 				"Task",
 				"Goal",
-				"Appraisal"
+				"Appraisal",
+				"Employee"
 			]]
+		]
+	},
+	{
+		"doctype": "Report",
+		"filters": [
+			["name", "in", ["Employee Performance"]]
 		]
 	},
 ]

@@ -1,5 +1,6 @@
 from frappe.model.document import Document
 
-
 class ClientRiskRegister(Document):
-    pass
+    def validate(self):
+        if not self.status:
+            self.status = "Open"

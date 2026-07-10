@@ -1,199 +1,213 @@
 {
- "actions": [],
- "autoname": "hash",
- "creation": "2026-07-09 00:00:00.000000",
- "default_view": "List",
- "doctype": "DocType",
- "engine": "InnoDB",
- "field_order": [
-  "task",
-  "project",
-  "preparer",
-  "reviewer",
-  "column_break_comments",
-  "review_date",
-  "review_comments",
-  "correction_status",
-  "approval_status",
-  "approved_date",
-  "section_details",
-  "correction_notes"
- ],
- "fields": [
-  {
-   "fieldname": "task",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Task",
-   "options": "Task",
-   "reqd": 1
-  },
-  {
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "label": "Project",
-   "options": "Project"
-  },
-  {
-   "fieldname": "preparer",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Preparer",
-   "options": "User"
-  },
-  {
-   "fieldname": "reviewer",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Reviewer",
-   "options": "User",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_comments",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "review_date",
-   "fieldtype": "Date",
-   "label": "Review Date"
-  },
-  {
-   "fieldname": "review_comments",
-   "fieldtype": "Small Text",
-   "label": "Review Comments"
-  },
-  {
-   "fieldname": "correction_status",
-   "fieldtype": "Select",
-   "label": "Correction Status",
-   "options": "No Correction Required\nReturned for Correction\nCorrected\nRe-Reviewed"
-  },
-  {
-   "fieldname": "approval_status",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Approval Status",
-   "options": "Pending\nApproved\nReturned\nEscalated"
-  },
-  {
-   "fieldname": "approved_date",
-   "fieldtype": "Date",
-   "label": "Approved Date"
-  },
-  {
-   "fieldname": "section_details",
-   "fieldtype": "Section Break",
-   "label": "Correction Details"
-  },
-  {
-   "depends_on": "eval:doc.correction_status == 'Returned for Correction'",
-   "fieldname": "correction_notes",
-   "fieldtype": "Small Text",
-   "label": "Correction Notes"
-  }
- ],
- "links": [],
- "modified": "2026-07-09 00:00:00.000000",
- "modified_by": "Administrator",
- "module": "Alpha Assignment Management",
- "name": "Review Gate Register",
- "owner": "Administrator",
- "permissions": [
-  {
-   "role": "System Manager",
-   "create": 1,
-   "read": 1,
-   "write": 1,
-   "submit": 1,
-   "cancel": 1,
-   "delete": 1,
-   "amend": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "report": 1,
-   "share": 1
-  },
-  {
-   "role": "Alpha Partner/Director",
-   "create": 1,
-   "read": 1,
-   "write": 1,
-   "submit": 1,
-   "cancel": 1,
-   "delete": 1,
-   "amend": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "report": 1,
-   "share": 1
-  },
-  {
-   "role": "Alpha Reviewer",
-   "create": 1,
-   "read": 1,
-   "write": 1,
-   "submit": 1,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 1,
-   "export": 0,
-   "print": 1,
-   "report": 1,
-   "share": 0
-  },
-  {
-   "role": "Alpha Engagement Manager",
-   "create": 0,
-   "read": 1,
-   "write": 0,
-   "submit": 0,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 1,
-   "export": 0,
-   "print": 1,
-   "report": 0,
-   "share": 0
-  },
-  {
-   "role": "Alpha Branch Manager",
-   "create": 0,
-   "read": 1,
-   "write": 0,
-   "submit": 0,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 1,
-   "export": 0,
-   "print": 1,
-   "report": 0,
-   "share": 0
-  },
-  {
-   "role": "Alpha Staff",
-   "create": 0,
-   "read": 1,
-   "write": 0,
-   "submit": 0,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 0,
-   "export": 0,
-   "print": 0,
-   "report": 0,
-   "share": 0
-  }
- ],
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": [],
- "track_changes": 1,
- "is_submittable": 1
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-07-09 00:00:00.000000",
+  "default_view": "List",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "section_review",
+    "task",
+    "project",
+    "review_cb_1",
+    "preparer",
+    "reviewer",
+    "review_cb_2",
+    "review_date",
+    "review_comments",
+    "correction_status",
+    "approval_status",
+    "approved_date",
+    "section_details",
+    "correction_notes"
+  ],
+  "fields": [
+    {
+      "fieldname": "section_review",
+      "fieldtype": "Section Break",
+      "label": "Review Details"
+    },
+    {
+      "fieldname": "task",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Task",
+      "options": "Task",
+      "reqd": 1
+    },
+    {
+      "fieldname": "project",
+      "fieldtype": "Link",
+      "label": "Project",
+      "options": "Project"
+    },
+    {
+      "fieldname": "review_cb_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "preparer",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Preparer",
+      "options": "User"
+    },
+    {
+      "fieldname": "reviewer",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Reviewer",
+      "options": "User",
+      "reqd": 1
+    },
+    {
+      "fieldname": "review_cb_2",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "review_date",
+      "fieldtype": "Date",
+      "label": "Review Date"
+    },
+    {
+      "fieldname": "review_comments",
+      "fieldtype": "Small Text",
+      "label": "Review Comments"
+    },
+    {
+      "fieldname": "correction_status",
+      "fieldtype": "Select",
+      "label": "Correction Status",
+      "options": "No Correction Required\nReturned for Correction\nCorrected\nRe-Reviewed",
+      "default": "No Correction Required"
+    },
+    {
+      "fieldname": "approval_status",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "Approval Status",
+      "options": "Pending\nApproved\nReturned\nEscalated",
+      "default": "Pending"
+    },
+    {
+      "fieldname": "approved_date",
+      "fieldtype": "Date",
+      "label": "Approved Date"
+    },
+    {
+      "fieldname": "section_details",
+      "fieldtype": "Section Break",
+      "label": "Correction Details",
+      "collapsible": 1
+    },
+    {
+      "depends_on": "eval:doc.correction_status == 'Returned for Correction'",
+      "fieldname": "correction_notes",
+      "fieldtype": "Small Text",
+      "label": "Correction Notes"
+    }
+  ],
+  "links": [],
+  "modified": "2026-07-10 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Alpha Assignment Management",
+  "name": "Review Gate Register",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "role": "System Manager",
+      "create": 1,
+      "read": 1,
+      "write": 1,
+      "submit": 1,
+      "cancel": 1,
+      "delete": 1,
+      "amend": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "report": 1,
+      "share": 1
+    },
+    {
+      "role": "Alpha Partner/Director",
+      "create": 1,
+      "read": 1,
+      "write": 1,
+      "submit": 1,
+      "cancel": 1,
+      "delete": 1,
+      "amend": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "report": 1,
+      "share": 1
+    },
+    {
+      "role": "Alpha Reviewer",
+      "create": 1,
+      "read": 1,
+      "write": 1,
+      "submit": 1,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 1,
+      "export": 0,
+      "print": 1,
+      "report": 1,
+      "share": 0
+    },
+    {
+      "role": "Alpha Engagement Manager",
+      "create": 0,
+      "read": 1,
+      "write": 0,
+      "submit": 0,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 1,
+      "export": 0,
+      "print": 1,
+      "report": 0,
+      "share": 0
+    },
+    {
+      "role": "Alpha Branch Manager",
+      "create": 0,
+      "read": 1,
+      "write": 0,
+      "submit": 0,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 1,
+      "export": 0,
+      "print": 1,
+      "report": 0,
+      "share": 0
+    },
+    {
+      "role": "Alpha Staff",
+      "create": 0,
+      "read": 1,
+      "write": 0,
+      "submit": 0,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 0,
+      "export": 0,
+      "print": 0,
+      "report": 0,
+      "share": 0
+    }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 1,
+  "is_submittable": 1
 }

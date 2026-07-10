@@ -1,248 +1,266 @@
 {
- "actions": [],
- "autoname": "naming_series:",
- "creation": "2026-07-09 00:00:00.000000",
- "default_view": "List",
- "doctype": "DocType",
- "engine": "InnoDB",
- "field_order": [
-  "naming_series",
-  "sla_level",
-  "assignment_origination",
-  "project",
-  "customer",
-  "column_break_dates",
-  "client_due_date",
-  "alpha_processing_deadline",
-  "review_deadline",
-  "escalation_date",
-  "section_team",
-  "engagement_manager",
-  "branch_manager",
-  "reviewer",
-  "section_status",
-  "status",
-  "breach_notified"
- ],
- "fields": [
-  {
-   "default": "AATL-SLA-.YYYY.-.#####",
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "label": "Naming Series",
-   "options": "AATL-SLA-.YYYY.-.#####"
-  },
-  {
-   "fieldname": "sla_level",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "SLA Level",
-   "options": "SLA A - Urgent Statutory\nSLA B - Audit Readiness\nSLA C - Monthly Bookkeeping\nSLA D - Reconstruction\nSLA E - Advisory/Research/Training",
-   "reqd": 1
-  },
-  {
-   "fieldname": "assignment_origination",
-   "fieldtype": "Link",
-   "label": "Assignment Origination",
-   "options": "Alpha Assignment Origination"
-  },
-  {
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "label": "Project",
-   "options": "Project"
-  },
-  {
-   "fieldname": "customer",
-   "fieldtype": "Link",
-   "label": "Customer",
-   "options": "Customer"
-  },
-  {
-   "fieldname": "column_break_dates",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "client_due_date",
-   "fieldtype": "Date",
-   "label": "Client Due Date"
-  },
-  {
-   "fieldname": "alpha_processing_deadline",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Alpha Processing Deadline",
-   "reqd": 1
-  },
-  {
-   "fieldname": "review_deadline",
-   "fieldtype": "Date",
-   "label": "Review Deadline"
-  },
-  {
-   "fieldname": "escalation_date",
-   "fieldtype": "Date",
-   "label": "Escalation Date"
-  },
-  {
-   "fieldname": "section_team",
-   "fieldtype": "Section Break",
-   "label": "Team"
-  },
-  {
-   "fieldname": "engagement_manager",
-   "fieldtype": "Link",
-   "label": "Engagement Manager",
-   "options": "User"
-  },
-  {
-   "fieldname": "branch_manager",
-   "fieldtype": "Link",
-   "label": "Branch Manager",
-   "options": "User"
-  },
-  {
-   "fieldname": "reviewer",
-   "fieldtype": "Link",
-   "label": "Reviewer",
-   "options": "User"
-  },
-  {
-   "fieldname": "section_status",
-   "fieldtype": "Section Break",
-   "label": "Status"
-  },
-  {
-   "default": "Active",
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "label": "Status",
-   "options": "Active\nBreached\nCompleted\nClosed"
-  },
-  {
-   "default": "0",
-   "fieldname": "breach_notified",
-   "fieldtype": "Check",
-   "label": "Breach Notified"
-  }
- ],
- "is_submittable": 1,
- "links": [],
- "modified": "2026-07-09 00:00:00.000000",
- "modified_by": "Administrator",
- "module": "Alpha Assignment Management",
- "name": "Alpha Engagement SLA",
- "naming_rule": "By \"Naming Series\" field",
- "owner": "Administrator",
- "permissions": [
-  {
-   "role": "System Manager",
-   "create": 1,
-   "read": 1,
-   "write": 1,
-   "submit": 1,
-   "cancel": 1,
-   "delete": 1,
-   "amend": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "report": 1,
-   "share": 1
-  },
-  {
-   "role": "Alpha Partner/Director",
-   "create": 1,
-   "read": 1,
-   "write": 1,
-   "submit": 1,
-   "cancel": 1,
-   "delete": 1,
-   "amend": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "report": 1,
-   "share": 1
-  },
-  {
-   "role": "Alpha Engagement Manager",
-   "create": 1,
-   "read": 1,
-   "write": 1,
-   "submit": 1,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 1,
-   "export": 0,
-   "print": 1,
-   "report": 1,
-   "share": 0
-  },
-  {
-   "role": "Alpha Branch Manager",
-   "create": 0,
-   "read": 1,
-   "write": 1,
-   "submit": 0,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 1,
-   "export": 0,
-   "print": 1,
-   "report": 1,
-   "share": 0
-  },
-  {
-   "role": "Alpha Client Owner",
-   "create": 0,
-   "read": 1,
-   "write": 0,
-   "submit": 0,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 1,
-   "export": 0,
-   "print": 1,
-   "report": 0,
-   "share": 0
-  },
-  {
-   "role": "Alpha Reviewer",
-   "create": 0,
-   "read": 1,
-   "write": 0,
-   "submit": 0,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 1,
-   "export": 0,
-   "print": 1,
-   "report": 0,
-   "share": 0
-  },
-  {
-   "role": "Alpha HR Admin",
-   "create": 0,
-   "read": 1,
-   "write": 0,
-   "submit": 0,
-   "cancel": 0,
-   "delete": 0,
-   "amend": 0,
-   "email": 0,
-   "export": 0,
-   "print": 0,
-   "report": 0,
-   "share": 0
-  }
- ],
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": [],
- "track_changes": 1
+  "actions": [],
+  "autoname": "naming_series:",
+  "creation": "2026-07-09 00:00:00.000000",
+  "default_view": "List",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "section_sla_info",
+    "naming_series",
+    "sla_level",
+    "assignment_origination",
+    "sla_info_cb_1",
+    "project",
+    "customer",
+    "client_due_date",
+    "sla_info_cb_2",
+    "alpha_processing_deadline",
+    "review_deadline",
+    "escalation_date",
+    "section_team",
+    "engagement_manager",
+    "branch_manager",
+    "team_cb_1",
+    "reviewer",
+    "section_status",
+    "status",
+    "breach_notified"
+  ],
+  "fields": [
+    {
+      "fieldname": "section_sla_info",
+      "fieldtype": "Section Break",
+      "label": "SLA Information"
+    },
+    {
+      "default": "AATL-SLA-.YYYY.-.#####",
+      "fieldname": "naming_series",
+      "fieldtype": "Select",
+      "label": "Naming Series",
+      "options": "AATL-SLA-.YYYY.-.#####"
+    },
+    {
+      "fieldname": "sla_level",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "SLA Level",
+      "options": "SLA A - Urgent Statutory\nSLA B - Audit Readiness\nSLA C - Monthly Bookkeeping\nSLA D - Reconstruction\nSLA E - Advisory/Research/Training",
+      "reqd": 1
+    },
+    {
+      "fieldname": "assignment_origination",
+      "fieldtype": "Link",
+      "label": "Assignment Origination",
+      "options": "Alpha Assignment Origination"
+    },
+    {
+      "fieldname": "sla_info_cb_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "project",
+      "fieldtype": "Link",
+      "label": "Project",
+      "options": "Project"
+    },
+    {
+      "fieldname": "customer",
+      "fieldtype": "Link",
+      "label": "Customer",
+      "options": "Customer"
+    },
+    {
+      "fieldname": "client_due_date",
+      "fieldtype": "Date",
+      "label": "Client Due Date"
+    },
+    {
+      "fieldname": "sla_info_cb_2",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "alpha_processing_deadline",
+      "fieldtype": "Date",
+      "in_list_view": 1,
+      "label": "Alpha Processing Deadline",
+      "reqd": 1
+    },
+    {
+      "fieldname": "review_deadline",
+      "fieldtype": "Date",
+      "label": "Review Deadline"
+    },
+    {
+      "fieldname": "escalation_date",
+      "fieldtype": "Date",
+      "label": "Escalation Date"
+    },
+    {
+      "fieldname": "section_team",
+      "fieldtype": "Section Break",
+      "label": "Team",
+      "collapsible": 1
+    },
+    {
+      "fieldname": "engagement_manager",
+      "fieldtype": "Link",
+      "label": "Engagement Manager",
+      "options": "User"
+    },
+    {
+      "fieldname": "branch_manager",
+      "fieldtype": "Link",
+      "label": "Branch Manager",
+      "options": "User"
+    },
+    {
+      "fieldname": "team_cb_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "reviewer",
+      "fieldtype": "Link",
+      "label": "Reviewer",
+      "options": "User"
+    },
+    {
+      "fieldname": "section_status",
+      "fieldtype": "Section Break",
+      "label": "Status",
+      "collapsible": 1
+    },
+    {
+      "default": "Active",
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Active\nBreached\nCompleted\nClosed"
+    },
+    {
+      "default": "0",
+      "fieldname": "breach_notified",
+      "fieldtype": "Check",
+      "label": "Breach Notified"
+    }
+  ],
+  "is_submittable": 1,
+  "links": [],
+  "modified": "2026-07-10 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Alpha Assignment Management",
+  "name": "Alpha Engagement SLA",
+  "naming_rule": "By \"Naming Series\" field",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "role": "System Manager",
+      "create": 1,
+      "read": 1,
+      "write": 1,
+      "submit": 1,
+      "cancel": 1,
+      "delete": 1,
+      "amend": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "report": 1,
+      "share": 1
+    },
+    {
+      "role": "Alpha Partner/Director",
+      "create": 1,
+      "read": 1,
+      "write": 1,
+      "submit": 1,
+      "cancel": 1,
+      "delete": 1,
+      "amend": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "report": 1,
+      "share": 1
+    },
+    {
+      "role": "Alpha Engagement Manager",
+      "create": 1,
+      "read": 1,
+      "write": 1,
+      "submit": 1,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 1,
+      "export": 0,
+      "print": 1,
+      "report": 1,
+      "share": 0
+    },
+    {
+      "role": "Alpha Branch Manager",
+      "create": 0,
+      "read": 1,
+      "write": 1,
+      "submit": 0,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 1,
+      "export": 0,
+      "print": 1,
+      "report": 1,
+      "share": 0
+    },
+    {
+      "role": "Alpha Client Owner",
+      "create": 0,
+      "read": 1,
+      "write": 0,
+      "submit": 0,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 1,
+      "export": 0,
+      "print": 1,
+      "report": 0,
+      "share": 0
+    },
+    {
+      "role": "Alpha Reviewer",
+      "create": 0,
+      "read": 1,
+      "write": 0,
+      "submit": 0,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 1,
+      "export": 0,
+      "print": 1,
+      "report": 0,
+      "share": 0
+    },
+    {
+      "role": "Alpha HR Admin",
+      "create": 0,
+      "read": 1,
+      "write": 0,
+      "submit": 0,
+      "cancel": 0,
+      "delete": 0,
+      "amend": 0,
+      "email": 0,
+      "export": 0,
+      "print": 0,
+      "report": 0,
+      "share": 0
+    }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 1
 }

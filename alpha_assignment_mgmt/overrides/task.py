@@ -15,6 +15,79 @@ def on_update(doc, method):
 	check_task_overdue(doc)
 
 
+def get_permission_query_conditions(user):
+	"""Role-based Task visibility.
+
+	- Alpha Staff / Alpha Reviewer: only tasks they are assigned to or own
+	- Alpha Client Owner: tasks in their projects
+	- Alpha Engagement Manager / Branch Manager / Partner: all tasks
+	"""
+	if not user:
+		user = frappe.session.user
+
+	roles = frappe.get_roles(user)
+
+	if "System Manager" in roles or "Alpha Partner/Director" in roles:
+		return ""
+
+	if "Alpha Engagement Manager" in roles:
+		return """(`tabTask`.`project` IN (
+			SELECT `tabProject`.`name` FROM `tabProject`
+			WHERE `tabProject`.`custom_engagement_manager` = %(user)s
+		) OR `tabTask`.`_assign` LIKE %(user_like)s
+		  OR `tabTask`.`owner` = %(user)s)"""
+
+	if "Alpha Branch Manager" in roles:
+		return """(`tabTask`.`project` IN (
+			SELECT `tabProject`.`name` FROM `tabProject`
+			WHERE `tabProject`.`custom_branch_manager` = %(user)s
+		) OR `tabTask`.`_assign` LIKE %(user_like)s
+		  OR `tabTask`.`owner` = %(user)s)"""
+
+	if "Alpha Staff" in roles or "Alpha Reviewer" in roles:
+		return """(`tabTask`.`_assign` LIKE %(user_like)s
+			OR `tabTask`.`owner` = %(user)s)"""
+
+	if "Alpha Client Owner" in roles:
+		return """(`tabTask`.`project` IN (
+			SELECT `tabProject`.`name` FROM `tabProject`
+			WHERE `tabProject`.`custom_client_owner` = %(user)s
+		) OR `tabTask`.`_assign` LIKE %(user_like)s
+		  OR `tabTask`.`owner` = %(user)s)"""
+
+	return ""
+
+
+def has_permission(doc, ptype, user):
+	"""Check if user has permission to access a specific Task."""
+	roles = frappe.get_roles(user)
+
+	if "System Manager" in roles or "Alpha Partner/Director" in roles:
+		return True
+
+	if "Alpha Engagement Manager" in roles or "Alpha Branch Manager" in roles:
+		return True
+
+	if "Alpha Staff" in roles or "Alpha Reviewer" in roles:
+		if doc.owner == user:
+			return True
+		if doc._assign:
+			try:
+				assigned = json.loads(doc._assign)
+				if user in assigned:
+					return True
+			except (json.JSONDecodeError, TypeError):
+				pass
+
+	if "Alpha Client Owner" in roles:
+		if doc.project:
+			owner = frappe.db.get_value("Project", doc.project, "custom_client_owner")
+			if owner == user:
+				return True
+
+	return False
+
+
 def check_evidence_attachment(doc):
 	"""Task cannot be completed without evidence or exception."""
 	if doc.status == "Completed":
