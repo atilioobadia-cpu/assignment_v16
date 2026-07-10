@@ -281,3 +281,7 @@ def update_workspace_with_charts():
 				VALUES (%s, NOW(), NOW(), 'Administrator', 'Administrator', %s,
 				        'Workspace', 'number_cards', %s, %s)
 			""", (frappe.generate_hash(length=10), ws_name, cname, cname))
+
+
+def after_migrate():
+	update_workspace_with_charts()

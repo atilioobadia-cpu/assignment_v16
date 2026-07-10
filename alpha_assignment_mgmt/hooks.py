@@ -5,11 +5,11 @@ app_description = "Professional service assignment management framework for Alph
 app_email = "info@alphaassociates.co.tz"
 app_icon = "octicon octicon-checklist"
 app_color = "#2563EB"
-app_license = "gpl-3.0"
 
 required_apps = ["frappe/erpnext", "frappe/hrms"]
 
 after_install = "alpha_assignment_mgmt.setup.after_install"
+after_migrate = "alpha_assignment_mgmt.setup.after_migrate"
 
 scheduler_events = {
 	"daily": [
