@@ -72,7 +72,7 @@ fixtures = [
 	{
 		"doctype": "Workspace",
 		"filters": [
-			["name", "in", ["Alpha Assignment Desk", "CEO Assignment Dashboard"]]
+			["name", "in", ["AIMS Desk", "CEO"]]
 		]
 	},
 ]

@@ -274,12 +274,9 @@ def _insert_workspace_number_cards(ws_name, card_names):
 
 
 def update_workspace_with_charts():
-	ws_name = "Alpha Assignment Desk"
+	ws_name = "AIMS Desk"
 	if not frappe.db.exists("Workspace", ws_name):
 		return
-
-	frappe.db.set_value("Workspace", ws_name, "label", "AIMS Desk")
-	frappe.db.set_value("Workspace", ws_name, "title", "AIMS Desk")
 
 	content = [
 		{
@@ -354,12 +351,9 @@ def update_workspace_with_charts():
 
 
 def update_ceo_dashboard_with_charts():
-	ws_name = "CEO Assignment Dashboard"
+	ws_name = "CEO"
 	if not frappe.db.exists("Workspace", ws_name):
 		return
-
-	frappe.db.set_value("Workspace", ws_name, "label", "CEO")
-	frappe.db.set_value("Workspace", ws_name, "title", "CEO")
 
 	content = [
 		{
