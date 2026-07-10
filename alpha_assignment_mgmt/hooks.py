@@ -69,4 +69,10 @@ fixtures = [
 			["name", "in", ["Employee Performance"]]
 		]
 	},
+	{
+		"doctype": "Workspace",
+		"filters": [
+			["name", "in", ["Alpha Assignment Desk", "CEO Assignment Dashboard"]]
+		]
+	},
 ]

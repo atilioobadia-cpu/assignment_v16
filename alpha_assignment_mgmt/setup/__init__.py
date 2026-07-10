@@ -278,12 +278,16 @@ def update_workspace_with_charts():
 	if not frappe.db.exists("Workspace", ws_name):
 		return
 
+	frappe.db.set_value("Workspace", ws_name, "label", "AIMS Desk")
+	frappe.db.set_value("Workspace", ws_name, "title", "AIMS Desk")
+	frappe.db.set_value("Workspace", ws_name, "route", "alpha-assignment-desk")
+
 	content = [
 		{
 			"id": "h1",
 			"type": "header",
 			"data": {
-				"text": '<span class="h4"><b>Alpha Assignment Desk</b></span>',
+				"text": '<span class="h4"><b>AIMS Desk</b></span>',
 				"col": 12
 			}
 		},
@@ -353,35 +357,18 @@ def update_workspace_with_charts():
 def update_ceo_dashboard_with_charts():
 	ws_name = "CEO Assignment Dashboard"
 	if not frappe.db.exists("Workspace", ws_name):
-		try:
-			ws = frappe.get_doc({
-				"doctype": "Workspace",
-				"workspace_name": ws_name,
-				"label": ws_name,
-				"module": "Alpha Assignment Management",
-				"icon": "dashboard",
-				"is_standard": 1,
-				"public": 1,
-				"title": ws_name,
-				"type": "Workspace",
-				"sequence_id": 2.0,
-				"for_user": "",
-				"hide_custom": 0,
-				"is_hidden": 0,
-				"parent_page": "",
-			})
-			ws.flags.ignore_permissions = True
-			ws.insert()
-		except Exception as e:
-			frappe.log_error(f"Failed to create CEO Dashboard: {e}")
 		return
+
+	frappe.db.set_value("Workspace", ws_name, "label", "CEO")
+	frappe.db.set_value("Workspace", ws_name, "title", "CEO")
+	frappe.db.set_value("Workspace", ws_name, "route", "ceo-assignment-dashboard")
 
 	content = [
 		{
 			"id": "h1",
 			"type": "header",
 			"data": {
-				"text": '<span class="h4"><b>CEO Assignment Dashboard</b></span>',
+				"text": '<span class="h4"><b>CEO</b></span>',
 				"col": 12
 			}
 		},
