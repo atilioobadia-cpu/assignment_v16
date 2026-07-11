@@ -11,6 +11,11 @@ required_apps = ["frappe/erpnext", "frappe/hrms"]
 after_install = "alpha_assignment_mgmt.setup.after_install"
 after_migrate = "alpha_assignment_mgmt.setup.after_migrate"
 
+app_include_js = [
+	"/assets/alpha_assignment_mgmt/js/project.js",
+	"/assets/alpha_assignment_mgmt/js/task.js",
+]
+
 scheduler_events = {
 	"daily": [
 		"alpha_assignment_mgmt.tasks.sla.daily_sla_breach_check",
@@ -45,6 +50,10 @@ doc_events = {
 
 permission_query_conditions = {
 	"Task": "alpha_assignment_mgmt.overrides.task.get_permission_query_conditions"
+}
+
+has_permission = {
+	"Task": "alpha_assignment_mgmt.overrides.task.has_permission"
 }
 
 fixtures = [

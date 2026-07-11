@@ -2,7 +2,7 @@ import frappe
 
 
 def before_insert(doc, method):
-	"""Ensure Assignment Origination is approved before Project creation."""
+	"""Auto-populate Project from linked Assignment Origination."""
 	if doc.custom_assignment_origination:
 		origination = frappe.get_doc(
 			"Alpha Assignment Origination", doc.custom_assignment_origination
@@ -12,11 +12,20 @@ def before_insert(doc, method):
 				f"Cannot create Project. Assignment Origination "
 				f"{origination.name} has not been approved yet."
 			)
+
+		doc.customer = origination.customer or doc.customer
 		doc.custom_service_line = origination.service_line
+		doc.project_type = origination.service_line
 		doc.custom_branch_manager = origination.lead_branch_manager
 		doc.custom_engagement_manager = origination.engagement_manager
-		doc.custom_client_owner = origination.client_owner
+		doc.custom_client_owner = doc.custom_client_owner or origination.client_owner
 		doc.custom_risk_rating = origination.risk_rating
+
+		if not doc.expected_end_date:
+			doc.expected_end_date = (
+				origination.regulatory_deadline
+				or origination.statutory_deadline
+			)
 
 
 def validate(doc, method):
@@ -51,6 +60,20 @@ def create_sla(doc):
 		"ERPNext Implementation": "SLA E - Advisory/Research/Training",
 	}
 
+	origination = None
+	if doc.custom_assignment_origination:
+		origination = frappe.get_doc(
+			"Alpha Assignment Origination", doc.custom_assignment_origination
+		)
+
+	deadline = doc.expected_end_date
+	if origination:
+		deadline = (
+			origination.regulatory_deadline
+			or origination.statutory_deadline
+			or doc.expected_end_date
+		)
+
 	sla = frappe.new_doc("Alpha Engagement SLA")
 	sla.project = doc.name
 	sla.customer = doc.customer
@@ -58,11 +81,21 @@ def create_sla(doc):
 	sla.sla_level = sla_level_map.get(doc.project_type, "SLA C - Monthly Bookkeeping")
 	sla.engagement_manager = doc.custom_engagement_manager
 	sla.branch_manager = doc.custom_branch_manager
-	sla.alpha_processing_deadline = doc.expected_start_date
+	sla.alpha_processing_deadline = deadline
+	sla.client_due_date = deadline
 	sla.insert(ignore_permissions=True)
 	sla.submit()
 
 	doc.db_set("custom_engagement_sla", sla.name)
+
+	# Back-link SLA to Origination
+	if doc.custom_assignment_origination:
+		frappe.db.set_value(
+			"Alpha Assignment Origination",
+			doc.custom_assignment_origination,
+			"sla_reference",
+			sla.name,
+		)
 
 
 def update_origination_status(doc, is_new):
@@ -72,6 +105,8 @@ def update_origination_status(doc, is_new):
 			"project_created": 1,
 			"project_reference": doc.name,
 			"workflow_state": "Project Created",
+			"acceptance_status": "Approved",
+			"closure_status": "In Progress",
 		})
 
 
