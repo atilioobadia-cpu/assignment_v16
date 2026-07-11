@@ -36,24 +36,29 @@ def create_roles():
 
 
 def create_naming_series():
+	"""Set naming series via DocType JSON property or Property Setter."""
 	series_map = {
 		"Alpha Assignment Origination": "AOR-.YYYY.-.#####",
 		"Alpha Engagement SLA": "AATL-SLA-.YYYY.-.#####",
 	}
 	for doctype, series in series_map.items():
-		if not frappe.db.get_value(
-			"Property Setter",
-			{"doc_type": doctype, "property": "naming_series"},
-		):
-			frappe.get_doc({
-				"doctype": "Property Setter",
-				"doctype_or_field": "DocType",
-				"doc_type": doctype,
-				"property": "naming_series",
-				"property_type": "Data",
-				"value": series,
-				"__islocal": 1,
-			}).insert(ignore_permissions=True)
+		try:
+			exists = frappe.db.get_value(
+				"Property Setter",
+				{"doc_type": doctype, "property": "naming_series"},
+			)
+			if not exists:
+				frappe.get_doc({
+					"doctype": "Property Setter",
+					"doctype_or_field": "DocType",
+					"doc_type": doctype,
+					"property": "naming_series",
+					"property_type": "Data",
+					"value": series,
+					"__islocal": 1,
+				}).insert(ignore_permissions=True)
+		except Exception:
+			pass
 
 
 def create_project_types():
@@ -109,6 +114,7 @@ def create_project_templates():
 			"doctype": "Alpha Project Template",
 			"template_name": tmpl_def["template_name"],
 			"project_type": tmpl_def["project_type"],
+			"service_line": tmpl_def.get("service_line", ""),
 			"description": tmpl_def.get("description", ""),
 			"is_active": 1,
 			"tasks": tmpl_def["tasks"],
@@ -122,6 +128,7 @@ def _get_template_definitions():
 		{
 			"template_name": "Tax Compliance Filing",
 			"project_type": "Tax Compliance",
+			"service_line": "Tax Compliance",
 			"description": "Standard task sequence for tax return filing per Appendix B",
 			"tasks": [
 				{"task_subject": "Receive trial balance, draft financial statements and tax records", "sequence": 1, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "expected_output": "Engagement Manager confirms completeness"},
@@ -139,6 +146,7 @@ def _get_template_definitions():
 		{
 			"template_name": "Audit Readiness Support",
 			"project_type": "Audit Readiness",
+			"service_line": "Audit & Assurance",
 			"description": "Standard 16-task sequence for audit readiness and management pack per Appendix B",
 			"tasks": [
 				{"task_subject": "Engagement confirmation and kickoff", "sequence": 1, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "expected_output": "Approved scope, team and deadline"},
@@ -162,6 +170,7 @@ def _get_template_definitions():
 		{
 			"template_name": "Monthly Bookkeeping",
 			"project_type": "Monthly Bookkeeping",
+			"service_line": "Bookkeeping",
 			"description": "Standard 10-task sequence for monthly bookkeeping per Appendix C",
 			"tasks": [
 				{"task_subject": "Monthly document request issued", "sequence": 1, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Staff", "expected_output": "PBC checklist sent"},
@@ -179,6 +188,7 @@ def _get_template_definitions():
 		{
 			"template_name": "Accounting Reconstruction",
 			"project_type": "Accounting Reconstruction",
+			"service_line": "Accounting Reconstruction",
 			"description": "Standard task sequence for historical accounting reconstruction",
 			"tasks": [
 				{"task_subject": "Engagement confirmation and scope definition", "sequence": 1, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "expected_output": "Approved scope, period and team"},
@@ -198,6 +208,7 @@ def _get_template_definitions():
 		{
 			"template_name": "TRA Support",
 			"project_type": "TRA Support",
+			"service_line": "TRA Support",
 			"description": "Task sequence for TRA notice and audit support",
 			"tasks": [
 				{"task_subject": "Receive and review TRA notice", "sequence": 1, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Tax Officer", "expected_output": "Notice details documented"},

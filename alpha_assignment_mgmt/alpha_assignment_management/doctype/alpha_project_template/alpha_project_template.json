@@ -4,56 +4,63 @@
  "creation": "2026-07-11 00:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
- "field_order": [
-  "section_template",
-  "template_name",
-  "project_type",
-  "template_cb_1",
-  "description",
-  "is_active",
-  "section_tasks",
-  "tasks",
-  "section_info",
-  "total_tasks",
-  "info_cb_1",
-  "total_expected_hours"
- ],
- "fields": [
-  {
-   "fieldname": "section_template",
-   "fieldtype": "Section Break",
-   "label": "Template Details"
-  },
-  {
-   "fieldname": "template_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Template Name",
-   "reqd": 1,
-   "unique": 1
-  },
-  {
-   "fieldname": "project_type",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Project Type",
-   "options": "Project Type"
-  },
-  {
-   "fieldname": "template_cb_1",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "description",
-   "fieldtype": "Small Text",
-   "label": "Description"
-  },
-  {
-   "fieldname": "is_active",
-   "fieldtype": "Check",
-   "label": "Active",
-   "default": 1
-  },
+  "field_order": [
+   "section_template",
+   "template_name",
+   "project_type",
+   "template_cb_1",
+   "service_line",
+   "description",
+   "is_active",
+   "section_tasks",
+   "tasks",
+   "section_info",
+   "total_tasks",
+   "info_cb_1",
+   "total_expected_hours"
+  ],
+  "fields": [
+   {
+    "fieldname": "section_template",
+    "fieldtype": "Section Break",
+    "label": "Template Details"
+   },
+   {
+    "fieldname": "template_name",
+    "fieldtype": "Data",
+    "in_list_view": 1,
+    "label": "Template Name",
+    "reqd": 1,
+    "unique": 1
+   },
+   {
+    "fieldname": "project_type",
+    "fieldtype": "Link",
+    "in_list_view": 1,
+    "label": "Project Type",
+    "options": "Project Type"
+   },
+   {
+    "fieldname": "template_cb_1",
+    "fieldtype": "Column Break"
+   },
+   {
+    "fieldname": "service_line",
+    "fieldtype": "Select",
+    "label": "Service Line",
+    "options": "\nTax Compliance\nAudit & Assurance\nBookkeeping\nAccounting Reconstruction\nCompany Secretarial\nPayroll\nBusiness Advisory\nTRA Support\nInternal Audit\nConsultancy"
+   },
+   {
+    "fieldname": "description",
+    "fieldtype": "Small Text",
+    "label": "Description"
+   },
+   {
+    "fieldname": "is_active",
+    "fieldtype": "Check",
+    "label": "Active",
+    "default": 1
+   },
   {
    "fieldname": "section_tasks",
    "fieldtype": "Section Break",
