@@ -1,0 +1,200 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-07-11 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_feedback",
+  "employee",
+  "project",
+  "assignment_origination",
+  "fb_cb_1",
+  "feedback_type",
+  "feedback_date",
+  "section_content",
+  "feedback_from",
+  "feedback_role",
+  "fb_cb_2",
+  "rating",
+  "section_details",
+  "strengths",
+  "improvements",
+  "section_action",
+  "recommendations",
+  "status",
+  "section_approval",
+  "acknowledged_by",
+  "acknowledged_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_feedback",
+   "fieldtype": "Section Break",
+   "label": "Feedback Details"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "assignment_origination",
+   "fieldtype": "Link",
+   "label": "Assignment Origination",
+   "options": "Alpha Assignment Origination"
+  },
+  {
+   "fieldname": "fb_cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "feedback_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Feedback Type",
+   "options": "Reviewer Feedback\nManager Feedback\nClient Feedback\nSelf Assessment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "feedback_date",
+   "fieldtype": "Date",
+   "label": "Feedback Date",
+   "default": "Today"
+  },
+  {
+   "fieldname": "section_content",
+   "fieldtype": "Section Break",
+   "label": "Feedback Content"
+  },
+  {
+   "fieldname": "feedback_from",
+   "fieldtype": "Data",
+   "label": "Feedback From (Name)"
+  },
+  {
+   "fieldname": "feedback_role",
+   "fieldtype": "Select",
+   "label": "Their Role",
+   "options": "\nAlpha Tax Officer\nAlpha Reviewer\nAlpha Engagement Manager\nAlpha Branch Manager\nAlpha Partner/Director\nClient Contact\nOther"
+  },
+  {
+   "fieldname": "fb_cb_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "rating",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Rating",
+   "options": "\nExcellent\nGood\nSatisfactory\nNeeds Improvement\nUnsatisfactory"
+  },
+  {
+   "fieldname": "section_details",
+   "fieldtype": "Section Break",
+   "label": "Detailed Feedback"
+  },
+  {
+   "fieldname": "strengths",
+   "fieldtype": "Small Text",
+   "label": "Strengths / Positive Observations"
+  },
+  {
+   "fieldname": "improvements",
+   "fieldtype": "Small Text",
+   "label": "Areas for Improvement"
+  },
+  {
+   "fieldname": "section_action",
+   "fieldtype": "Section Break",
+   "label": "Action Items"
+  },
+  {
+   "fieldname": "recommendations",
+   "fieldtype": "Small Text",
+   "label": "Recommendations"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Draft\nSubmitted\nAcknowledged",
+   "default": "Draft"
+  },
+  {
+   "fieldname": "section_approval",
+   "fieldtype": "Section Break",
+   "label": "Acknowledgement"
+  },
+  {
+   "fieldname": "acknowledged_by",
+   "fieldtype": "Link",
+   "label": "Acknowledged By",
+   "options": "User"
+  },
+  {
+   "fieldname": "acknowledged_date",
+   "fieldtype": "Date",
+   "label": "Acknowledged Date"
+  }
+ ],
+ "links": [],
+ "modified": "2026-07-11 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Alpha Assignment Management",
+ "name": "Performance Feedback",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "create": 1,
+   "read": 1,
+   "write": 1,
+   "delete": 1
+  },
+  {
+   "role": "Alpha Partner/Director",
+   "create": 1,
+   "read": 1,
+   "write": 1
+  },
+  {
+   "role": "Alpha Engagement Manager",
+   "create": 1,
+   "read": 1,
+   "write": 1
+  },
+  {
+   "role": "Alpha Branch Manager",
+   "create": 1,
+   "read": 1,
+   "write": 1
+  },
+  {
+   "role": "Alpha Reviewer",
+   "create": 1,
+   "read": 1,
+   "write": 1
+  },
+  {
+   "role": "Alpha HR Admin",
+   "create": 1,
+   "read": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

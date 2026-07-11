@@ -42,6 +42,7 @@ doc_events = {
 	},
 	"Appraisal": {
 		"validate": "alpha_assignment_mgmt.overrides.appraisal.validate",
+		"on_submit": "alpha_assignment_mgmt.overrides.appraisal.on_submit",
 	},
 	"Alpha Assignment Origination": {
 		"on_update": "alpha_assignment_mgmt.overrides.assignment_origination.on_update",
@@ -84,13 +85,13 @@ fixtures = [
 	{
 		"doctype": "Workspace",
 		"filters": [
-			["name", "in", ["AIMS Desk", "CEO"]]
+			["name", "in", ["AIMS Desk", "CEO", "Branch Manager Dashboard", "Engagement Manager Dashboard"]]
 		]
 	},
 	{
 		"doctype": "DocType",
 		"filters": [
-			["name", "in", ["Alpha Project Template", "Alpha Task Template"]]
+			["name", "in", ["Alpha Project Template", "Alpha Task Template", "Performance Feedback"]]
 		]
 	},
 ]

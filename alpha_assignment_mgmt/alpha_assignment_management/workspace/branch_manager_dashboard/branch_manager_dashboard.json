@@ -1,0 +1,228 @@
+{
+ "doctype": "Workspace",
+ "name": "Branch Manager Dashboard",
+ "label": "Branch Manager Dashboard",
+ "module": "Alpha Assignment Management",
+ "icon": "branch",
+ "is_standard": 1,
+ "public": 1,
+ "title": "Branch Manager Dashboard",
+ "type": "Workspace",
+ "sequence_id": 3.0,
+ "charts": [],
+ "number_cards": [],
+ "roles": [],
+ "for_user": "",
+ "hide_custom": 0,
+ "is_hidden": 0,
+ "parent_page": "",
+ "links": [
+  {
+   "type": "Link",
+   "label": "All Branch Assignments",
+   "link_to": "Alpha Assignment Origination",
+   "link_type": "DocType",
+   "onboard": 1,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Active Projects",
+   "link_to": "Project",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Branch Staff",
+   "link_to": "Employee",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Branch SLA Compliance",
+   "link_to": "SLA Compliance Overview",
+   "link_type": "Report",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 1,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Branch Staff Productivity",
+   "link_to": "Staff Productivity",
+   "link_type": "Report",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 1,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Client Delays",
+   "link_to": "Client Delay Log",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Risk Register",
+   "link_to": "Client Risk Register",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Engagement SLAs",
+   "link_to": "Alpha Engagement SLA",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Closure Certificates",
+   "link_to": "Assignment Closure Certificate",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Staff Appraisals",
+   "link_to": "Appraisal",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Performance Feedback",
+   "link_to": "Performance Feedback",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Timesheets",
+   "link_to": "Timesheet",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  }
+ ],
+ "shortcuts": [
+  {
+   "label": "All Branch Assignments",
+   "type": "DocType",
+   "link_to": "Alpha Assignment Origination",
+   "doc_type": "Alpha Assignment Origination",
+   "icon": "list"
+  },
+  {
+   "label": "Active Projects",
+   "type": "DocType",
+   "link_to": "Project",
+   "doc_type": "Project",
+   "icon": "project"
+  },
+  {
+   "label": "Branch Staff",
+   "type": "DocType",
+   "link_to": "Employee",
+   "doc_type": "Employee",
+   "icon": "user"
+  },
+  {
+   "label": "SLA Compliance",
+   "type": "Report",
+   "link_to": "SLA Compliance Overview",
+   "doc_type": "SLA Compliance Overview",
+   "icon": "chart"
+  },
+  {
+   "label": "Staff Productivity",
+   "type": "Report",
+   "link_to": "Staff Productivity",
+   "doc_type": "Staff Productivity",
+   "icon": "chart"
+  },
+  {
+   "label": "Client Delays",
+   "type": "DocType",
+   "link_to": "Client Delay Log",
+   "doc_type": "Client Delay Log",
+   "icon": "warn"
+  },
+  {
+   "label": "Risk Register",
+   "type": "DocType",
+   "link_to": "Client Risk Register",
+   "doc_type": "Client Risk Register",
+   "icon": "warning"
+  },
+  {
+   "label": "Staff Appraisals",
+   "type": "DocType",
+   "link_to": "Appraisal",
+   "doc_type": "Appraisal",
+   "icon": "task"
+  },
+  {
+   "label": "Performance Feedback",
+   "type": "DocType",
+   "link_to": "Performance Feedback",
+   "doc_type": "Performance Feedback",
+   "icon": "feedback"
+  },
+  {
+   "label": "Engagement SLAs",
+   "type": "DocType",
+   "link_to": "Alpha Engagement SLA",
+   "doc_type": "Alpha Engagement SLA",
+   "icon": "deadline"
+  },
+  {
+   "label": "Closure Certificates",
+   "type": "DocType",
+   "link_to": "Assignment Closure Certificate",
+   "doc_type": "Assignment Closure Certificate",
+   "icon": "certificate"
+  },
+  {
+   "label": "Timesheets",
+   "type": "DocType",
+   "link_to": "Timesheet",
+   "doc_type": "Timesheet",
+   "icon": "clock"
+  }
+ ],
+ "content": "[{\"id\":\"h1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Branch Manager Dashboard</b></span>\",\"col\":12}},{\"id\":\"p1\",\"type\":\"paragraph\",\"data\":{\"text\":\"Oversee branch-level assignments, SLA compliance, staff productivity, and client risk management.\",\"col\":12}},{\"id\":\"sh1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h5\\\"><b>Operations</b></span>\",\"col\":12}},{\"id\":\"s1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"All Branch Assignments\",\"col\":3}},{\"id\":\"s2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Active Projects\",\"col\":3}},{\"id\":\"s3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Engagement SLAs\",\"col\":3}},{\"id\":\"s4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Closure Certificates\",\"col\":3}},{\"id\":\"sh2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h5\\\"><b>Team & Performance</b></span>\",\"col\":12}},{\"id\":\"s5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Branch Staff\",\"col\":3}},{\"id\":\"s6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"SLA Compliance\",\"col\":3}},{\"id\":\"s7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Staff Productivity\",\"col\":3}},{\"id\":\"s8\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Staff Appraisals\",\"col\":3}},{\"id\":\"s9\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Performance Feedback\",\"col\":3}},{\"id\":\"sh3\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h5\\\"><b>Risk & Issues</b></span>\",\"col\":12}},{\"id\":\"s10\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Client Delays\",\"col\":3}},{\"id\":\"s11\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Risk Register\",\"col\":3}},{\"id\":\"s12\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Timesheets\",\"col\":3}}]"
+}

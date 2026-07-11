@@ -589,5 +589,67 @@
   "label": "Utilization Rate (30d)",
   "insert_after": "custom_column_break_sla_1",
   "read_only": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Timesheet Detail-custom_section_alpha",
+  "dt": "Timesheet Detail",
+  "fieldname": "custom_section_alpha",
+  "fieldtype": "Section Break",
+  "label": "Assignment Details",
+  "insert_after": "activity_type"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Timesheet Detail-custom_is_billable",
+  "dt": "Timesheet Detail",
+  "fieldname": "custom_is_billable",
+  "fieldtype": "Check",
+  "label": "Billable",
+  "insert_after": "custom_section_alpha",
+  "default": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Timesheet Detail-custom_alpha_cb_1",
+  "dt": "Timesheet Detail",
+  "fieldname": "custom_alpha_cb_1",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_is_billable"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Timesheet Detail-custom_output_note",
+  "dt": "Timesheet Detail",
+  "fieldname": "custom_output_note",
+  "fieldtype": "Small Text",
+  "label": "Output Note",
+  "insert_after": "custom_alpha_cb_1"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Timesheet Detail-custom_alpha_cb_2",
+  "dt": "Timesheet Detail",
+  "fieldname": "custom_alpha_cb_2",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_output_note"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Timesheet Detail-custom_evidence_reference",
+  "dt": "Timesheet Detail",
+  "fieldname": "custom_evidence_reference",
+  "fieldtype": "Data",
+  "label": "Evidence Reference",
+  "insert_after": "custom_alpha_cb_2"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Timesheet Detail-custom_client_delay_flag",
+  "dt": "Timesheet Detail",
+  "fieldname": "custom_client_delay_flag",
+  "fieldtype": "Check",
+  "label": "Client Delay",
+  "insert_after": "custom_evidence_reference"
  }
 ]
