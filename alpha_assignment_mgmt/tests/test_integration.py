@@ -52,8 +52,8 @@ def _ensure_customer():
 		doc = frappe.get_doc({
 			"doctype": "Customer",
 			"customer_name": customer_name,
-			"customer_group": "All Customer Groups",
-			"territory": "All Territories",
+			"customer_group": "Commercial",
+			"territory": "Tanzania",
 			"customer_type": "Company",
 		})
 		doc.flags.ignore_permissions = True
@@ -76,12 +76,14 @@ def _ensure_employee():
 			user.flags.ignore_permissions = True
 			user.insert()
 			frappe.db.set_value("User", user_email, "user_type", "System User")
+		company = frappe.db.get_default("company") or frappe.db.get_single_value("Global Settings", "default_company")
+		desg = "Accountant"
 		doc = frappe.get_doc({
 			"doctype": "Employee",
 			"employee_name": "Test AIMS Employee",
-			"company": frappe.db.get_default("company") or frappe.db.get_single_value("Global Settings", "default_company"),
+			"company": company,
 			"user_id": user_email,
-			"designation": "Alpha Tax Officer",
+			"designation": desg,
 			"status": "Active",
 		})
 		doc.flags.ignore_permissions = True
