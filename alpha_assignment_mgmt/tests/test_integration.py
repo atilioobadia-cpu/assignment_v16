@@ -113,21 +113,23 @@ def test_origination_create():
 		"service_line": "Tax Compliance",
 		"date_received": today(),
 		"received_by": frappe.session.user,
-		"acceptance_status": "Pending",
+		"acceptance_status": "Draft",
 	})
 	orig.flags.ignore_permissions = True
 	orig.insert()
 	assert orig.name, "Origination not created"
 	assert orig.date_received == today(), "date_received not auto-set"
 	assert orig.received_by == frappe.session.user, "received_by not auto-set"
-	frappe.db.set_value("Alpha Assignment Origination", orig.name, "acceptance_status", "Accepted")
+	frappe.db.set_value("Alpha Assignment Origination", orig.name, "acceptance_status", "Approved")
+	frappe.db.set_value("Alpha Assignment Origination", orig.name, "workflow_state", "Approved")
 	frappe.db.commit()
 	return orig.name
 
 
 def test_origination_to_project():
 	orig_name = test_origination_create()
-	frappe.db.set_value("Alpha Assignment Origination", orig_name, "acceptance_status", "Accepted")
+	frappe.db.set_value("Alpha Assignment Origination", orig_name, "acceptance_status", "Approved")
+	frappe.db.set_value("Alpha Assignment Origination", orig_name, "workflow_state", "Approved")
 	frappe.db.commit()
 
 	orig = frappe.get_doc("Alpha Assignment Origination", orig_name)
