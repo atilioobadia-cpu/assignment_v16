@@ -66,6 +66,9 @@ def _create_project(doc):
 		"closure_status": "Open",
 	})
 
+	# Generate tasks from template if one is linked
+	_generate_tasks_from_template(doc, project.name)
+
 	frappe.msgprint(
 		f"Project {project.name} created successfully.",
 		alert=True,
@@ -190,5 +193,70 @@ def _create_document_requests(doc, project_name):
 
 	frappe.msgprint(
 		f"Created {len(docs)} document requests for assignment.",
+		alert=True,
+	)
+
+
+def _generate_tasks_from_template(doc, project_name):
+	"""Generate Project Tasks from Alpha Project Template."""
+	# Use template from form field, otherwise auto-detect by service line
+	template_name = None
+	if hasattr(doc, "custom_project_template") and doc.custom_project_template:
+		template_name = doc.custom_project_template
+	elif doc.service_line:
+		template_name = frappe.db.get_value(
+			"Alpha Project Template",
+			{"project_type": doc.service_line, "is_active": 1},
+			"name",
+		)
+
+	if not template_name:
+		return
+
+	template = frappe.get_doc("Alpha Project Template", template_name)
+
+	if not template.tasks:
+		return
+
+	# Build sequence -> task_name mapping for dependency resolution
+	seq_to_task = {}
+
+	for tmpl_task in template.tasks:
+		task = frappe.get_doc({
+			"doctype": "Task",
+			"project": project_name,
+			"subject": tmpl_task.task_subject,
+			"status": "Open",
+			"custom_task_sequence": tmpl_task.sequence,
+			"custom_expected_hours": tmpl_task.expected_hours,
+			"custom_requires_review": tmpl_task.requires_review or 0,
+		})
+
+		if tmpl_task.expected_output:
+			task.description = tmpl_task.expected_output
+
+		task.flags.ignore_permissions = True
+		task.insert()
+
+		seq_to_task[tmpl_task.sequence] = task.name
+
+	# Now set dependency strings (task names instead of sequence numbers)
+	for tmpl_task in template.tasks:
+		if tmpl_task.depends_on and tmpl_task.sequence in seq_to_task:
+			dep_seqs = [s.strip() for s in str(tmpl_task.depends_on).split(",") if s.strip()]
+			dep_task_names = [seq_to_task[int(s)] for s in dep_seqs if int(s) in seq_to_task]
+			if dep_task_names:
+				frappe.db.set_value(
+					"Task",
+					seq_to_task[tmpl_task.sequence],
+					"custom_depends_on_tasks",
+					",".join(dep_task_names),
+				)
+
+	# Update origination
+	frappe.db.set_value(doc.doctype, doc.name, "task_template_applied", template_name)
+
+	frappe.msgprint(
+		f"Generated {len(template.tasks)} tasks from template: {template_name}",
 		alert=True,
 	)

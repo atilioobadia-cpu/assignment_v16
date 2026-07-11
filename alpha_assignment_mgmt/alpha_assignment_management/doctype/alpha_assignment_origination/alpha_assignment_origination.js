@@ -12,7 +12,7 @@ frappe.ui.form.on("Alpha Assignment Origination", {
 							method: "alpha_assignment_mgmt.overrides.assignment_origination.create_project_from_origination",
 							args: { origination_name: frm.doc.name },
 							freeze: true,
-							freeze_message: __("Creating Project..."),
+							freeze_message: __("Creating Project and generating tasks..."),
 							callback(r) {
 								if (r.message) {
 									frappe.msgprint(__("Project {0} created successfully.", [r.message]));
@@ -33,7 +33,36 @@ frappe.ui.form.on("Alpha Assignment Origination", {
 
 		if (frm.doc.project_created) {
 			frm.set_df_property("customer", "read_only", 1);
+			frm.set_df_property("service_line", "read_only", 1);
 		}
+	},
+
+	service_line(frm) {
+		if (!frm.doc.service_line) {
+			frm.set_value("custom_project_template", "");
+			return;
+		}
+
+		frappe.call({
+			method: "frappe.client.get_value",
+			args: {
+				doctype: "Alpha Project Template",
+				filters: {
+					project_type: frm.doc.service_line,
+					is_active: 1,
+				},
+				fields: ["name", "template_name", "total_tasks"],
+			},
+			callback(r) {
+				if (r.message) {
+					frm.set_value("custom_project_template", r.message.name);
+					frappe.show_alert({
+						message: __("Template auto-selected: {0} ({1} tasks)", [r.message.template_name, r.message.total_tasks]),
+						indicator: "green",
+					});
+				}
+			},
+		});
 	},
 
 	customer(frm) {

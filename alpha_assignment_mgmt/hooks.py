@@ -87,4 +87,10 @@ fixtures = [
 			["name", "in", ["AIMS Desk", "CEO"]]
 		]
 	},
+	{
+		"doctype": "DocType",
+		"filters": [
+			["name", "in", ["Alpha Project Template", "Alpha Task Template"]]
+		]
+	},
 ]

@@ -7,6 +7,7 @@ def after_install():
 	create_naming_series()
 	create_project_types()
 	create_activity_types()
+	create_project_templates()
 	create_dashboard_charts()
 	create_number_cards()
 	create_ceo_dashboard_charts()
@@ -96,6 +97,119 @@ def create_activity_types():
 			frappe.get_doc({"doctype": "Activity Type", "activity_type": name}).insert(
 				ignore_permissions=True
 			)
+
+
+def create_project_templates():
+	"""Create standard project templates from the requirements document."""
+	templates = _get_template_definitions()
+	for tmpl_def in templates:
+		if frappe.db.exists("Alpha Project Template", tmpl_def["template_name"]):
+			continue
+		doc = frappe.get_doc({
+			"doctype": "Alpha Project Template",
+			"template_name": tmpl_def["template_name"],
+			"project_type": tmpl_def["project_type"],
+			"description": tmpl_def.get("description", ""),
+			"is_active": 1,
+			"tasks": tmpl_def["tasks"],
+		})
+		doc.flags.ignore_permissions = True
+		doc.insert()
+
+
+def _get_template_definitions():
+	return [
+		{
+			"template_name": "Tax Compliance Filing",
+			"project_type": "Tax Compliance",
+			"description": "Standard task sequence for tax return filing per Appendix B",
+			"tasks": [
+				{"task_subject": "Receive trial balance, draft financial statements and tax records", "sequence": 1, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "expected_output": "Engagement Manager confirms completeness"},
+				{"task_subject": "Confirm tax period, IDRAS deadline and extension status", "sequence": 2, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Tax Officer", "depends_on": "1", "expected_output": "Tax Officer and Reviewer confirm"},
+				{"task_subject": "Review revenue, expenses and disallowable items", "sequence": 3, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Tax Officer", "depends_on": "2", "expected_output": "Tax Reviewer checks computation basis"},
+				{"task_subject": "Review capital allowances and fixed asset additions/disposals", "sequence": 4, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Tax Officer", "depends_on": "2", "expected_output": "Reviewer approves asset schedule"},
+				{"task_subject": "Review WHT, PAYE, SDL, VAT and other statutory exposure", "sequence": 5, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Tax Officer", "depends_on": "2", "expected_output": "Tax Reviewer checks reconciliation"},
+				{"task_subject": "Prepare income tax computation", "sequence": 6, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Tax Officer", "depends_on": "3,4,5", "expected_output": "Internal tax review mandatory"},
+				{"task_subject": "Obtain client approval and management representation", "sequence": 7, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "6", "expected_output": "Client approval required before filing"},
+				{"task_subject": "File through IDRAS and save filing evidence", "sequence": 8, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Tax Officer", "depends_on": "7", "expected_output": "Filing evidence attached"},
+				{"task_subject": "Prepare payment advice or filing confirmation note", "sequence": 9, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "8", "expected_output": "Engagement Manager signs off"},
+				{"task_subject": "Close assignment and update client tax calendar", "sequence": 10, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "9", "expected_output": "Closure certificate submitted"},
+			],
+		},
+		{
+			"template_name": "Audit Readiness Support",
+			"project_type": "Audit Readiness",
+			"description": "Standard 16-task sequence for audit readiness and management pack per Appendix B",
+			"tasks": [
+				{"task_subject": "Engagement confirmation and kickoff", "sequence": 1, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "expected_output": "Approved scope, team and deadline"},
+				{"task_subject": "Document request issued (PBC list)", "sequence": 2, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "1", "expected_output": "PBC/document request register"},
+				{"task_subject": "Data Inventory Register completed", "sequence": 3, "expected_hours": 2, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "2", "expected_output": "DIR by department and evidence status"},
+				{"task_subject": "Opening balance review", "sequence": 4, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "3", "expected_output": "Opening balance validation schedule"},
+				{"task_subject": "Bank reconciliation", "sequence": 5, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "3", "expected_output": "Bank reconciliation and unreconciled items"},
+				{"task_subject": "Sales and revenue validation", "sequence": 6, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "3", "expected_output": "Revenue support and sales reconciliation"},
+				{"task_subject": "Purchases, suppliers and liabilities review", "sequence": 7, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "3", "expected_output": "Supplier schedule and liability classification"},
+				{"task_subject": "Fixed assets and depreciation review", "sequence": 8, "expected_hours": 2, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "3", "expected_output": "Asset register and depreciation workings"},
+				{"task_subject": "Tax schedules review", "sequence": 9, "expected_hours": 2, "requires_review": 1, "default_owner_role": "Alpha Tax Officer", "depends_on": "3", "expected_output": "VAT, PAYE, WHT, SDL, income tax support"},
+				{"task_subject": "Adjusting journals", "sequence": 10, "expected_hours": 2, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "4,5,6,7,8,9", "expected_output": "AJE register and supporting evidence"},
+				{"task_subject": "Draft management accounts", "sequence": 11, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Engagement Manager", "depends_on": "10", "expected_output": "Draft financial statements and notes"},
+				{"task_subject": "Technical review", "sequence": 12, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Reviewer", "depends_on": "11", "expected_output": "Review comments and clearance"},
+				{"task_subject": "Client query clearance", "sequence": 13, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "12", "expected_output": "Client responses and representation points"},
+				{"task_subject": "Auditor handover pack", "sequence": 14, "expected_hours": 2, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "12,13", "expected_output": "Audit-ready schedules and evidence index"},
+				{"task_subject": "Tax return support", "sequence": 15, "expected_hours": 2, "requires_review": 1, "default_owner_role": "Alpha Tax Officer", "depends_on": "10", "expected_output": "Tax computation and filing pack"},
+				{"task_subject": "Assignment closure", "sequence": 16, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "14,15", "expected_output": "Closure certificate and archive confirmation"},
+			],
+		},
+		{
+			"template_name": "Monthly Bookkeeping",
+			"project_type": "Monthly Bookkeeping",
+			"description": "Standard 10-task sequence for monthly bookkeeping per Appendix C",
+			"tasks": [
+				{"task_subject": "Monthly document request issued", "sequence": 1, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Staff", "expected_output": "PBC checklist sent"},
+				{"task_subject": "Documents received and indexed", "sequence": 2, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "1", "expected_output": "Document Request Register updated"},
+				{"task_subject": "Bank, sales, purchases and payroll records checked", "sequence": 3, "expected_hours": 2, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "2", "expected_output": "Posting readiness status"},
+				{"task_subject": "ERPNext posting completed using approved accounts and cost centres", "sequence": 4, "expected_hours": 4, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "3", "expected_output": "Posting log and references"},
+				{"task_subject": "Bank, tax, receivable and payable reconciliations prepared", "sequence": 5, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "4", "expected_output": "Reconciliation pack"},
+				{"task_subject": "Reviewer checks postings and reconciliations", "sequence": 6, "expected_hours": 2, "requires_review": 1, "default_owner_role": "Alpha Reviewer", "depends_on": "5", "expected_output": "Review Gate cleared"},
+				{"task_subject": "Monthly close pack prepared", "sequence": 7, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "6", "expected_output": "Client monthly report"},
+				{"task_subject": "Tax readiness and filing support prepared", "sequence": 8, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Tax Officer", "depends_on": "4", "expected_output": "VAT/PAYE/WHT support where applicable"},
+				{"task_subject": "Client queries issued and followed up", "sequence": 9, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "6", "expected_output": "Client Delay Log if unresolved"},
+				{"task_subject": "Monthly assignment closed and billed", "sequence": 10, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "7,8", "expected_output": "Closure and invoice status"},
+			],
+		},
+		{
+			"template_name": "Accounting Reconstruction",
+			"project_type": "Accounting Reconstruction",
+			"description": "Standard task sequence for historical accounting reconstruction",
+			"tasks": [
+				{"task_subject": "Engagement confirmation and scope definition", "sequence": 1, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "expected_output": "Approved scope, period and team"},
+				{"task_subject": "Document request issued for historical records", "sequence": 2, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "1", "expected_output": "PBC register for reconstruction period"},
+				{"task_subject": "Source documents received and indexed", "sequence": 3, "expected_hours": 2, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "2", "expected_output": "Document Register updated"},
+				{"task_subject": "Opening balances established and validated", "sequence": 4, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "3", "expected_output": "Opening balance schedule"},
+				{"task_subject": "Bank statements reconciled for reconstruction period", "sequence": 5, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "3", "expected_output": "Bank reconciliation for each period"},
+				{"task_subject": "Sales and revenue reconstructed from source documents", "sequence": 6, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "3,4", "expected_output": "Revenue reconstruction schedule"},
+				{"task_subject": "Purchases and expenses reconstructed", "sequence": 7, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "3,4", "expected_output": "Expense reconstruction schedule"},
+				{"task_subject": "Fixed assets and depreciation recomputed", "sequence": 8, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "3,4", "expected_output": "Asset register and depreciation workings"},
+				{"task_subject": "Tax computations reconstructed", "sequence": 9, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Tax Officer", "depends_on": "6,7,8", "expected_output": "Tax computation per period"},
+				{"task_subject": "Financial statements drafted for each period", "sequence": 10, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Engagement Manager", "depends_on": "5,6,7,8,9", "expected_output": "Draft financial statements per period"},
+				{"task_subject": "Technical review of reconstructed statements", "sequence": 11, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Reviewer", "depends_on": "10", "expected_output": "Review comments and clearance"},
+				{"task_subject": "Assignment closure", "sequence": 12, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "11", "expected_output": "Closure certificate submitted"},
+			],
+		},
+		{
+			"template_name": "TRA Support",
+			"project_type": "TRA Support",
+			"description": "Task sequence for TRA notice and audit support",
+			"tasks": [
+				{"task_subject": "Receive and review TRA notice", "sequence": 1, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Tax Officer", "expected_output": "Notice details documented"},
+				{"task_subject": "Gather supporting documents from client", "sequence": 2, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "1", "expected_output": "Document Register updated"},
+				{"task_subject": "Review tax computations for queried period", "sequence": 3, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Tax Officer", "depends_on": "2", "expected_output": "Review notes and findings"},
+				{"task_subject": "Prepare response and supporting schedules", "sequence": 4, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Tax Officer", "depends_on": "3", "expected_output": "Draft response with schedules"},
+				{"task_subject": "Technical review of response", "sequence": 5, "expected_hours": 2, "requires_review": 1, "default_owner_role": "Alpha Reviewer", "depends_on": "4", "expected_output": "Review clearance"},
+				{"task_subject": "File response with TRA and save evidence", "sequence": 6, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Tax Officer", "depends_on": "5", "expected_output": "Filing evidence attached"},
+				{"task_subject": "Assignment closure", "sequence": 7, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "6", "expected_output": "Closure certificate submitted"},
+			],
+		},
+	]
 
 
 def create_dashboard_charts():
@@ -428,3 +542,4 @@ def update_ceo_dashboard_with_charts():
 def after_migrate():
 	update_workspace_with_charts()
 	update_ceo_dashboard_with_charts()
+	create_project_templates()

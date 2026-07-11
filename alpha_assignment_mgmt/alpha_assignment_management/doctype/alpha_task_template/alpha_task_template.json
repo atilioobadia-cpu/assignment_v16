@@ -1,0 +1,94 @@
+{
+ "actions": [],
+ "creation": "2026-07-11 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "task_subject",
+  "task_cb_1",
+  "expected_hours",
+  "sequence",
+  "section_owner",
+  "default_owner_role",
+  "owner_cb_1",
+  "requires_review",
+  "depends_on",
+  "section_notes",
+  "expected_output"
+ ],
+ "fields": [
+  {
+   "fieldname": "task_subject",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Task Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "task_cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "expected_hours",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Expected Hours"
+  },
+  {
+   "fieldname": "sequence",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Seq"
+  },
+  {
+   "fieldname": "section_owner",
+   "fieldtype": "Section Break",
+   "label": "Assignment"
+  },
+  {
+   "fieldname": "default_owner_role",
+   "fieldtype": "Select",
+   "label": "Default Owner Role",
+   "options": "\nAlpha Tax Officer\nAlpha Staff\nAlpha Reviewer\nAlpha Engagement Manager\nAlpha Branch Manager"
+  },
+  {
+   "fieldname": "owner_cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "requires_review",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Requires Review"
+  },
+  {
+   "fieldname": "depends_on",
+   "fieldtype": "Data",
+   "label": "Depends On (Seq #)",
+   "description": "Enter sequence numbers this task depends on, comma-separated (e.g. 1,2,3)"
+  },
+  {
+   "fieldname": "section_notes",
+   "fieldtype": "Section Break",
+   "label": "Notes",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "expected_output",
+   "fieldtype": "Small Text",
+   "label": "Expected Output"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-07-11 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Alpha Assignment Management",
+ "name": "Alpha Task Template",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

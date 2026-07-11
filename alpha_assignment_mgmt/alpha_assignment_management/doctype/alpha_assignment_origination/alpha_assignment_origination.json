@@ -64,6 +64,7 @@
     "workflow_cb_2",
     "sla_reference",
     "task_template_applied",
+    "custom_project_template",
     "closure_status",
     "amended_from"
   ],
@@ -382,7 +383,15 @@
     {
       "fieldname": "task_template_applied",
       "fieldtype": "Data",
-      "label": "Task Template Applied"
+      "label": "Task Template Applied",
+      "read_only": 1
+    },
+    {
+      "fieldname": "custom_project_template",
+      "fieldtype": "Link",
+      "label": "Project Template",
+      "options": "Alpha Project Template",
+      "description": "Select a template to auto-generate tasks when project is created"
     },
     {
       "fieldname": "closure_status",
