@@ -13,6 +13,38 @@ frappe.ui.form.on("Assignment Closure Certificate", {
 				frappe.set_route("Form", "Alpha Assignment Origination", frm.doc.assignment_origination);
 			}, __("Navigate"));
 		}
+
+		if (frm.doc.status === "Draft") {
+			frm.add_custom_button(__("Re-Check Tasks"), () => {
+				frappe.call({
+					method: "frappe.client.get_list",
+					args: {
+						doctype: "Task",
+						filters: {
+							project: frm.doc.project,
+							status: ["not in", ["Completed", "Cancelled"]],
+						},
+						limit_page_length: 100,
+						fields: ["name", "subject", "status"],
+					},
+					callback(r) {
+						if (r.message && r.message.length) {
+							frm.set_value("all_tasks_complete", 0);
+							frappe.msgprint(
+								__("There are {0} incomplete task(s): {1}", [
+									r.message.length,
+									r.message.map((t) => t.subject).join(", "),
+								]),
+								__("Incomplete Tasks")
+							);
+						} else {
+							frm.set_value("all_tasks_complete", 1);
+							frappe.msgprint(__("All tasks are complete!"), __("Check Complete"));
+						}
+					},
+				});
+			}, __("Actions"));
+		}
 	},
 
 	project(frm) {

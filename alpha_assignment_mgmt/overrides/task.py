@@ -111,7 +111,17 @@ def check_client_delay(doc):
 			delay.task = doc.name
 			delay.project = doc.project
 			delay.date_requested = now_datetime()
-			delay.status = "Open"
+
+			if doc.project:
+				project = frappe.get_cached_doc("Project", doc.project)
+				delay.customer = project.customer
+				delay.escalation_level = "Level 1 - Staff"
+				delay.impact = "Medium"
+				delay.missing_information = (
+					f"Task '{doc.subject}' is waiting for client response. "
+					f"Expected completion: {doc.exp_end_date or 'Not set'}."
+				)
+
 			delay.insert(ignore_permissions=True)
 			doc.custom_client_delay_log = delay.name
 
@@ -148,6 +158,45 @@ def check_task_overdue(doc):
 			deadline = deadline.date()
 		if deadline < getdate():
 			send_overdue_notification(doc)
+			check_sla_breach(doc)
+
+
+def check_sla_breach(doc):
+	"""Auto-breach Engagement SLA when task is overdue."""
+	if not doc.project:
+		return
+
+	sla = frappe.db.get_value(
+		"Alpha Engagement SLA",
+		{"project": doc.project, "docstatus": 1, "status": ["not in", ["Met", "Breached"]]},
+		["name", "status"],
+		as_dict=True,
+	)
+	if not sla or sla.name is None:
+		return
+
+	breached_count = frappe.db.count(
+		"Task",
+		filters={
+			"project": doc.project,
+			"status": ["not in", ["Completed", "Cancelled"]],
+			"exp_end_date": ["<", getdate()],
+		},
+	)
+
+	if breached_count > 0:
+		frappe.db.set_value("Alpha Engagement SLA", sla.name, "status", "Breached")
+		frappe.db.set_value("Alpha Engagement SLA", sla.name, "actual_end_date", getdate())
+
+		sla_doc = frappe.get_doc("Alpha Engagement SLA", sla.name)
+		if sla_doc.project:
+			project = frappe.db.get_value(
+				"Project", sla_doc.project, "custom_assignment_origination"
+			)
+			if project:
+				frappe.db.set_value(
+					"Alpha Assignment Origination", project, "sl_status", "SLA Breached"
+				)
 
 
 def get_assigned_users(doc):

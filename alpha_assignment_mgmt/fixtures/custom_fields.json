@@ -154,12 +154,60 @@
   "fieldtype": "Link",
   "label": "Closure Certificate",
   "insert_after": "custom_column_break_class_2",
-  "options": "Assignment Closure Certificate",
-  "read_only": 1
- },
- {
-  "doctype": "Custom Field",
-  "name": "Task-custom_section_break_track",
+   "options": "Assignment Closure Certificate",
+   "read_only": 1
+  },
+  {
+   "doctype": "Custom Field",
+   "name": "Project-custom_section_break_billing",
+   "dt": "Project",
+   "fieldname": "custom_section_break_billing",
+   "fieldtype": "Section Break",
+   "label": "Billing",
+   "insert_after": "custom_closure_certificate",
+   "collapsible": 1
+  },
+  {
+   "doctype": "Custom Field",
+   "name": "Project-custom_sales_order",
+   "dt": "Project",
+   "fieldname": "custom_sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "options": "Sales Order",
+   "insert_after": "custom_section_break_billing"
+  },
+  {
+   "doctype": "Custom Field",
+   "name": "Project-custom_column_break_billing_1",
+   "dt": "Project",
+   "fieldname": "custom_column_break_billing_1",
+   "fieldtype": "Column Break",
+   "insert_after": "custom_sales_order"
+  },
+  {
+   "doctype": "Custom Field",
+   "name": "Project-custom_sales_invoice",
+   "dt": "Project",
+   "fieldname": "custom_sales_invoice",
+   "fieldtype": "Link",
+   "label": "Sales Invoice",
+   "options": "Sales Invoice",
+   "insert_after": "custom_column_break_billing_1"
+  },
+  {
+   "doctype": "Custom Field",
+   "name": "Project-custom_billing_status",
+   "dt": "Project",
+   "fieldname": "custom_billing_status",
+   "fieldtype": "Select",
+   "label": "Billing Status",
+   "options": "\nNot Billed\nPartially Billed\nFully Billed",
+   "insert_after": "custom_sales_invoice"
+  },
+  {
+   "doctype": "Custom Field",
+   "name": "Task-custom_section_break_track",
   "dt": "Task",
   "fieldname": "custom_section_break_track",
   "fieldtype": "Section Break",
