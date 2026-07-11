@@ -62,33 +62,38 @@ def _ensure_customer():
 
 
 def _ensure_employee():
-	employee_name = "TEST-aims-employee"
-	if not frappe.db.exists("Employee", employee_name):
-		user_email = "test.aims.employee@example.com"
-		if not frappe.db.exists("User", user_email):
-			user = frappe.get_doc({
-				"doctype": "User",
-				"email": user_email,
-				"first_name": "Test",
-				"last_name": "AIMS Employee",
-				"send_welcome_email": 0,
-			})
-			user.flags.ignore_permissions = True
-			user.insert()
-			frappe.db.set_value("User", user_email, "user_type", "System User")
-		company = frappe.db.get_default("company") or frappe.db.get_single_value("Global Settings", "default_company")
-		desg = "Accountant"
-		doc = frappe.get_doc({
-			"doctype": "Employee",
-			"employee_name": "Test AIMS Employee",
-			"company": company,
-			"user_id": user_email,
-			"designation": desg,
-			"status": "Active",
+	emp = frappe.db.get_value("Employee", {"user_id": "test.aims.employee@example.com"}, "name")
+	if emp:
+		return emp
+	user_email = "test.aims.employee@example.com"
+	if not frappe.db.exists("User", user_email):
+		user = frappe.get_doc({
+			"doctype": "User",
+			"email": user_email,
+			"first_name": "Test",
+			"last_name": "AIMS Employee",
+			"send_welcome_email": 0,
 		})
-		doc.flags.ignore_permissions = True
-		doc.insert()
-	return employee_name
+		user.flags.ignore_permissions = True
+		user.insert()
+		frappe.db.set_value("User", user_email, "user_type", "System User")
+	company = frappe.db.get_default("company") or frappe.db.get_single_value("Global Settings", "default_company")
+	doc = frappe.get_doc({
+		"doctype": "Employee",
+		"employee_name": "Test AIMS Employee",
+		"first_name": "Test",
+		"last_name": "AIMS Employee",
+		"gender": "Male",
+		"date_of_birth": "1990-01-01",
+		"date_of_joining": today(),
+		"company": company,
+		"user_id": user_email,
+		"designation": "Accountant",
+		"status": "Active",
+	})
+	doc.flags.ignore_permissions = True
+	doc.insert()
+	return doc.name
 
 
 def test_customer_setup():
