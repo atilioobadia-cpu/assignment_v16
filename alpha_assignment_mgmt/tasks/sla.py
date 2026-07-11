@@ -39,12 +39,28 @@ def notify_breach(sla):
 	"""Send breach notification."""
 	recipients = collect_recipients(sla)
 	if recipients:
+		customer_name = frappe.db.get_value("Customer", sla.customer, "customer_name") or sla.customer or "N/A"
 		frappe.sendmail(
 			recipients=recipients,
-			subject=f"SLA Breach: {sla.name}",
+			subject=f"[AIMS] SLA Breached: {sla.name}",
 			message=(
-				f"SLA <b>{sla.name}</b> for Project <b>{sla.project}</b> "
-				"has been breached."
+				f"<div style='font-family: Arial, sans-serif; max-width: 600px;'>"
+				f"<h2 style='color: #dc3545;'>SLA Breach Alert</h2>"
+				f"<table style='width: 100%; border-collapse: collapse; margin: 16px 0;'>"
+				f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>SLA</td>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{sla.name}</td></tr>"
+				f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>Project</td>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{sla.project}</td></tr>"
+				f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>Client</td>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{customer_name}</td></tr>"
+				f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>SLA Level</td>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{sla.sla_level}</td></tr>"
+				f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>Deadline</td>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd; color: #dc3545;'><b>{sla.alpha_processing_deadline}</b></td></tr>"
+				f"</table>"
+				f"<p style='color: #dc3545;'><b>This SLA has been breached. Immediate action required.</b></p>"
+				f"<p style='color: #666; font-size: 12px;'>Alpha Assignment Management System</p>"
+				f"</div>"
 			),
 		)
 
@@ -53,12 +69,26 @@ def notify_breach_warning(sla, hours_remaining):
 	"""Send breach warning notification."""
 	recipients = collect_recipients(sla)
 	if recipients:
+		customer_name = frappe.db.get_value("Customer", sla.customer, "customer_name") or sla.customer or "N/A"
 		frappe.sendmail(
 			recipients=recipients,
-			subject=f"SLA Breach Warning: {sla.name}",
+			subject=f"[AIMS] SLA Breach Warning: {sla.name}",
 			message=(
-				f"SLA <b>{sla.name}</b> for Project <b>{sla.project}</b> "
-				f"is approaching breach ({int(hours_remaining)} hours remaining)."
+				f"<div style='font-family: Arial, sans-serif; max-width: 600px;'>"
+				f"<h2 style='color: #ffc107;'>SLA Breach Warning</h2>"
+				f"<table style='width: 100%; border-collapse: collapse; margin: 16px 0;'>"
+				f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>SLA</td>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{sla.name}</td></tr>"
+				f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>Project</td>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{sla.project}</td></tr>"
+				f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>Client</td>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{customer_name}</td></tr>"
+				f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>Time Remaining</td>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd; color: #ffc107;'><b>{int(hours_remaining)} hours</b></td></tr>"
+				f"</table>"
+				f"<p>Please take action to avoid SLA breach.</p>"
+				f"<p style='color: #666; font-size: 12px;'>Alpha Assignment Management System</p>"
+				f"</div>"
 			),
 		)
 
@@ -69,9 +99,11 @@ def collect_recipients(sla):
 	if sla.project:
 		project = frappe.get_cached_doc("Project", sla.project)
 		if project.custom_engagement_manager:
-			recipients.append(project.custom_engagement_manager)
-	if sla.customer:
-		email = frappe.db.get_value("Customer", sla.customer, "email_id")
-		if email:
-			recipients.append(email)
-	return [r for r in recipients if r]
+			email = frappe.db.get_value("User", project.custom_engagement_manager, "email")
+			if email:
+				recipients.append(email)
+		if project.custom_branch_manager:
+			email = frappe.db.get_value("User", project.custom_branch_manager, "email")
+			if email:
+				recipients.append(email)
+	return list(set(recipients))

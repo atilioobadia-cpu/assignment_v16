@@ -8,7 +8,7 @@ frappe.query_reports["SLA Compliance Overview"] = {
 			"fieldtype": "Select",
 			"label": __("SLA Status"),
 			"mandatory": 0,
-			"options": "\nActive\nBreached\nCompleted\nCancelled"
+			"options": "\nActive\nBreached\nCompleted\nClosed"
 		},
 		{
 			"fieldname": "sla_level",

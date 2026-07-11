@@ -7,6 +7,7 @@ def validate(doc, method):
 	check_evidence_attachment(doc)
 	check_review_gate(doc)
 	check_client_delay(doc)
+	check_task_dependencies(doc)
 
 
 def on_update(doc, method):
@@ -115,6 +116,31 @@ def check_client_delay(doc):
 			doc.custom_client_delay_log = delay.name
 
 
+def check_task_dependencies(doc):
+	"""Prevent starting a task if its dependencies are not completed."""
+	if doc.status not in ("In Progress", "Completed"):
+		return
+
+	if not doc.custom_depends_on_tasks:
+		return
+
+	dep_names = [d.strip() for d in doc.custom_depends_on_tasks.split(",") if d.strip()]
+	if not dep_names:
+		return
+
+	incomplete = []
+	for dep_name in dep_names:
+		dep_status = frappe.db.get_value("Task", dep_name, "status")
+		if dep_status not in ("Completed", "Cancelled"):
+			incomplete.append(f"{dep_name} ({dep_status or 'not found'})")
+
+	if incomplete:
+		frappe.throw(
+			f"Cannot start Task {doc.name}. The following dependencies are not completed: "
+			+ ", ".join(incomplete)
+		)
+
+
 def check_task_overdue(doc):
 	if doc.status not in ("Completed", "Cancelled") and doc.exp_end_date:
 		deadline = doc.exp_end_date
@@ -153,7 +179,9 @@ def send_overdue_notification(doc):
 				recipients=recipients,
 				subject=f"Overdue Task: {doc.subject}",
 				message=(
-					f"Task <b>{doc.subject}</b> in Project <b>{doc.project}</b> "
-					f"was due on {doc.exp_end_date} and is now overdue."
+					f"<h3>Task Overdue Alert</h3>"
+					f"<p>Task <b>{doc.subject}</b> in Project <b>{doc.project}</b> "
+					f"was due on <b>{doc.exp_end_date}</b> and is now overdue.</p>"
+					f"<p>Please take immediate action.</p>"
 				),
 			)

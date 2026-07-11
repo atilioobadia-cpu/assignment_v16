@@ -29,12 +29,26 @@ def daily_overdue_task_notification():
 				if email:
 					recipients.add(email)
 			if recipients:
+				customer_name = frappe.db.get_value("Customer", project.customer, "customer_name") or project.customer or "N/A"
 				frappe.sendmail(
 					recipients=list(recipients),
-					subject=f"Overdue Task: {task.subject}",
+					subject=f"[AIMS] Overdue Task: {task.subject}",
 					message=(
-						f"Task <b>{task.subject}</b> in Project <b>{task.project}</b> "
-						f"was due on {task.exp_end_date}."
+						f"<div style='font-family: Arial, sans-serif; max-width: 600px;'>"
+						f"<h2 style='color: #dc3545;'>Task Overdue Alert</h2>"
+						f"<table style='width: 100%; border-collapse: collapse; margin: 16px 0;'>"
+						f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>Task</td>"
+						f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{task.subject}</td></tr>"
+						f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>Project</td>"
+						f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{task.project}</td></tr>"
+						f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>Client</td>"
+						f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{customer_name}</td></tr>"
+						f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>Due Date</td>"
+						f"<td style='padding: 8px; border-bottom: 1px solid #ddd; color: #dc3545;'><b>{task.exp_end_date}</b></td></tr>"
+						f"</table>"
+						f"<p>Please take immediate action to resolve this overdue task.</p>"
+						f"<p style='color: #666; font-size: 12px;'>Alpha Assignment Management System</p>"
+						f"</div>"
 					),
 				)
 
@@ -67,7 +81,7 @@ def weekly_productivity_report():
 	for manager in managers:
 		projects = frappe.get_all(
 			"Project",
-			filters={"custom_engagement_manager": manager},
+			filters={"custom_engagement_manager": manager, "status": "Active"},
 			pluck="name",
 		)
 
@@ -75,6 +89,9 @@ def weekly_productivity_report():
 			continue
 
 		report_lines = []
+		total_hours_week = 0
+		total_tasks_week = 0
+
 		for project_name in projects:
 			total_hours = frappe.db.sql(
 				"""
@@ -98,20 +115,43 @@ def weekly_productivity_report():
 				},
 			)
 
+			total_hours_week += total_hours
+			total_tasks_week += task_count
+
+			customer = frappe.db.get_value("Project", project_name, "customer") or "N/A"
+			customer_name = frappe.db.get_value("Customer", customer, "customer_name") or customer
+
 			report_lines.append(
-				f"<tr><td>{project_name}</td><td>{total_hours:.1f}</td>"
-				f"<td>{task_count}</td></tr>"
+				f"<tr>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{project_name}</td>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{customer_name}</td>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd; text-align: center;'>{total_hours:.1f}</td>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd; text-align: center;'>{task_count}</td>"
+				f"</tr>"
 			)
 
 		if report_lines:
 			table = (
-				"<table border='1' cellpadding='5'>"
-				"<tr><th>Project</th><th>Hours Logged</th><th>Tasks Completed</th></tr>"
+				"<div style='font-family: Arial, sans-serif; max-width: 700px;'>"
+				"<h2 style='color: #2563eb;'>Weekly Productivity Report</h2>"
+				"<p>Here is your team's performance summary for the past week.</p>"
+				"<table style='width: 100%; border-collapse: collapse; margin: 16px 0;'>"
+				"<tr style='background-color: #f8f9fa;'>"
+				"<th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Project</th>"
+				"<th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Client</th>"
+				"<th style='padding: 8px; text-align: center; border-bottom: 2px solid #ddd;'>Hours</th>"
+				"<th style='padding: 8px; text-align: center; border-bottom: 2px solid #ddd;'>Tasks Done</th>"
+				"</tr>"
 				+ "".join(report_lines)
-				+ "</table>"
+				+ f"</table>"
+				f"<div style='margin-top: 16px; padding: 12px; background-color: #f8f9fa; border-radius: 4px;'>"
+				f"<b>Weekly Totals:</b> {total_hours_week:.1f} hours | {total_tasks_week} tasks completed"
+				f"</div>"
+				f"<p style='color: #666; font-size: 12px;'>Alpha Assignment Management System</p>"
+				f"</div>"
 			)
 			frappe.sendmail(
 				recipients=[manager],
-				subject=f"Weekly Productivity Report ({today()})",
+				subject=f"[AIMS] Weekly Productivity Report ({today()})",
 				message=table,
 			)

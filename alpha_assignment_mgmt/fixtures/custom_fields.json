@@ -265,6 +265,52 @@
  },
  {
   "doctype": "Custom Field",
+  "name": "Task-custom_section_break_deps",
+  "dt": "Task",
+  "fieldname": "custom_section_break_deps",
+  "fieldtype": "Section Break",
+  "label": "Dependencies & Planning",
+  "insert_after": "custom_column_break_links_2"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Task-custom_depends_on_tasks",
+  "dt": "Task",
+  "fieldname": "custom_depends_on_tasks",
+  "fieldtype": "Small Text",
+  "label": "Depends On (Task Names, comma-separated)",
+  "insert_after": "custom_section_break_deps",
+  "description": "Enter task names this task depends on, separated by commas"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Task-custom_expected_hours",
+  "dt": "Task",
+  "fieldname": "custom_expected_hours",
+  "fieldtype": "Float",
+  "label": "Expected Hours",
+  "insert_after": "custom_depends_on_tasks"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Task-custom_task_sequence",
+  "dt": "Task",
+  "fieldname": "custom_task_sequence",
+  "fieldtype": "Int",
+  "label": "Sequence",
+  "insert_after": "custom_expected_hours",
+  "description": "Task order within project (1, 2, 3...)"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Task-custom_deps_cb",
+  "dt": "Task",
+  "fieldname": "custom_deps_cb",
+  "fieldtype": "Column Break",
+  "insert_after": "custom_task_sequence"
+ },
+ {
+  "doctype": "Custom Field",
   "name": "Goal-custom_section_break_assign",
   "dt": "Goal",
   "fieldname": "custom_section_break_assign",
