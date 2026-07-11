@@ -51,7 +51,7 @@ frappe.ui.form.on("Alpha Assignment Origination", {
 					project_type: frm.doc.service_line,
 					is_active: 1,
 				},
-				fields: ["name", "template_name", "total_tasks"],
+				fieldname: ["name", "template_name", "total_tasks"],
 			},
 			callback(r) {
 				if (r.message) {
@@ -74,7 +74,7 @@ frappe.ui.form.on("Alpha Assignment Origination", {
 			args: {
 				doctype: "Customer",
 				filters: { name: frm.doc.customer },
-				fields: ["email_id", "mobile_no", "tax_id", "customer_primary_address"],
+				fieldname: ["email_id", "mobile_no", "tax_id", "customer_primary_address"],
 			},
 			callback(r) {
 				if (r.message) {

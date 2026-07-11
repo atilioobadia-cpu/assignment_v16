@@ -24,17 +24,17 @@ frappe.ui.form.on("Alpha Engagement SLA", {
 			args: {
 				doctype: "Project",
 				filters: { name: frm.doc.project },
-				fields: [
-					"customer",
-					"custom_assignment_origination",
-					"custom_engagement_manager",
-					"custom_branch_manager",
-					"custom_client_owner",
-					"custom_service_line",
-					"custom_risk_rating",
-					"expected_start_date",
-					"expected_end_date",
-				],
+			fieldname: [
+				"customer",
+				"custom_assignment_origination",
+				"custom_engagement_manager",
+				"custom_branch_manager",
+				"custom_client_owner",
+				"custom_service_line",
+				"custom_risk_rating",
+				"expected_start_date",
+				"expected_end_date",
+			],
 			},
 			callback(r) {
 				if (r.message) {

@@ -47,7 +47,7 @@ frappe.ui.form.on("Client Delay Log", {
 								args: {
 									doctype: "Task",
 									filters: { name: frm.doc.task },
-									fields: ["status"],
+									fieldname: ["status"],
 								},
 								callback(r) {
 									if (r.message && r.message.status === "Waiting for Client") {
@@ -79,7 +79,7 @@ frappe.ui.form.on("Client Delay Log", {
 			args: {
 				doctype: "Task",
 				filters: { name: frm.doc.task },
-				fields: ["project", "subject", "exp_end_date"],
+				fieldname: ["project", "subject", "exp_end_date"],
 			},
 			callback(r) {
 				if (r.message) {
@@ -91,7 +91,7 @@ frappe.ui.form.on("Client Delay Log", {
 							args: {
 								doctype: "Project",
 								filters: { name: r.message.project },
-								fields: ["customer"],
+								fieldname: ["customer"],
 							},
 							callback(r2) {
 								if (r2.message && r2.message.customer) {
@@ -114,7 +114,7 @@ frappe.ui.form.on("Client Delay Log", {
 			args: {
 				doctype: "Project",
 				filters: { name: frm.doc.project },
-				fields: ["customer"],
+				fieldname: ["customer"],
 			},
 			callback(r) {
 				if (r.message && r.message.customer) {

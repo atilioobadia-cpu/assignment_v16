@@ -24,12 +24,12 @@ frappe.ui.form.on("Client Risk Register", {
 			args: {
 				doctype: "Project",
 				filters: { name: frm.doc.project },
-				fields: [
-					"customer",
-					"custom_assignment_origination",
-					"custom_risk_rating",
-					"custom_engagement_manager",
-				],
+			fieldname: [
+				"customer",
+				"custom_assignment_origination",
+				"custom_risk_rating",
+				"custom_engagement_manager",
+			],
 			},
 			callback(r) {
 				if (r.message) {
@@ -51,7 +51,7 @@ frappe.ui.form.on("Client Risk Register", {
 			args: {
 				doctype: "Alpha Assignment Origination",
 				filters: { name: frm.doc.assignment_origination },
-				fields: ["customer", "risk_rating"],
+				fieldname: ["customer", "risk_rating"],
 			},
 			callback(r) {
 				if (r.message) {

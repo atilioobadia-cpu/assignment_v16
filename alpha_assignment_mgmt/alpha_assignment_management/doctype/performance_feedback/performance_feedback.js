@@ -32,7 +32,7 @@ frappe.ui.form.on("Performance Feedback", {
 			args: {
 				doctype: "Employee",
 				filters: { name: frm.doc.employee },
-				fields: ["user_id", "employee_name", "designation", "branch"],
+				fieldname: ["user_id", "employee_name", "designation", "branch"],
 			},
 			callback(r) {
 				if (r.message && r.message.user_id) {
@@ -51,7 +51,7 @@ frappe.ui.form.on("Performance Feedback", {
 			args: {
 				doctype: "Project",
 				filters: { name: frm.doc.project },
-				fields: ["custom_assignment_origination"],
+				fieldname: ["custom_assignment_origination"],
 			},
 			callback(r) {
 				if (r.message && r.message.custom_assignment_origination) {

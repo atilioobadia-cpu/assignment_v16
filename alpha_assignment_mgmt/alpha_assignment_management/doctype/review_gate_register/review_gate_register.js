@@ -51,7 +51,7 @@ frappe.ui.form.on("Review Gate Register", {
 			args: {
 				doctype: "Task",
 				filters: { name: frm.doc.task },
-				fields: ["project", "subject", "owner", "_assign"],
+				fieldname: ["project", "subject", "owner", "_assign"],
 			},
 			callback(r) {
 				if (r.message) {
@@ -72,7 +72,7 @@ frappe.ui.form.on("Review Gate Register", {
 			args: {
 				doctype: "Project",
 				filters: { name: frm.doc.project },
-				fields: ["customer", "custom_engagement_manager"],
+				fieldname: ["customer", "custom_engagement_manager"],
 			},
 			callback(r) {
 				if (r.message) {

@@ -56,13 +56,13 @@ frappe.ui.form.on("Assignment Closure Certificate", {
 			args: {
 				doctype: "Project",
 				filters: { name: frm.doc.project },
-				fields: [
-					"customer",
-					"custom_assignment_origination",
-					"custom_engagement_manager",
-					"custom_branch_manager",
-					"custom_client_owner",
-				],
+			fieldname: [
+				"customer",
+				"custom_assignment_origination",
+				"custom_engagement_manager",
+				"custom_branch_manager",
+				"custom_client_owner",
+			],
 			},
 			callback(r) {
 				if (r.message) {

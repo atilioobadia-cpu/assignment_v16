@@ -32,10 +32,10 @@ frappe.ui.form.on("Document Request Register", {
 			args: {
 				doctype: "Project",
 				filters: { name: frm.doc.project },
-				fields: [
-					"custom_assignment_origination",
-					"custom_client_owner",
-				],
+			fieldname: [
+				"custom_assignment_origination",
+				"custom_client_owner",
+			],
 			},
 			callback(r) {
 				if (r.message) {
@@ -56,7 +56,7 @@ frappe.ui.form.on("Document Request Register", {
 			args: {
 				doctype: "Alpha Assignment Origination",
 				filters: { name: frm.doc.assignment_origination },
-				fields: ["customer"],
+				fieldname: ["customer"],
 			},
 			callback(r) {
 				if (r.message) {
