@@ -8,8 +8,27 @@ from frappe.utils import today, add_days
 _shared = {}
 
 
+def _cleanup_test_data():
+	"""Remove previous test artifacts so tests can run cleanly."""
+	try:
+		frappe.db.sql("DELETE FROM `tabClient Risk Register` WHERE customer = 'TEST-AIMS-CLIENT'")
+		frappe.db.sql("DELETE FROM `tabClient Delay Log` WHERE task IN (SELECT name FROM `tabTask` WHERE project LIKE 'AATL-2026-TAX-TESTA-%')")
+		frappe.db.sql("DELETE FROM `tabReview Gate Register` WHERE project LIKE 'AATL-2026-TAX-TESTA-%'")
+		frappe.db.sql("DELETE FROM `tabDocument Request Register` WHERE project LIKE 'AATL-2026-TAX-TESTA-%'")
+		frappe.db.sql("DELETE FROM `tabAssignment Closure Certificate` WHERE project LIKE 'AATL-2026-TAX-TESTA-%'")
+		frappe.db.sql("DELETE FROM `tabPerformance Feedback` WHERE employee IN (SELECT name FROM `tabEmployee` WHERE user_id = 'test.aims.employee@example.com')")
+		frappe.db.sql("DELETE FROM `tabAlpha Engagement SLA` WHERE project LIKE 'AATL-2026-TAX-TESTA-%'")
+		frappe.db.sql("DELETE FROM `tabTask` WHERE project LIKE 'AATL-2026-TAX-TESTA-%'")
+		frappe.db.sql("DELETE FROM `tabProject` WHERE name LIKE 'AATL-2026-TAX-TESTA-%'")
+		frappe.db.sql("DELETE FROM `tabAlpha Assignment Origination` WHERE assignment_title = 'Test Tax Filing Integration'")
+		frappe.db.commit()
+	except Exception:
+		frappe.db.rollback()
+
+
 def run_all_tests():
 	"""Run all integration tests and report results."""
+	_cleanup_test_data()
 	results = []
 	tests = [
 		test_01_customer_setup,
