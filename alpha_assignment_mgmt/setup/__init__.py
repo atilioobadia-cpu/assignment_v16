@@ -439,7 +439,7 @@ def update_workspace_with_charts():
 		if frappe.db.exists("Dashboard Chart", cname):
 			chart_items.append({
 				"id": f"c{i+1}", "type": "chart",
-				"data": {"chart_name": cname, "col": 4}
+				"data": {"chart_name": cname, "col": 12}
 			})
 
 	content += card_items + chart_items
@@ -520,7 +520,7 @@ def update_ceo_dashboard_with_charts():
 		if frappe.db.exists("Dashboard Chart", cname):
 			chart_items.append({
 				"id": f"c{i+1}", "type": "chart",
-				"data": {"chart_name": cname, "col": 4}
+				"data": {"chart_name": cname, "col": 12 if i == 0 else 4}
 			})
 
 	content += card_items + chart_items
