@@ -72,7 +72,8 @@ fixtures = [
 				"Task",
 				"Goal",
 				"Appraisal",
-				"Employee"
+				"Employee",
+				"Timesheet Detail"
 			]]
 		]
 	},
