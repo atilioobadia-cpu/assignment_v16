@@ -4,62 +4,54 @@ from frappe.utils import now_datetime, getdate
 
 
 def validate(doc, method):
-	"""Enforce evidence attachment and review gate rules."""
 	check_evidence_attachment(doc)
 	check_review_gate(doc)
 	check_client_delay(doc)
 
 
 def on_update(doc, method):
-	"""Update SLA status and notify on overdue."""
 	check_task_overdue(doc)
 
 
 def get_permission_query_conditions(user):
-	"""Role-based Task visibility.
-
-	- Alpha Staff / Alpha Reviewer: only tasks they are assigned to or own
-	- Alpha Client Owner: tasks in their projects
-	- Alpha Engagement Manager / Branch Manager / Partner: all tasks
-	"""
 	if not user:
 		user = frappe.session.user
 
 	roles = frappe.get_roles(user)
+	user_like = frappe.db.escape(f'%"{user}"%')
 
 	if "System Manager" in roles or "Alpha Partner/Director" in roles:
 		return ""
 
 	if "Alpha Engagement Manager" in roles:
-		return """(`tabTask`.`project` IN (
+		return f"""(`tabTask`.`project` IN (
 			SELECT `tabProject`.`name` FROM `tabProject`
 			WHERE `tabProject`.`custom_engagement_manager` = %(user)s
-		) OR `tabTask`.`_assign` LIKE %(user_like)s
+		) OR `tabTask`.`_assign` LIKE {user_like}
 		  OR `tabTask`.`owner` = %(user)s)"""
 
 	if "Alpha Branch Manager" in roles:
-		return """(`tabTask`.`project` IN (
+		return f"""(`tabTask`.`project` IN (
 			SELECT `tabProject`.`name` FROM `tabProject`
 			WHERE `tabProject`.`custom_branch_manager` = %(user)s
-		) OR `tabTask`.`_assign` LIKE %(user_like)s
+		) OR `tabTask`.`_assign` LIKE {user_like}
 		  OR `tabTask`.`owner` = %(user)s)"""
 
 	if "Alpha Staff" in roles or "Alpha Reviewer" in roles:
-		return """(`tabTask`.`_assign` LIKE %(user_like)s
+		return f"""(`tabTask`.`_assign` LIKE {user_like}
 			OR `tabTask`.`owner` = %(user)s)"""
 
 	if "Alpha Client Owner" in roles:
-		return """(`tabTask`.`project` IN (
+		return f"""(`tabTask`.`project` IN (
 			SELECT `tabProject`.`name` FROM `tabProject`
 			WHERE `tabProject`.`custom_client_owner` = %(user)s
-		) OR `tabTask`.`_assign` LIKE %(user_like)s
+		) OR `tabTask`.`_assign` LIKE {user_like}
 		  OR `tabTask`.`owner` = %(user)s)"""
 
 	return ""
 
 
 def has_permission(doc, ptype, user):
-	"""Check if user has permission to access a specific Task."""
 	roles = frappe.get_roles(user)
 
 	if "System Manager" in roles or "Alpha Partner/Director" in roles:
@@ -89,7 +81,6 @@ def has_permission(doc, ptype, user):
 
 
 def check_evidence_attachment(doc):
-	"""Task cannot be completed without evidence or exception."""
 	if doc.status == "Completed":
 		if not doc.custom_evidence_attachment and not doc.custom_evidence_exception:
 			frappe.throw(
@@ -99,7 +90,6 @@ def check_evidence_attachment(doc):
 
 
 def check_review_gate(doc):
-	"""High-risk tasks require Review Gate approval before completion."""
 	if doc.status == "Completed" and doc.custom_requires_review:
 		gate = frappe.db.get_value(
 			"Review Gate Register",
@@ -114,7 +104,6 @@ def check_review_gate(doc):
 
 
 def check_client_delay(doc):
-	"""When task status is Waiting for Client, require Client Delay Log."""
 	if doc.status == "Waiting for Client":
 		if not doc.custom_client_delay_log:
 			delay = frappe.new_doc("Client Delay Log")
@@ -127,7 +116,6 @@ def check_client_delay(doc):
 
 
 def check_task_overdue(doc):
-	"""Notify when task is overdue."""
 	if doc.status not in ("Completed", "Cancelled") and doc.exp_end_date:
 		deadline = doc.exp_end_date
 		if hasattr(deadline, "date"):
@@ -137,7 +125,6 @@ def check_task_overdue(doc):
 
 
 def get_assigned_users(doc):
-	"""Extract assigned user IDs from _assign field."""
 	users = []
 	if doc._assign:
 		try:
@@ -148,7 +135,6 @@ def get_assigned_users(doc):
 
 
 def send_overdue_notification(doc):
-	"""Send notification for overdue task."""
 	if doc.project:
 		project = frappe.get_cached_doc("Project", doc.project)
 		recipients = []
