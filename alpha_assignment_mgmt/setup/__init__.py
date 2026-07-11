@@ -459,10 +459,11 @@ def update_workspace_with_charts():
 	shortcuts = [
 		("s1", "New Assignment Origination"), ("s2", "All Assignments"),
 		("s3", "Active Projects"), ("s4", "Engagement SLAs"),
-		("s5", "Review Queue"), ("s6", "Document Requests"),
-		("s7", "Closure Certificates"), ("s8", "Client Delays"),
-		("s9", "My Tasks"), ("s10", "My Timesheets"),
-		("s11", "Staff Productivity"), ("s12", "SLA Compliance"),
+		("s5", "My Tasks"), ("s6", "My Timesheets"),
+		("s7", "Document Requests"), ("s8", "Review Queue"),
+		("s9", "Client Delays"), ("s10", "Risk Register"),
+		("s11", "Closure Certificates"), ("s12", "SLA Compliance"),
+		("s13", "Staff Productivity"),
 	]
 	for sid, sname in shortcuts:
 		content.append({
