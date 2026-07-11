@@ -48,9 +48,9 @@ AIMS manages client engagements from intake to closure inside ERPNext — origin
 ### Install
 
 ```bash
-bench get-app git@github.com:atilioobadia-cpu/assignment_v16.git
-bench --site yoursite install-app alpha_assignment_mgmt
-bench --site yoursite migrate
+bench get-app https://github.com/atilioobadia-cpu/assignment_v16.git
+bench --site aims.local install-app alpha_assignment_mgmt
+bench --site aims.local migrate
 ```
 
 The install automatically provisions all configuration — roles, project types, activity types, templates, dashboards, and reports.
