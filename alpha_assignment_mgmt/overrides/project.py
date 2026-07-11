@@ -74,6 +74,10 @@ def create_sla(doc):
 			or doc.expected_end_date
 		)
 
+	if not deadline:
+		from frappe.utils import add_days
+		deadline = add_days(doc.expected_start_date or frappe.utils.today(), 30)
+
 	sla = frappe.new_doc("Alpha Engagement SLA")
 	sla.project = doc.name
 	sla.customer = doc.customer
