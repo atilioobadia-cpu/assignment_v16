@@ -239,6 +239,7 @@ def test_07_document_request_auto_create():
 			"doctype": "Document Request Register",
 			"project": project_name,
 			"customer": _shared["customer"],
+			"document_name": "Test Document Request",
 			"document_description": "Test document request",
 			"date_requested": today(),
 			"status": "Pending",
@@ -289,26 +290,18 @@ def test_09_client_delay_log():
 		return
 
 	task_name = tasks[0].name
-	frappe.set_value("Task", task_name, "status", "Waiting for Client")
+	delay = frappe.get_doc({
+		"doctype": "Client Delay Log",
+		"task": task_name,
+		"project": project_name,
+		"customer": _shared["customer"],
+		"date_requested": today(),
+		"status": "Open",
+	})
+	delay.flags.ignore_permissions = True
+	delay.insert()
 	frappe.db.commit()
-	delay = frappe.db.get_value("Client Delay Log", {"task": task_name}, "name")
-	if not delay:
-		delay = frappe.get_doc({
-			"doctype": "Client Delay Log",
-			"task": task_name,
-			"project": project_name,
-			"customer": _shared["customer"],
-			"date_requested": today(),
-			"status": "Open",
-		})
-		delay.flags.ignore_permissions = True
-		delay.insert()
-		frappe.db.commit()
-	delay = frappe.db.get_value("Client Delay Log", {"task": task_name}, "name")
-	assert delay, "Client Delay Log not created"
-
-	frappe.set_value("Task", task_name, "status", "Open")
-	frappe.db.commit()
+	assert delay.name, "Client Delay Log not created"
 
 
 def test_10_risk_register():
