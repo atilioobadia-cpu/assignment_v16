@@ -126,8 +126,8 @@ def _generate_project_name(doc):
 	# Get next sequence number
 	prefix = f"AATL-{year}-{type_code}-{client_code}-"
 	existing = frappe.db.sql(
-		"""SELECT name FROM `tabProject`
-		WHERE name LIKE %s ORDER BY name DESC LIMIT 1""",
+		"""SELECT project_name FROM `tabProject`
+		WHERE project_name LIKE %s ORDER BY project_name DESC LIMIT 1""",
 		(f"{prefix}%",),
 	)
 	if existing:
