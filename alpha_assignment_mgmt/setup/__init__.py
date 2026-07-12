@@ -5,6 +5,7 @@ import os
 
 def after_install():
 	create_roles()
+	create_workflow_states()
 	create_naming_series()
 	create_project_types()
 	create_activity_types()
@@ -34,6 +35,26 @@ def create_roles():
 			frappe.get_doc({"doctype": "Role", "role_name": role}).insert(
 				ignore_permissions=True
 			)
+
+
+def create_workflow_states():
+	"""Create Workflow State records used by the Alpha Assignment Origination Workflow.
+	These are referenced in the workflow JSON fixture and must exist before the workflow is created."""
+	states = [
+		{"state": "Draft", "doc_status": "0", "allow_edit": "Alpha Tax Officer"},
+		{"state": "Submitted", "doc_status": "1", "allow_edit": "Alpha Engagement Manager"},
+		{"state": "Under Review", "doc_status": "1", "allow_edit": "Alpha Branch Manager"},
+		{"state": "Approved", "doc_status": "1", "allow_edit": "Alpha Managing Director"},
+		{"state": "Rejected", "doc_status": "1", "allow_edit": "System Manager"},
+		{"state": "Project Created", "doc_status": "1", "allow_edit": "Alpha Engagement Manager"},
+		{"state": "Closed", "doc_status": "1", "allow_edit": "System Manager"},
+	]
+	for state in states:
+		if not frappe.db.exists("Workflow State", state["state"]):
+			frappe.get_doc({
+				"doctype": "Workflow State",
+				"workflow_state_name": state["state"],
+			}).insert(ignore_permissions=True)
 
 
 def create_naming_series():
@@ -612,6 +633,7 @@ def update_ceo_dashboard_with_charts():
 
 
 def after_migrate():
+	create_workflow_states()
 	update_workspace_with_charts()
 	update_ceo_dashboard_with_charts()
 	create_project_templates()
