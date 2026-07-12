@@ -37,16 +37,26 @@
    "is_query_report": 0,
    "dependencies": ""
   },
-  {
-   "type": "Link",
-   "label": "Active Projects",
-   "link_to": "Project",
-   "link_type": "DocType",
-   "onboard": 0,
-   "hidden": 0,
-   "is_query_report": 0,
-   "dependencies": ""
-  },
+   {
+    "type": "Link",
+    "label": "Project Templates",
+    "link_to": "Alpha Project Template",
+    "link_type": "DocType",
+    "onboard": 0,
+    "hidden": 0,
+    "is_query_report": 0,
+    "dependencies": ""
+   },
+   {
+    "type": "Link",
+    "label": "Active Projects",
+    "link_to": "Project",
+    "link_type": "DocType",
+    "onboard": 0,
+    "hidden": 0,
+    "is_query_report": 0,
+    "dependencies": ""
+   },
   {
    "type": "Link",
    "label": "Engagement SLAs",
@@ -199,13 +209,20 @@
   }
  ],
  "shortcuts": [
-  {
-   "label": "New Assignment Origination",
-   "type": "DocType",
-   "link_to": "Alpha Assignment Origination",
-   "doc_type": "Alpha Assignment Origination",
-   "icon": "add"
-  },
+   {
+    "label": "Project Templates",
+    "type": "DocType",
+    "link_to": "Alpha Project Template",
+    "doc_type": "Alpha Project Template",
+    "icon": "bookmark"
+   },
+   {
+    "label": "New Assignment Origination",
+    "type": "DocType",
+    "link_to": "Alpha Assignment Origination",
+    "doc_type": "Alpha Assignment Origination",
+    "icon": "add"
+   },
   {
    "label": "All Assignments",
    "type": "DocType",

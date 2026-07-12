@@ -457,6 +457,7 @@ def update_workspace_with_charts():
 	]
 
 	shortcuts = [
+		("s0", "Project Templates"),
 		("s1", "New Assignment Origination"), ("s2", "All Assignments"),
 		("s3", "Active Projects"), ("s4", "Engagement SLAs"),
 		("s5", "My Tasks"), ("s6", "My Timesheets"),

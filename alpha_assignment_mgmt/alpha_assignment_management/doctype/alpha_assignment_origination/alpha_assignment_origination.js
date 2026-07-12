@@ -19,6 +19,9 @@ frappe.ui.form.on("Alpha Assignment Origination", {
 									frm.reload_doc();
 								}
 							},
+							error() {
+								frm.reload_doc();
+							},
 						});
 					}
 				);

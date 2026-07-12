@@ -13,6 +13,16 @@ def create_project_from_origination(origination_name):
 	if doc.project_created:
 		frappe.throw(f"Project already created: {doc.project_reference}")
 
+	existing_project = frappe.db.get_value(
+		"Project", {"custom_assignment_origination": doc.name}, "name"
+	)
+	if existing_project:
+		frappe.db.set_value(doc.doctype, doc.name, {
+			"project_reference": existing_project,
+			"project_created": 1,
+		})
+		frappe.throw(f"Project already created: {existing_project}")
+
 	return _create_project(doc)
 
 
@@ -24,7 +34,16 @@ def on_update(doc, method):
 	if doc.project_created:
 		return
 
-	# Only auto-create on actual approval (docstatus=1 for submitted docs)
+	existing_project = frappe.db.get_value(
+		"Project", {"custom_assignment_origination": doc.name}, "name"
+	)
+	if existing_project:
+		frappe.db.set_value(doc.doctype, doc.name, {
+			"project_reference": existing_project,
+			"project_created": 1,
+		})
+		return
+
 	if hasattr(doc, "docstatus") and doc.docstatus != 1:
 		return
 
@@ -57,6 +76,12 @@ def _create_project(doc):
 	project.flags.ignore_permissions = True
 	project.insert()
 	project.submit()
+
+	doc.project_reference = project.name
+	doc.project_created = 1
+	doc.acceptance_status = "Approved"
+	doc.approval_date = today()
+	doc.closure_status = "Open"
 
 	frappe.db.set_value(doc.doctype, doc.name, {
 		"project_reference": project.name,
