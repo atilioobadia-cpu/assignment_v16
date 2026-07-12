@@ -57,48 +57,6 @@ Every assignment follows a structured, auditable workflow. Every task has owners
 - **Executive Dashboard (CEO)** — High-level metrics, trend analysis, and assignment intake monitoring
 - **Reports** — Staff Productivity, SLA Compliance Overview, and Employee Performance reports
 
----
-
-## Architecture
-
-```
-alpha_assignment_mgmt/
-├── alpha_assignment_management/       # Core DocTypes
-│   ├── doctype/
-│   │   ├── alpha_assignment_origination/   # Assignment intake
-│   │   ├── alpha_engagement_sla/           # SLA tracking
-│   │   ├── document_request_register/      # Document management
-│   │   ├── review_gate_register/           # Quality gates
-│   │   ├── client_delay_log/               # Delay tracking
-│   │   ├── client_risk_register/           # Risk management
-│   │   ├── assignment_closure_certificate/ # Closure workflow
-│   │   ├── performance_feedback/           # HR feedback
-│   │   └── alpha_project_template/         # Task templates
-│   └── workspace/
-│       ├── alpha_assignment_desk/          # Operations dashboard
-│       └── ceo_assignment_dashboard/       # Executive dashboard
-├── overrides/                          # Core business logic
-│   ├── project.py                      # Project lifecycle hooks
-│   ├── assignment_origination.py       # Origination → Project automation
-│   ├── task.py                         # Task gates and SLA breach
-│   ├── appraisal.py                    # Performance metrics
-│   └── timesheet.py                    # Time tracking validation
-├── tasks/                              # Scheduled jobs
-│   ├── sla.py                          # Daily SLA breach checks
-│   ├── notifications.py                # Alerts and reports
-│   └── performance.py                  # Employee metric computation
-├── fixtures/                           # Pre-configured data
-│   ├── custom_fields.json              # 66 custom fields across 6 DocTypes
-│   └── alpha_assignment_origination_workflow.json
-├── setup/                              # Installation & migration
-│   └── __init__.py                     # Auto-provisioning on install
-├── public/js/                          # Client-side enhancements
-├── report/                             # Custom reports
-└── tests/                              # Integration test suite (13 tests)
-```
-
----
-
 ## Installation
 
 ### Prerequisites
