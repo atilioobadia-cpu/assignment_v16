@@ -259,7 +259,7 @@ def create_number_cards():
 			"type": "Document Type",
 			"document_type": "Project",
 			"function": "Count",
-			"filters_json": '[["Project","status","=","Active"]]',
+			"filters_json": '[["Project","status","=","Completed"]]',
 		},
 		{
 			"label": "Pending Reviews",
@@ -269,11 +269,11 @@ def create_number_cards():
 			"filters_json": '[["Review Gate Register","docstatus","=",0]]',
 		},
 		{
-			"label": "Overdue SLAs",
+			"label": "Pending Projects",
 			"type": "Document Type",
-			"document_type": "Alpha Engagement SLA",
+			"document_type": "Project",
 			"function": "Count",
-			"filters_json": '[["Alpha Engagement SLA","status","=","Breached"]]',
+			"filters_json": '[["Project","status","=","Open"]]',
 		},
 	]
 	for card in cards:
@@ -422,7 +422,7 @@ def update_workspace_with_charts():
 		},
 	]
 
-	card_names = ["Active Assignments", "Active Projects", "Pending Reviews", "Overdue SLAs"]
+	card_names = ["Active Assignments", "Active Projects", "Pending Reviews", "Pending Projects"]
 	card_items = []
 	for i, cname in enumerate(card_names):
 		if frappe.db.exists("Number Card", cname):
