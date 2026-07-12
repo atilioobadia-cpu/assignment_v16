@@ -707,6 +707,7 @@
   "label": "Employee Log",
   "options": "Task Employee Log",
   "insert_after": "custom_deps_cb",
-  "description": "Track which employees contributed to completing this task"
+  "description": "Track which employees contributed to completing this task",
+  "doctype": "Custom Field"
  }
 ]
