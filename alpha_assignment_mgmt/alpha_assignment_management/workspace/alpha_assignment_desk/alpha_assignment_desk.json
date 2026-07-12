@@ -210,13 +210,6 @@
  ],
  "shortcuts": [
   {
-   "label": "Project Templates",
-   "type": "DocType",
-   "link_to": "Alpha Project Template",
-   "doc_type": "Alpha Project Template",
-   "icon": "bookmark"
-  },
-  {
    "label": "New Assignment Origination",
    "type": "DocType",
    "link_to": "Alpha Assignment Origination",
@@ -231,7 +224,21 @@
    "icon": "list"
   },
   {
+   "label": "Project Templates",
+   "type": "DocType",
+   "link_to": "Alpha Project Template",
+   "doc_type": "Alpha Project Template",
+   "icon": "bookmark"
+  },
+  {
    "label": "Active Projects",
+   "type": "DocType",
+   "link_to": "Project",
+   "doc_type": "Project",
+   "icon": "project"
+  },
+  {
+   "label": "Pending Projects",
    "type": "DocType",
    "link_to": "Project",
    "doc_type": "Project",
@@ -292,6 +299,13 @@
    "link_to": "Assignment Closure Certificate",
    "doc_type": "Assignment Closure Certificate",
    "icon": "certificate"
+  },
+  {
+   "label": "Performance Feedback",
+   "type": "DocType",
+   "link_to": "Performance Feedback",
+   "doc_type": "Performance Feedback",
+   "icon": "rating"
   },
   {
    "label": "SLA Compliance",
