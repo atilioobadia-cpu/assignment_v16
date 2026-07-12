@@ -17,7 +17,7 @@ def daily_performance_computation():
 	"""Compute and store performance metrics for all active employees."""
 	employees = frappe.get_all(
 		"Employee",
-		filters={"status": "Active"},
+		filters={"status": "Active", "user_id": ["is", "set"]},
 		fields=["name", "user_id", "employee_name"],
 	)
 
@@ -59,7 +59,7 @@ def get_hours_logged(emp, since):
 		SELECT COALESCE(SUM(tt.hours), 0)
 		FROM `tabTimesheet Detail` tt
 		JOIN `tabTimesheet` t ON t.name = tt.parent
-		WHERE tt.employee = %s
+		WHERE t.employee = %s
 		AND t.start_date >= %s
 		AND t.docstatus = 1
 	""", (emp.name, since))
@@ -67,13 +67,16 @@ def get_hours_logged(emp, since):
 
 
 def get_tasks_completed(emp, since):
-	"""Count tasks completed since date."""
-	filters = {
-		"status": "Completed",
-		"completed_by": emp.user_id,
-		"modified": [">=", since],
-	}
-	return frappe.db.count("Task", filters=filters)
+	"""Count tasks completed since date via Task Employee Log."""
+	result = frappe.db.sql("""
+		SELECT COUNT(DISTINCT tel.parent)
+		FROM `tabTask Employee Log` tel
+		JOIN `tabTask` task ON task.name = tel.parent
+		WHERE tel.employee = %s
+		AND task.status = 'Completed'
+		AND task.completed_on >= %s
+	""", (emp.name, since))
+	return int(result[0][0]) if result else 0
 
 
 def get_active_assignments(emp):

@@ -1,5 +1,6 @@
 import frappe
 import json
+import os
 
 
 def after_install():
@@ -398,6 +399,62 @@ def _insert_workspace_number_cards(ws_name, card_names):
 			""", (frappe.generate_hash(length=10), ws_name, cname, cname))
 
 
+def _insert_workspace_shortcuts(ws_name):
+	"""Sync pinned shortcut icons in tabWorkspace Shortcut from the workspace JSON fixture."""
+	frappe.db.delete("Workspace Shortcut", {"parent": ws_name, "parenttype": "Workspace"})
+	ws_path = os.path.join(
+		os.path.dirname(os.path.dirname(__file__)),
+		"alpha_assignment_management", "workspace",
+		"alpha_assignment_desk", "alpha_assignment_desk.json",
+	)
+	if not os.path.exists(ws_path):
+		return
+	with open(ws_path) as f:
+		ws_data = json.load(f)
+	for idx, sc in enumerate(ws_data.get("shortcuts", []), 1):
+		frappe.db.sql("""
+			INSERT INTO `tabWorkspace Shortcut`
+			(name, creation, modified, owner, modified_by, parent, parenttype,
+			 parentfield, idx, type, link_to, label, icon)
+			VALUES (%s, NOW(), NOW(), 'Administrator', 'Administrator', %s,
+			        'Workspace', 'shortcuts', %s, %s, %s, %s, %s)
+		""", (
+			frappe.generate_hash(length=10), ws_name,
+			idx, sc.get("type", "DocType"),
+			sc.get("link_to", ""), sc.get("label", ""),
+			sc.get("icon", "link"),
+		))
+
+
+def _insert_workspace_links(ws_name):
+	"""Sync left sidebar links in tabWorkspace Link from the workspace JSON fixture."""
+	frappe.db.delete("Workspace Link", {"parent": ws_name, "parenttype": "Workspace"})
+	ws_path = os.path.join(
+		os.path.dirname(os.path.dirname(__file__)),
+		"alpha_assignment_management", "workspace",
+		"alpha_assignment_desk", "alpha_assignment_desk.json",
+	)
+	if not os.path.exists(ws_path):
+		return
+	with open(ws_path) as f:
+		ws_data = json.load(f)
+	for idx, lnk in enumerate(ws_data.get("links", []), 1):
+		frappe.db.sql("""
+			INSERT INTO `tabWorkspace Link`
+			(name, creation, modified, owner, modified_by, parent, parenttype,
+			 parentfield, idx, type, link_to, label, link_type, onboard, hidden,
+			 is_query_report, dependencies)
+			VALUES (%s, NOW(), NOW(), 'Administrator', 'Administrator', %s,
+			        'Workspace', 'links', %s, 'Link', %s, %s, %s, %s, %s, %s, %s)
+		""", (
+			frappe.generate_hash(length=10), ws_name,
+			idx, lnk.get("link_to", ""), lnk.get("label", ""),
+			lnk.get("link_type", "DocType"), lnk.get("onboard", 0),
+			lnk.get("hidden", 0), lnk.get("is_query_report", 0),
+			lnk.get("dependencies", ""),
+		))
+
+
 def update_workspace_with_charts():
 	ws_name = "AIMS Desk"
 	if not frappe.db.exists("Workspace", ws_name):
@@ -475,6 +532,8 @@ def update_workspace_with_charts():
 	frappe.db.set_value("Workspace", ws_name, "content", json.dumps(content))
 	_insert_workspace_charts(ws_name, chart_names)
 	_insert_workspace_number_cards(ws_name, card_names)
+	_insert_workspace_shortcuts(ws_name)
+	_insert_workspace_links(ws_name)
 
 
 def update_ceo_dashboard_with_charts():
