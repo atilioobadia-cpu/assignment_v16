@@ -12,7 +12,7 @@ def produce_fingerlings(cycle_name):
 
     company = "The Big Best Company Limited"
 
-    # Create output batch with qty 0 - Material Receipt will set the actual qty
+    # Create output batch with qty 0 - Manufacture entry will set the actual qty
     batch_id = f"BATCH-FNG-{datetime.datetime.now().year}-{cycle.name}"
 
     batch = frappe.get_doc({
@@ -42,42 +42,40 @@ def produce_fingerlings(cycle_name):
 
     cost = total_cost[0].total if total_cost else 0
 
-    # Create stock entry: issue nursery stock
+    # Create a Manufacture Stock Entry: consume nursery fry -> produce fingerlings
+    # This updates "Manufactured Items Value" on the Company dashboard
     nursery_wh = cycle.hatchery_warehouse or "Hatchery / Nursery - TBBCL"
+    fg_warehouse = cycle.hatchery_warehouse or "Hatchery / Nursery - TBBCL"
 
-    if nursery_wh and cycle.parent_batch:
-        try:
-            se_issue = frappe.get_doc({
-                "doctype": "Stock Entry",
-                "stock_entry_type": "Material Issue",
-                "company": company,
-                "items": [{
-                    "item_code": "FNG-STD",
-                    "qty": cycle.fingerlings_produced,
-                    "s_warehouse": nursery_wh,
-                    "batch_no": cycle.parent_batch,
-                }]
-            })
-            se_issue.insert(ignore_permissions=True)
-            se_issue.submit()
-        except Exception:
-            pass
+    se_items = []
 
-    # Create stock entry: receive at hatchery
-    try:
-        se_receive = frappe.get_doc({
-            "doctype": "Stock Entry",
-            "stock_entry_type": "Material Receipt",
-            "company": company,
-            "items": [{
-                "item_code": "FNG-STD",
-                "qty": cycle.fingerlings_produced,
-                "t_warehouse": cycle.hatchery_warehouse or "Hatchery / Nursery - TBBCL",
-                "batch_no": batch.name,
-            }]
+    # Source item: consume fry from nursery (parent batch)
+    if cycle.parent_batch:
+        se_items.append({
+            "item_code": "FNG-STD",
+            "qty": cycle.fingerlings_produced,
+            "s_warehouse": nursery_wh,
+            "batch_no": cycle.parent_batch,
         })
-        se_receive.insert(ignore_permissions=True)
-        se_receive.submit()
+
+    # Target item: produce fingerlings into output batch
+    se_items.append({
+        "item_code": "FNG-STD",
+        "qty": cycle.fingerlings_produced,
+        "t_warehouse": fg_warehouse,
+        "batch_no": batch.name,
+    })
+
+    try:
+        se = frappe.get_doc({
+            "doctype": "Stock Entry",
+            "stock_entry_type": "Manufacture",
+            "purpose": "Manufacture",
+            "company": company,
+            "items": se_items,
+        })
+        se.insert(ignore_permissions=True)
+        se.submit()
     except Exception:
         pass
 
