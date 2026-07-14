@@ -1,0 +1,355 @@
+{
+  "actions": [],
+  "allow_rename": 1,
+  "autoname": "format:BRC-.YYYY.-.{###}",
+  "creation": "2026-07-14 00:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "breeding_cycle_name",
+    "fish_type",
+    "column_break_1",
+    "status",
+    "naming_series",
+    "section_break_2",
+    "pond",
+    "nursery_tank",
+    "column_break_3",
+    "grow_out_warehouse",
+    "hatchery_warehouse",
+    "section_break_4",
+    "male_count",
+    "female_count",
+    "column_break_5",
+    "total_broodstock",
+    "stocking_date",
+    "section_break_6",
+    "spawning_date",
+    "eggs_collected",
+    "column_break_7",
+    "hatching_rate",
+    "fry_collected",
+    "section_break_8",
+    "treatment_start_date",
+    "treatment_end_date",
+    "column_break_9",
+    "sex_reversal_done",
+    "nursery_days",
+    "section_break_10",
+    "fingerlings_produced",
+    "avg_weight_grams",
+    "column_break_11",
+    "survival_rate",
+    "total_mortality",
+    "section_break_12",
+    "output_batch",
+    "parent_batch",
+    "column_break_13",
+    "total_cost",
+    "cost_per_fingerling",
+    "section_break_14",
+    "project",
+    "work_order",
+    "column_break_15",
+    "breeding_cycle_name2",
+    "section_break_16",
+    "notes"
+  ],
+  "fields": [
+    {
+      "fieldname": "breeding_cycle_name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Cycle Name",
+      "reqd": 1
+    },
+    {
+      "fieldname": "fish_type",
+      "fieldtype": "Select",
+      "label": "Fish Type",
+      "options": "\nTilapia\nCatfish\nOther",
+      "reqd": 1
+    },
+    {
+      "fieldname": "column_break_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "default": "Draft",
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "Status",
+      "options": "\nDraft\nIn Progress\nSpawning Complete\nNursery\nFingerlings Ready\nCompleted\nClosed"
+    },
+    {
+      "fieldname": "naming_series",
+      "fieldtype": "Data",
+      "hidden": 1
+    },
+    {
+      "fieldname": "section_break_2",
+      "fieldtype": "Section Break",
+      "label": "Pond & Location"
+    },
+    {
+      "fieldname": "pond",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Broodstock Pond",
+      "options": "Location",
+      "reqd": 1
+    },
+    {
+      "fieldname": "nursery_tank",
+      "fieldtype": "Link",
+      "label": "Nursery Tank",
+      "options": "Location"
+    },
+    {
+      "fieldname": "column_break_3",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "grow_out_warehouse",
+      "fieldtype": "Link",
+      "label": "Grow-Out Warehouse",
+      "options": "Warehouse"
+    },
+    {
+      "fieldname": "hatchery_warehouse",
+      "fieldtype": "Link",
+      "label": "Hatchery Warehouse",
+      "options": "Warehouse"
+    },
+    {
+      "fieldname": "section_break_4",
+      "fieldtype": "Section Break",
+      "label": "Broodstock"
+    },
+    {
+      "default": "0",
+      "fieldname": "male_count",
+      "fieldtype": "Int",
+      "label": "Male Count"
+    },
+    {
+      "default": "0",
+      "fieldname": "female_count",
+      "fieldtype": "Int",
+      "label": "Female Count"
+    },
+    {
+      "fieldname": "column_break_5",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "total_broodstock",
+      "fieldtype": "Int",
+      "label": "Total Broodstock",
+      "read_only": 1
+    },
+    {
+      "default": "Today",
+      "fieldname": "stocking_date",
+      "fieldtype": "Date",
+      "label": "Stocking Date"
+    },
+    {
+      "fieldname": "section_break_6",
+      "fieldtype": "Section Break",
+      "label": "Spawning"
+    },
+    {
+      "fieldname": "spawning_date",
+      "fieldtype": "Date",
+      "label": "Spawning Date"
+    },
+    {
+      "default": "0",
+      "fieldname": "eggs_collected",
+      "fieldtype": "Int",
+      "label": "Eggs Collected"
+    },
+    {
+      "fieldname": "column_break_7",
+      "fieldtype": "Column Break"
+    },
+    {
+      "default": "0",
+      "fieldname": "hatching_rate",
+      "fieldtype": "Percent",
+      "label": "Hatching Rate %"
+    },
+    {
+      "fieldname": "fry_collected",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "Fry Collected",
+      "read_only": 1
+    },
+    {
+      "fieldname": "section_break_8",
+      "fieldtype": "Section Break",
+      "label": "Nursery"
+    },
+    {
+      "fieldname": "treatment_start_date",
+      "fieldtype": "Date",
+      "label": "Sex Reversal Start"
+    },
+    {
+      "fieldname": "treatment_end_date",
+      "fieldtype": "Date",
+      "label": "Sex Reversal End"
+    },
+    {
+      "fieldname": "column_break_9",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "sex_reversal_done",
+      "fieldtype": "Check",
+      "label": "Sex Reversal Completed"
+    },
+    {
+      "fieldname": "nursery_days",
+      "fieldtype": "Int",
+      "label": "Nursery Duration (Days)",
+      "read_only": 1
+    },
+    {
+      "fieldname": "section_break_10",
+      "fieldtype": "Section Break",
+      "label": "Production Output"
+    },
+    {
+      "default": "0",
+      "fieldname": "fingerlings_produced",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "Fingerlings Produced"
+    },
+    {
+      "default": "0",
+      "fieldname": "avg_weight_grams",
+      "fieldtype": "Float",
+      "label": "Avg Weight (g)"
+    },
+    {
+      "fieldname": "column_break_11",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "survival_rate",
+      "fieldtype": "Percent",
+      "label": "Survival Rate %",
+      "read_only": 1
+    },
+    {
+      "fieldname": "total_mortality",
+      "fieldtype": "Int",
+      "label": "Total Mortality",
+      "read_only": 1
+    },
+    {
+      "fieldname": "section_break_12",
+      "fieldtype": "Section Break",
+      "label": "Batch & Costing"
+    },
+    {
+      "fieldname": "output_batch",
+      "fieldtype": "Link",
+      "label": "Output Batch",
+      "options": "Batch",
+      "read_only": 1
+    },
+    {
+      "fieldname": "parent_batch",
+      "fieldtype": "Link",
+      "label": "Parent/Fry Batch",
+      "options": "Batch",
+      "read_only": 1
+    },
+    {
+      "fieldname": "column_break_13",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "total_cost",
+      "fieldtype": "Currency",
+      "label": "Total Production Cost",
+      "read_only": 1
+    },
+    {
+      "fieldname": "cost_per_fingerling",
+      "fieldtype": "Currency",
+      "label": "Cost per Fingerling",
+      "read_only": 1
+    },
+    {
+      "fieldname": "section_break_14",
+      "fieldtype": "Section Break",
+      "label": "Linking"
+    },
+    {
+      "fieldname": "project",
+      "fieldtype": "Link",
+      "label": "Linked Project",
+      "options": "Project"
+    },
+    {
+      "fieldname": "work_order",
+      "fieldtype": "Link",
+      "label": "Work Order",
+      "options": "Work Order",
+      "read_only": 1
+    },
+    {
+      "fieldname": "column_break_15",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "breeding_cycle_name2",
+      "fieldtype": "Data",
+      "label": "Reference No"
+    },
+    {
+      "fieldname": "section_break_16",
+      "fieldtype": "Section Break",
+      "label": "Notes"
+    },
+    {
+      "fieldname": "notes",
+      "fieldtype": "Small Text",
+      "label": "Notes"
+    }
+  ],
+  "index_web_pages_for_search": 0,
+  "links": [],
+  "modified": "2026-07-14 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Fish Production",
+  "name": "Breeding Cycle",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 1,
+      "submit": 0,
+      "write": 1
+    }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "title_field": "breeding_cycle_name",
+  "track_changes": 1
+}

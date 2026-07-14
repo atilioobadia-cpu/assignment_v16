@@ -14,6 +14,7 @@ after_migrate = "alpha_assignment_mgmt.setup.after_migrate"
 app_include_js = [
 	"/assets/alpha_assignment_mgmt/js/project.js",
 	"/assets/alpha_assignment_mgmt/js/task.js",
+	"/assets/alpha_assignment_mgmt/js/breeding_cycle.js",
 ]
 
 scheduler_events = {
@@ -46,6 +47,9 @@ doc_events = {
 	},
 	"Alpha Assignment Origination": {
 		"on_update": "alpha_assignment_mgmt.overrides.assignment_origination.on_update",
+	},
+	"Stock Entry": {
+		"validate": "alpha_assignment_mgmt.fish_production.account_mapping.auto_set_stock_entry_accounts",
 	},
 }
 
@@ -93,6 +97,12 @@ fixtures = [
 		"doctype": "DocType",
 		"filters": [
 			["name", "in", ["Alpha Project Template", "Alpha Task Template", "Performance Feedback"]]
+		]
+	},
+	{
+		"doctype": "Custom Field",
+		"filters": [
+			["dt", "in", ["Location", "Work Order", "Batch"]]
 		]
 	},
 ]

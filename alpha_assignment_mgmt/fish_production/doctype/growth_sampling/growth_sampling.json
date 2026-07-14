@@ -1,0 +1,212 @@
+{
+ "actions": [],
+ "autoname": "format:GRS-.YYYY.-.{###}",
+ "creation": "2026-07-14 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "batch_no",
+  "sampling_date",
+  "column_break_1",
+  "location",
+  "phase",
+  "section_break_2",
+  "sample_size",
+  "avg_weight_grams",
+  "expected_weight_grams",
+  "column_break_3",
+  "daily_weight_gain",
+  "weight_deviation",
+  "section_break_4",
+  "mortality_today",
+  "cumulative_mortality",
+  "column_break_5",
+  "estimated_count",
+  "survival_rate",
+  "section_break_6",
+  "total_biomass_kg",
+  "total_feed_to_date",
+  "column_break_7",
+  "fcr_to_date",
+  "batch_status",
+  "section_break_8",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "batch_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Fish Batch",
+   "options": "Batch",
+   "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "sampling_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Sampling Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location (Pond/Cage)",
+   "options": "Location"
+  },
+  {
+   "fieldname": "phase",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Phase",
+   "options": "\nNursery\nGrow-Out\nPre-Harvest\nHarvest Ready"
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break",
+   "label": "Sample Identity"
+  },
+  {
+   "default": "30",
+   "fieldname": "sample_size",
+   "fieldtype": "Int",
+   "label": "Sample Size (fish)"
+  },
+  {
+   "fieldname": "avg_weight_grams",
+   "fieldtype": "Float",
+   "label": "Avg Weight (g)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "expected_weight_grams",
+   "fieldtype": "Float",
+   "label": "Expected Weight (g)"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "daily_weight_gain",
+   "fieldtype": "Float",
+   "label": "Daily Weight Gain (g)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "weight_deviation",
+   "fieldtype": "Float",
+   "label": "Weight Deviation %",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break",
+   "label": "Sampling Data"
+  },
+  {
+   "default": "0",
+   "fieldname": "mortality_today",
+   "fieldtype": "Int",
+   "label": "Mortality Today"
+  },
+  {
+   "fieldname": "cumulative_mortality",
+   "fieldtype": "Int",
+   "label": "Cumulative Mortality",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "estimated_count",
+   "fieldtype": "Int",
+   "label": "Estimated Count",
+   "read_only": 1
+  },
+  {
+   "fieldname": "survival_rate",
+   "fieldtype": "Percent",
+   "label": "Survival Rate %",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break",
+   "label": "Population"
+  },
+  {
+   "fieldname": "total_biomass_kg",
+   "fieldtype": "Float",
+   "label": "Total Biomass (kg)",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_feed_to_date",
+   "fieldtype": "Float",
+   "label": "Total Feed to Date (kg)"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fcr_to_date",
+   "fieldtype": "Float",
+   "label": "FCR to Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "batch_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Batch Status",
+   "options": "\nNursery\nGrow-Out\nHarvest Ready\nClosed"
+  },
+  {
+   "fieldname": "section_break_8",
+   "fieldtype": "Section Break",
+   "label": "Biomass & Feed"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Observations"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-07-14 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Fish Production",
+ "name": "Growth Sampling",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 0,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "batch_no",
+ "track_changes": 1
+}
