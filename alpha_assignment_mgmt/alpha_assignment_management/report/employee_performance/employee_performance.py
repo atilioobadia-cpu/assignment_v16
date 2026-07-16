@@ -27,19 +27,33 @@ def get_top_bottom(days=30):
 		hours_logged = float(hours[0][0]) if hours else 0.0
 
 		tasks = frappe.db.sql("""
-			SELECT COUNT(DISTINCT tel.parent)
-			FROM `tabTask Employee Log` tel
-			JOIN `tabTask` task ON task.name = tel.parent
-			WHERE tel.employee = %s
-			AND task.status = 'Completed'
+			SELECT COUNT(DISTINCT task.name)
+			FROM `tabTask` task
+			WHERE task.status = 'Completed'
 			AND task.completed_on >= %s
-		""", (emp.name, since))
+			AND (
+				JSON_CONTAINS(task._assign, %s)
+				OR task.owner = %s
+			)
+		""", (since, frappe.json.dumps(emp.user_id), emp.user_id))
 		tasks_completed = int(tasks[0][0]) if tasks else 0
+
+		tasks_open = frappe.db.sql("""
+			SELECT COUNT(DISTINCT task.name)
+			FROM `tabTask` task
+			WHERE task.status IN ('Open', 'Working', 'Overdue')
+			AND (
+				JSON_CONTAINS(task._assign, %s)
+				OR task.owner = %s
+			)
+		""", (frappe.json.dumps(emp.user_id), emp.user_id))
+		tasks_pending = int(tasks_open[0][0]) if tasks_open else 0
 
 		results.append({
 			"employee_name": emp.employee_name,
 			"hours_logged": hours_logged,
 			"tasks_completed": tasks_completed,
+			"tasks_pending": tasks_pending,
 		})
 
 	# Sort by combined score: hours + tasks * 8

@@ -13,7 +13,7 @@ frappe.query_reports["Employee Performance"] = {
 	"onload": function (report) {
 		frappe.call({
 			method: "alpha_assignment_mgmt.alpha_assignment_management.report.employee_performance.employee_performance.get_top_bottom",
-			args: { days: 30 },
+			args: { days: frappe.query_report.get_filter_value("days") || 30 },
 			callback: function (r) {
 				if (r.message) {
 					render_performance_cards(report, r.message);
@@ -35,7 +35,7 @@ function render_performance_cards(report, data) {
 	if (data.top_contributors && data.top_contributors.length) {
 		top_html += '<table class="table table-sm table-borderless mb-0">';
 		data.top_contributors.forEach((emp, i) => {
-			top_html += `<tr><td><strong>#${i + 1}</strong></td><td>${emp.employee_name}</td><td class="text-right"><span class="badge badge-success">${emp.hours_logged}h</span></td><td class="text-right"><span class="badge badge-info">${emp.tasks_completed} tasks</span></td></tr>`;
+			top_html += `<tr><td><strong>#${i + 1}</strong></td><td>${emp.employee_name}</td><td class="text-right"><span class="badge badge-success">${emp.hours_logged}h</span></td><td class="text-right"><span class="badge badge-info">${emp.tasks_completed} done</span></td><td class="text-right"><span class="badge badge-warning">${emp.tasks_pending} pending</span></td></tr>`;
 		});
 		top_html += "</table>";
 	} else {
@@ -49,7 +49,7 @@ function render_performance_cards(report, data) {
 	if (data.bottom_performers && data.bottom_performers.length) {
 		bottom_html += '<table class="table table-sm table-borderless mb-0">';
 		data.bottom_performers.forEach((emp, i) => {
-			bottom_html += `<tr><td><strong>#${i + 1}</strong></td><td>${emp.employee_name}</td><td class="text-right"><span class="badge badge-warning">${emp.hours_logged}h</span></td><td class="text-right"><span class="badge badge-secondary">${emp.tasks_completed} tasks</span></td></tr>`;
+			bottom_html += `<tr><td><strong>#${i + 1}</strong></td><td>${emp.employee_name}</td><td class="text-right"><span class="badge badge-warning">${emp.hours_logged}h</span></td><td class="text-right"><span class="badge badge-success">${emp.tasks_completed} done</span></td><td class="text-right"><span class="badge badge-danger">${emp.tasks_pending} pending</span></td></tr>`;
 		});
 		bottom_html += "</table>";
 	} else {
