@@ -80,7 +80,31 @@ fixtures = [
 	{
 		"doctype": "Report",
 		"filters": [
-			["name", "in", ["Employee Performance"]]
+			["name", "in", ["Employee Performance", "Staff Productivity"]]
+		]
+	},
+	{
+		"doctype": "Number Card",
+		"filters": [
+			["name", "in", ["Tasks Completed", "Tasks Pending"]]
+		]
+	},
+	{
+		"doctype": "Dashboard Chart",
+		"filters": [
+			["name", "in", [
+				"Employee Performance Trend",
+				"Tasks by Status",
+				"Tasks Completed Over Time",
+				"Open Tasks by Project",
+				"Task Priority Distribution",
+			]]
+		]
+	},
+	{
+		"doctype": "Custom HTML Block",
+		"filters": [
+			["name", "=", "CEO Top Bottom Employees"]
 		]
 	},
 	{
