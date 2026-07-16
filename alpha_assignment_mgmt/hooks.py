@@ -107,16 +107,4 @@ fixtures = [
 			["name", "=", "CEO Top Bottom Employees"]
 		]
 	},
-	{
-		"doctype": "Workspace",
-		"filters": [
-			["name", "in", ["AIMS Desk", "CEO"]]
-		]
-	},
-	{
-		"doctype": "DocType",
-		"filters": [
-			["name", "in", ["Alpha Project Template", "Alpha Task Template", "Performance Feedback"]]
-		]
-	},
 ]
