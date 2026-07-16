@@ -1,0 +1,718 @@
+[
+ {
+  "app": null,
+  "charts": [
+   {
+    "chart_name": "Employee Performance Trend",
+    "label": "Employee Performance Trend"
+   },
+   {
+    "chart_name": "Tasks by Status",
+    "label": "Tasks by Status"
+   },
+   {
+    "chart_name": "Tasks Completed Over Time",
+    "label": "Tasks Completed Over Time"
+   },
+   {
+    "chart_name": "Open Tasks by Project",
+    "label": "Open Tasks by Project"
+   },
+   {
+    "chart_name": "Task Priority Distribution",
+    "label": "Task Priority Distribution"
+   }
+  ],
+  "content": "[{\"id\": \"h1\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>CEO Dashboard</b></span>\", \"col\": 12}}, {\"id\": \"p1\", \"type\": \"paragraph\", \"data\": {\"text\": \"Overview of employee task completion and project productivity.\", \"col\": 12}}, {\"id\": \"nc1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Tasks Completed\", \"col\": 3}}, {\"id\": \"nc2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Tasks Pending\", \"col\": 3}}, {\"id\": \"nc3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Active Staff\", \"col\": 3}}, {\"id\": \"nc4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Active Clients\", \"col\": 3}}, {\"id\": \"cb1\", \"type\": \"custom_block\", \"data\": {\"custom_block_name\": \"CEO Top Bottom Employees\", \"col\": 12}}, {\"id\": \"c1\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Employee Performance Trend\", \"col\": 12}}, {\"id\": \"c2\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Tasks by Status\", \"col\": 6}}, {\"id\": \"c3\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Tasks Completed Over Time\", \"col\": 6}}, {\"id\": \"c4\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Open Tasks by Project\", \"col\": 6}}, {\"id\": \"c5\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Task Priority Distribution\", \"col\": 6}}, {\"id\": \"sp1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"sh2\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h5\\\"><b>Quick Actions</b></span>\", \"col\": 12}}, {\"id\": \"s1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Staff Productivity\", \"col\": 3}}, {\"id\": \"s2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Employee Performance\", \"col\": 3}}]",
+  "custom_blocks": [
+   {
+    "custom_block_name": "CEO Top Bottom Employees",
+    "label": "Employee Task Performance"
+   }
+  ],
+  "docstatus": 0,
+  "doctype": "Workspace",
+  "external_link": null,
+  "for_user": "",
+  "hide_custom": 0,
+  "icon": "dashboard",
+  "indicator_color": null,
+  "is_hidden": 0,
+  "label": "CEO",
+  "link_to": null,
+  "link_type": null,
+  "links": [],
+  "modified": "2026-07-16 16:21:44.823155",
+  "module": "Alpha Assignment Management",
+  "name": "CEO",
+  "number_cards": [
+   {
+    "label": "Tasks Completed",
+    "number_card_name": "Tasks Completed"
+   },
+   {
+    "label": "Tasks Pending",
+    "number_card_name": "Tasks Pending"
+   },
+   {
+    "label": "Active Staff",
+    "number_card_name": "Active Staff"
+   },
+   {
+    "label": "Active Clients",
+    "number_card_name": "Active Clients"
+   }
+  ],
+  "parent_page": "",
+  "public": 1,
+  "quick_lists": [],
+  "restrict_to_domain": null,
+  "roles": [
+   {
+    "role": "Alpha Managing Director"
+   },
+   {
+    "role": "Alpha Managing Director"
+   },
+   {
+    "role": "Alpha Partner/Director"
+   },
+   {
+    "role": "Alpha Partner/Director"
+   },
+   {
+    "role": "System Manager"
+   },
+   {
+    "role": "System Manager"
+   }
+  ],
+  "sequence_id": 2.0,
+  "shortcuts": [
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "chart",
+    "kanban_board": null,
+    "label": "Staff Productivity",
+    "link_to": "Staff Productivity",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "Report",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": "Report",
+    "format": null,
+    "icon": null,
+    "kanban_board": null,
+    "label": null,
+    "link_to": "Employee Performance",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "Report",
+    "url": null
+   }
+  ],
+  "title": "CEO",
+  "type": "Workspace"
+ },
+ {
+  "app": null,
+  "charts": [
+   {
+    "chart_name": "Employee Performance Trend",
+    "label": "Employee Performance Trend"
+   }
+  ],
+  "content": "[{\"id\": \"h1\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>AIMS Desk</b></span>\", \"col\": 12}}, {\"id\": \"p1\", \"type\": \"paragraph\", \"data\": {\"text\": \"Manage client assignments from origination to closure. Track SLAs, reviews, document requests, and team productivity.\", \"col\": 12}}, {\"id\": \"nc1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Active Assignments\", \"col\": 3}}, {\"id\": \"nc2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Active Projects\", \"col\": 3}}, {\"id\": \"nc3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Tasks Completed\", \"col\": 3}}, {\"id\": \"nc4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Tasks Pending\", \"col\": 3}}, {\"id\": \"c1\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Assignments Trend (Last 12 Months)\", \"col\": 12}}, {\"id\": \"sp1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"sh2\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h5\\\"><b>Quick Actions</b></span>\", \"col\": 12}}, {\"id\": \"s1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Assignment Origination\", \"col\": 3}}, {\"id\": \"s2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"All Assignments\", \"col\": 3}}, {\"id\": \"s3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Project Templates\", \"col\": 3}}, {\"id\": \"s4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Active Projects\", \"col\": 3}}, {\"id\": \"s5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Pending Projects\", \"col\": 3}}, {\"id\": \"s6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Engagement SLAs\", \"col\": 3}}, {\"id\": \"s7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"My Tasks\", \"col\": 3}}, {\"id\": \"s8\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"My Timesheets\", \"col\": 3}}, {\"id\": \"s9\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Document Requests\", \"col\": 3}}, {\"id\": \"s10\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Review Queue\", \"col\": 3}}, {\"id\": \"s11\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Client Delays\", \"col\": 3}}, {\"id\": \"s12\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Risk Register\", \"col\": 3}}, {\"id\": \"s13\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Closure Certificates\", \"col\": 3}}, {\"id\": \"s14\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Performance Feedback\", \"col\": 3}}, {\"id\": \"s15\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SLA Compliance\", \"col\": 3}}, {\"id\": \"s16\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Staff Productivity\", \"col\": 3}}]",
+  "custom_blocks": [],
+  "docstatus": 0,
+  "doctype": "Workspace",
+  "external_link": null,
+  "for_user": "",
+  "hide_custom": 0,
+  "icon": "checklist",
+  "indicator_color": null,
+  "is_hidden": 0,
+  "label": "AIMS Desk",
+  "link_to": null,
+  "link_type": null,
+  "links": [
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "New Assignment Origination",
+    "link_count": 0,
+    "link_to": "Alpha Assignment Origination",
+    "link_type": "DocType",
+    "onboard": 1,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "All Assignments",
+    "link_count": 0,
+    "link_to": "Alpha Assignment Origination",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Project Templates",
+    "link_count": 0,
+    "link_to": "Alpha Project Template",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Active Projects",
+    "link_count": 0,
+    "link_to": "Project",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Pending Projects",
+    "link_count": 0,
+    "link_to": "Project",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Engagement SLAs",
+    "link_count": 0,
+    "link_to": "Alpha Engagement SLA",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "My Tasks",
+    "link_count": 0,
+    "link_to": "Task",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "My Timesheets",
+    "link_count": 0,
+    "link_to": "Timesheet",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Document Requests",
+    "link_count": 0,
+    "link_to": "Document Request Register",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Review Queue",
+    "link_count": 0,
+    "link_to": "Review Gate Register",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Client Delays",
+    "link_count": 0,
+    "link_to": "Client Delay Log",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Risk Register",
+    "link_count": 0,
+    "link_to": "Client Risk Register",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Closure Certificates",
+    "link_count": 0,
+    "link_to": "Assignment Closure Certificate",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Performance Feedback",
+    "link_count": 0,
+    "link_to": "Performance Feedback",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Customers",
+    "link_count": 0,
+    "link_to": "Customer",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Staff Goals",
+    "link_count": 0,
+    "link_to": "Goal",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Appraisals",
+    "link_count": 0,
+    "link_to": "Appraisal",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Sales Orders",
+    "link_count": 0,
+    "link_to": "Sales Order",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Sales Invoices",
+    "link_count": 0,
+    "link_to": "Sales Invoice",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 1,
+    "label": "Staff Productivity Report",
+    "link_count": 0,
+    "link_to": "Staff Productivity",
+    "link_type": "Report",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 1,
+    "label": "SLA Compliance Overview",
+    "link_count": 0,
+    "link_to": "SLA Compliance Overview",
+    "link_type": "Report",
+    "onboard": 0,
+    "only_for": null,
+    "report_ref_doctype": null,
+    "type": "Link"
+   }
+  ],
+  "modified": "2026-07-16 14:32:20.351741",
+  "module": "Alpha Assignment Management",
+  "name": "AIMS Desk",
+  "number_cards": [
+   {
+    "label": "Active Assignments",
+    "number_card_name": "Active Assignments"
+   },
+   {
+    "label": "Active Projects",
+    "number_card_name": "Active Projects"
+   },
+   {
+    "label": "Tasks Completed",
+    "number_card_name": "Tasks Completed"
+   },
+   {
+    "label": "Tasks Pending",
+    "number_card_name": "Tasks Pending"
+   }
+  ],
+  "parent_page": "",
+  "public": 1,
+  "quick_lists": [],
+  "restrict_to_domain": null,
+  "roles": [],
+  "sequence_id": 1.0,
+  "shortcuts": [
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "add",
+    "kanban_board": null,
+    "label": "New Assignment Origination",
+    "link_to": "Alpha Assignment Origination",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "list",
+    "kanban_board": null,
+    "label": "All Assignments",
+    "link_to": "Alpha Assignment Origination",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "bookmark",
+    "kanban_board": null,
+    "label": "Project Templates",
+    "link_to": "Alpha Project Template",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "project",
+    "kanban_board": null,
+    "label": "Active Projects",
+    "link_to": "Project",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "project",
+    "kanban_board": null,
+    "label": "Pending Projects",
+    "link_to": "Project",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "deadline",
+    "kanban_board": null,
+    "label": "Engagement SLAs",
+    "link_to": "Alpha Engagement SLA",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "task",
+    "kanban_board": null,
+    "label": "My Tasks",
+    "link_to": "Task",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "clock",
+    "kanban_board": null,
+    "label": "My Timesheets",
+    "link_to": "Timesheet",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "file",
+    "kanban_board": null,
+    "label": "Document Requests",
+    "link_to": "Document Request Register",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "review",
+    "kanban_board": null,
+    "label": "Review Queue",
+    "link_to": "Review Gate Register",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "warn",
+    "kanban_board": null,
+    "label": "Client Delays",
+    "link_to": "Client Delay Log",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "list",
+    "kanban_board": null,
+    "label": "Risk Register",
+    "link_to": "Client Risk Register",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "certificate",
+    "kanban_board": null,
+    "label": "Closure Certificates",
+    "link_to": "Assignment Closure Certificate",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "rating",
+    "kanban_board": null,
+    "label": "Performance Feedback",
+    "link_to": "Performance Feedback",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "chart",
+    "kanban_board": null,
+    "label": "SLA Compliance",
+    "link_to": "SLA Compliance Overview",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "Report",
+    "url": null
+   },
+   {
+    "color": null,
+    "doc_view": null,
+    "format": null,
+    "icon": "chart",
+    "kanban_board": null,
+    "label": "Staff Productivity",
+    "link_to": "Staff Productivity",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": null,
+    "type": "Report",
+    "url": null
+   }
+  ],
+  "title": "AIMS Desk",
+  "type": "Workspace"
+ }
+]

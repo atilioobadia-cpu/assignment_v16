@@ -1,0 +1,67 @@
+[
+ {
+  "add_total_row": 0,
+  "add_translate_data": 0,
+  "columns": [],
+  "disable_prepared_report_automation": 0,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Report",
+  "filters": [],
+  "is_standard": "Yes",
+  "javascript": null,
+  "json": null,
+  "letter_head": null,
+  "modified": "2026-07-15 18:14:32.929389",
+  "module": "Alpha Assignment Management",
+  "name": "Staff Productivity",
+  "prepared_report": 0,
+  "query": "SELECT\n  `tabEmployee`.`name` AS \"Employee ID:Link/Employee:120\",\n  `tabEmployee`.`employee_name` AS \"Employee Name:Data:200\",\n  `tabEmployee`.`designation` AS \"Designation:Data:150\",\n  `tabEmployee`.`branch` AS \"Branch:Link/Branch:120\",\n  COALESCE(`timesheet_stats`.`total_hours`, 0) AS \"Hours Logged:Float:100\",\n  COALESCE(`task_stats`.`tasks_completed`, 0) AS \"Tasks Completed:Int:100\",\n  COALESCE(`task_stats`.`tasks_pending`, 0) AS \"Tasks Pending:Int:100\",\n  COALESCE(`project_stats`.`active_projects`, 0) AS \"Active Projects:Int:100\",\n  COALESCE(`project_stats`.`completed_projects`, 0) AS \"Completed Projects:Int:100\"\nFROM `tabEmployee`\nLEFT JOIN (\n  SELECT\n    `t`.`employee`,\n    ROUND(SUM(`tt`.`hours`), 1) AS `total_hours`\n  FROM `tabTimesheet Detail` `tt`\n  JOIN `tabTimesheet` `t` ON `t`.`name` = `tt`.`parent`\n  WHERE `t`.`docstatus` = 1\n  AND `tt`.`hours` > 0\n  GROUP BY `t`.`employee`\n) `timesheet_stats` ON `tabEmployee`.`name` = `timesheet_stats`.`employee`\nLEFT JOIN (\n  SELECT\n    `e`.`name` AS `employee`,\n    COUNT(CASE WHEN `task`.`status` = 'Completed' THEN 1 END) AS `tasks_completed`,\n    COUNT(CASE WHEN `task`.`status` IN ('Open', 'Working', 'Overdue') THEN 1 END) AS `tasks_pending`\n  FROM `tabTask` `task`\n  JOIN `tabEmployee` `e` ON (\n    JSON_CONTAINS(`task`.`_assign`, CONCAT('\"', `e`.`user_id`, '\"'))\n    OR `task`.`owner` = `e`.`user_id`\n  )\n  WHERE `e`.`user_id` IS NOT NULL AND `e`.`user_id` != ''\n  GROUP BY `e`.`name`\n) `task_stats` ON `tabEmployee`.`name` = `task_stats`.`employee`\nLEFT JOIN (\n  SELECT\n    `e`.`name` AS `employee`,\n    COUNT(CASE WHEN `p`.`status` = 'Open' THEN 1 END) AS `active_projects`,\n    COUNT(CASE WHEN `p`.`status` = 'Completed' THEN 1 END) AS `completed_projects`\n  FROM `tabProject` `p`\n  JOIN `tabEmployee` `e` ON `e`.`user_id` = `p`.`custom_engagement_manager`\n  WHERE `p`.`custom_engagement_manager` IS NOT NULL\n    AND `p`.`custom_engagement_manager` != ''\n  GROUP BY `e`.`name`\n) `project_stats` ON `tabEmployee`.`name` = `project_stats`.`employee`\nWHERE `tabEmployee`.`status` = 'Active'\nORDER BY COALESCE(`task_stats`.`tasks_completed`, 0) DESC, `timesheet_stats`.`total_hours` DESC\nLIMIT 100",
+  "ref_doctype": "Employee",
+  "reference_report": null,
+  "report_name": "Staff Productivity",
+  "report_script": null,
+  "report_type": "Query Report",
+  "roles": [],
+  "timeout": 0
+ },
+ {
+  "add_total_row": 0,
+  "add_translate_data": 0,
+  "columns": [],
+  "disable_prepared_report_automation": 0,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Report",
+  "filters": [],
+  "is_standard": "Yes",
+  "javascript": null,
+  "json": "{}",
+  "letter_head": null,
+  "modified": "2026-07-15 18:14:33.009415",
+  "module": null,
+  "name": "Employee Performance",
+  "prepared_report": 0,
+  "query": "SELECT\n    `tabEmployee`.`name` AS \"Employee ID:Link/Employee:120\",\n    `tabEmployee`.`employee_name` AS \"Employee Name:Data:200\",\n    `tabEmployee`.`designation` AS \"Designation:Data:150\",\n    `tabEmployee`.`branch` AS \"Branch:Link/Branch:120\",\n    COALESCE(`ts`.`total_hours`, 0) AS \"Hours Logged (30d):Float:100\",\n    COALESCE(`tc`.`tasks_completed`, 0) AS \"Tasks Completed:Int:100\",\n    COALESCE(`tp`.`tasks_pending`, 0) AS \"Tasks Pending:Int:100\"\nFROM `tabEmployee`\nLEFT JOIN (\n    SELECT `t`.`employee`, ROUND(SUM(`tt`.`hours`), 1) AS `total_hours`\n    FROM `tabTimesheet Detail` `tt`\n    JOIN `tabTimesheet` `t` ON `t`.`name` = `tt`.`parent`\n    WHERE `t`.`docstatus` = 1 AND `t`.`start_date` >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)\n    GROUP BY `t`.`employee`\n) `ts` ON `tabEmployee`.`name` = `ts`.`employee`\nLEFT JOIN (\n    SELECT `e`.`name` AS `employee`,\n    COUNT(CASE WHEN `task`.`status` = 'Completed' AND `task`.`completed_on` >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) THEN 1 END) AS `tasks_completed`,\n    COUNT(CASE WHEN `task`.`status` IN ('Open', 'Working', 'Overdue') THEN 1 END) AS `tasks_pending`\n    FROM `tabTask` `task`\n    JOIN `tabEmployee` `e` ON (\n        JSON_CONTAINS(`task`.`_assign`, CONCAT('\"', `e`.`user_id`, '\"'))\n        OR `task`.`owner` = `e`.`user_id`\n    )\n    WHERE `e`.`user_id` IS NOT NULL AND `e`.`user_id` != ''\n    GROUP BY `e`.`name`\n) `tc` ON `tabEmployee`.`name` = `tc`.`employee`\nLEFT JOIN (\n    SELECT `e`.`name` AS `employee`,\n    COUNT(CASE WHEN `task`.`status` IN ('Open', 'Working', 'Overdue') THEN 1 END) AS `tasks_pending`\n    FROM `tabTask` `task`\n    JOIN `tabEmployee` `e` ON (\n        JSON_CONTAINS(`task`.`_assign`, CONCAT('\"', `e`.`user_id`, '\"'))\n        OR `task`.`owner` = `e`.`user_id`\n    )\n    WHERE `e`.`user_id` IS NOT NULL AND `e`.`user_id` != ''\n    GROUP BY `e`.`name`\n) `tp` ON `tabEmployee`.`name` = `tp`.`employee`\nWHERE `tabEmployee`.`status` = 'Active'\nORDER BY COALESCE(`tc`.`tasks_completed`, 0) DESC",
+  "ref_doctype": "Employee",
+  "reference_report": null,
+  "report_name": "Employee Performance",
+  "report_script": null,
+  "report_type": "Query Report",
+  "roles": [
+   {
+    "role": "Alpha Managing Director"
+   },
+   {
+    "role": "Alpha Partner/Director"
+   },
+   {
+    "role": "Alpha Engagement Manager"
+   },
+   {
+    "role": "System Manager"
+   }
+  ],
+  "timeout": 0
+ }
+]
