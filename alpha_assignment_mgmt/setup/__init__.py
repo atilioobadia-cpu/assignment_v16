@@ -19,6 +19,7 @@ def after_install():
 	_setup_ceo_workspace()
 	_setup_aims_desk_workspace()
 	_create_ceo_api_method()
+	_clear_number_card_currencies()
 	frappe.db.commit()
 
 
@@ -31,6 +32,7 @@ def after_migrate():
 	_create_custom_html_block()
 	_setup_ceo_workspace()
 	_setup_aims_desk_workspace()
+	_clear_number_card_currencies()
 	frappe.db.commit()
 
 
@@ -389,6 +391,22 @@ def _create_task_number_cards():
 
 	# Also clear currency on Active Staff / Active Clients so they show numbers not TZS
 	for name in ["Active Staff", "Active Clients"]:
+		if frappe.db.exists("Number Card", name):
+			frappe.db.set_value("Number Card", name, {"currency": ""})
+
+
+def _clear_number_card_currencies():
+	"""Clear currency on all count-based Number Cards that should show whole numbers, not TZS.
+
+	Workspace sync creates Number Cards with the company's default currency (TZS).
+	We need to run this AFTER workspace sync to override that default.
+	"""
+	count_cards = [
+		"Tasks Completed", "Tasks Pending",
+		"Active Staff", "Active Clients",
+		"Active Assignments", "Active Projects",
+	]
+	for name in count_cards:
 		if frappe.db.exists("Number Card", name):
 			frappe.db.set_value("Number Card", name, {"currency": ""})
 
