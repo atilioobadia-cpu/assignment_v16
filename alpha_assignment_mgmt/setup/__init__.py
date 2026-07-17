@@ -616,13 +616,13 @@ def _insert_workspace_charts(ws_name, chart_names):
 		"DELETE FROM `tabWorkspace Chart` WHERE parent = %s AND parenttype = 'Workspace'",
 		ws_name,
 	)
-	for cname in chart_names:
+	for idx, cname in enumerate(chart_names):
 		if frappe.db.exists("Dashboard Chart", cname):
 			frappe.db.sql("""
 				INSERT INTO `tabWorkspace Chart`
 				(name, chart_name, label, parent, parentfield, parenttype, idx, docstatus, creation, modified, owner, modified_by)
 				VALUES (%s, %s, %s, %s, 'charts', 'Workspace', %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')
-			""", (f"{ws_name}_c{cname}", cname, cname, ws_name, cname))
+			""", (f"{ws_name}_c{idx}", cname, cname, ws_name, idx))
 
 
 def _insert_workspace_number_cards(ws_name, card_names):
@@ -630,13 +630,13 @@ def _insert_workspace_number_cards(ws_name, card_names):
 		"DELETE FROM `tabWorkspace Number Card` WHERE parent = %s AND parenttype = 'Workspace'",
 		ws_name,
 	)
-	for cname in card_names:
+	for idx, cname in enumerate(card_names):
 		if frappe.db.exists("Number Card", cname):
 			frappe.db.sql("""
 				INSERT INTO `tabWorkspace Number Card`
 				(name, number_card_name, label, parent, parentfield, parenttype, idx, docstatus, creation, modified, owner, modified_by)
 				VALUES (%s, %s, %s, %s, 'number_cards', 'Workspace', %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')
-			""", (f"{ws_name}_nc{cname}", cname, cname, ws_name, cname))
+			""", (f"{ws_name}_nc{idx}", cname, cname, ws_name, idx))
 
 
 def _insert_workspace_custom_blocks(ws_name, block_names):
@@ -644,13 +644,13 @@ def _insert_workspace_custom_blocks(ws_name, block_names):
 		"DELETE FROM `tabWorkspace Custom Block` WHERE parent = %s AND parenttype = 'Workspace'",
 		ws_name,
 	)
-	for bname in block_names:
+	for idx, bname in enumerate(block_names):
 		if frappe.db.exists("Custom HTML Block", bname):
 			frappe.db.sql("""
 				INSERT INTO `tabWorkspace Custom Block`
 				(name, custom_block_name, label, parent, parentfield, parenttype, idx, docstatus, creation, modified, owner, modified_by)
 				VALUES (%s, %s, %s, %s, 'custom_blocks', 'Workspace', %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')
-			""", (f"{ws_name}_cb{bname}", bname, bname, ws_name, bname))
+			""", (f"{ws_name}_cb{idx}", bname, bname, ws_name, idx))
 
 
 def _setup_ceo_workspace():
