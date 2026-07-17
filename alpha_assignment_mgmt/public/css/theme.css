@@ -1,6 +1,10 @@
-/* ==========================================
-   1. LIGHT THEME CONFIGURATION 
-   ========================================== */
+/* ==========================================================================
+   Frappe/ERPNext v16 Theme Overrides
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   LIGHT THEME 
+   -------------------------------------------------------------------------- */
 :root, [data-theme="light"] {
     --primary: #066B8E;
     --bg-color: #ffffff;
@@ -8,16 +12,30 @@
     --blue-500: #16C1F3;
     --text-color: #171717;
     --gray-500: #0EA5D0;
+    --sidebar-bg: #f8f9fa;
+    --layout-bg: #ffffff;
 }
 
-/* ==========================================
-   2. DARK THEME CONFIGURATION 
-   ========================================== */
+/* --------------------------------------------------------------------------
+   DARK THEME 
+   -------------------------------------------------------------------------- */
 [data-theme="dark"] {
-    --surface-gray-7: #066B8E;
-    --surface-menu-bar: #044B64;
-    --surface-white: #044B64;
     --surface-modal: #0EA5D0;
+    --card-bg: #0EA5D0;
+    --fg-color: #0EA5D0;
     --surface-gray-1: #16C1F3;
+    --sidebar-bg: #16C1F3;
+    --surface-gray-7: #066B8E;
+    --bg-color: #066B8E;
+    --layout-bg: #066B8E;
+    --surface-menu-bar: #044B64;
+    --navbar-bg: #044B64;
     --ink-gray-9: #ffffff;
+    --text-color: #ffffff;
+    --heading-color: #ffffff;
+    --surface-white: #044B64;
+    --text-muted: #e2f5fc;
+    --icon-fill: #ffffff;
+    --chart-axis-label-color: #ffffff;
+    --chart-grid-line-color: rgba(255, 255, 255, 0.15);
 }
