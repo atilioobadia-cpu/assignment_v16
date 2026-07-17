@@ -15,21 +15,22 @@
     --gray-500: #4a4e4a;
     --sidebar-bg: #f5f7f5;
     --surface-gray-1: #f5f7f5;
+}
 
-    .btn-primary {
-        background-color: #2B5129 !important;
-        border-color: #2B5129 !important;
-        color: #ffffff !important;
-    }
-    .btn-primary:hover, .btn-primary:focus {
-        background-color: #1c361a !important;
-        border-color: #1c361a !important;
-    }
-    .btn-default {
-        background-color: #ffffff !important;
-        border-color: #d1d5db !important;
-        color: #1A1C1A !important;
-    }
+[data-theme="light"] .btn-primary {
+    background-color: #2B5129 !important;
+    border-color: #2B5129 !important;
+    color: #ffffff !important;
+}
+[data-theme="light"] .btn-primary:hover,
+[data-theme="light"] .btn-primary:focus {
+    background-color: #1c361a !important;
+    border-color: #1c361a !important;
+}
+[data-theme="light"] .btn-default {
+    background-color: #ffffff !important;
+    border-color: #d1d5db !important;
+    color: #1A1C1A !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -39,58 +40,71 @@
     --surface-gray-7: #1A1C1A;
     --bg-color: #1A1C1A;
     --layout-bg: #1A1C1A;
-
     --surface-menu-bar: #111211;
     --navbar-bg: #111211;
     --surface-white: #111211;
-
     --surface-modal: #2B5129;
     --card-bg: #2B5129;
     --fg-color: #2B5129;
     --control-bg: #2B5129;
-
     --surface-gray-1: #1A1C1A;
     --sidebar-bg: #1A1C1A;
-
     --ink-gray-9: #ffffff;
     --text-color: #ffffff;
     --heading-color: #ffffff;
     --icon-fill: #ffffff;
     --text-muted: #e6eee6;
-
     --chart-axis-label-color: #ffffff;
     --chart-grid-line-color: rgba(255, 255, 255, 0.15);
+}
 
-    .btn-primary {
-        background-color: #2B5129 !important;
-        border-color: #2B5129 !important;
-        color: #ffffff !important;
-    }
-    .btn-primary:hover, .btn-primary:focus {
-        background-color: #386935 !important;
-        border-color: #386935 !important;
-    }
+[data-theme="dark"] .btn-primary {
+    background-color: #2B5129 !important;
+    border-color: #2B5129 !important;
+    color: #ffffff !important;
+}
+[data-theme="dark"] .btn-primary:hover,
+[data-theme="dark"] .btn-primary:focus {
+    background-color: #386935 !important;
+    border-color: #386935 !important;
+}
+[data-theme="dark"] .btn-default,
+[data-theme="dark"] .btn-secondary {
+    background-color: #2b2e2b !important;
+    border-color: #4a4e4a !important;
+    color: #ffffff !important;
+}
+[data-theme="dark"] .btn-default:hover,
+[data-theme="dark"] .btn-secondary:hover {
+    background-color: #3a3e3a !important;
+    border-color: #5a5e5a !important;
+}
 
-    .btn-default, .btn-secondary {
-        background-color: #2b2e2b !important;
-        border-color: #4a4e4a !important;
-        color: #ffffff !important;
-    }
-    .btn-default:hover, .btn-secondary:hover {
-        background-color: #3a3e3a !important;
-        border-color: #5a5e5a !important;
-    }
+[data-theme="dark"] .shortcut-widget-box,
+[data-theme="dark"] .widget-box,
+[data-theme="dark"] .shortcut-item-action,
+[data-theme="dark"] .dashboard-widget-box {
+    background-color: #2B5129 !important;
+}
 
-    .shortcut-widget-box, .widget-box, .shortcut-item-action, .dashboard-widget-box {
-        background-color: #2B5129 !important;
-    }
-    .shortcut-widget-box .widget-label, .widget-box .widget-head .widget-title, .widget-box .widget-title, .widget-label, .number-card-title, .shortcut-widget-box .widget-title, .shortcut-widget-box a, .shortcut-widget-box span, .widget-box text {
-        color: #ffffff !important;
-        fill: #ffffff !important;
-        opacity: 1 !important;
-    }
-    .shortcut-widget-box .text-muted, .widget-box .text-muted, .number-card-trend, .widget-subtitle {
-        color: #ffffff !important;
-        opacity: 0.9 !important;
-    }
+[data-theme="dark"] .shortcut-widget-box .widget-label,
+[data-theme="dark"] .widget-box .widget-head .widget-title,
+[data-theme="dark"] .widget-box .widget-title,
+[data-theme="dark"] .widget-label,
+[data-theme="dark"] .number-card-title,
+[data-theme="dark"] .shortcut-widget-box .widget-title,
+[data-theme="dark"] .shortcut-widget-box a,
+[data-theme="dark"] .shortcut-widget-box span,
+[data-theme="dark"] .widget-box text {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    opacity: 1 !important;
+}
+
+[data-theme="dark"] .shortcut-widget-box .text-muted,
+[data-theme="dark"] .widget-box .text-muted,
+[data-theme="dark"] .number-card-trend,
+[data-theme="dark"] .widget-subtitle {
+    color: #ffffff !important;
+    opacity: 0.9 !important;
 }
