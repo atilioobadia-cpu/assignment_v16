@@ -4,14 +4,28 @@
 [data-page-route="Workspaces"] .shortcut-widget-box {
 	height: auto !important;
 	min-height: 60px;
+	padding: 12px 14px !important;
 }
 
+[data-page-route="Workspaces"] .shortcut-widget-box .widget-title,
+[data-page-route="Workspaces"] .shortcut-widget-box .widget-title span,
 [data-page-route="Workspaces"] .shortcut-widget-box .widget-title .ellipsis {
 	white-space: normal !important;
 	text-overflow: unset !important;
 	overflow: visible !important;
 	word-wrap: break-word;
+	overflow-wrap: break-word;
 	hyphens: auto;
+	max-width: none !important;
+	display: block !important;
+}
+
+/* Also handle the base .ellipsis class within shortcut context */
+[data-page-route="Workspaces"] .shortcut-widget-box .ellipsis {
+	white-space: normal !important;
+	text-overflow: unset !important;
+	overflow: visible !important;
+	max-width: none !important;
 }
 
 /* CEO Dashboard - Top 5/Bottom 5 list styling */

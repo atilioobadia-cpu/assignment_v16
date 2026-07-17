@@ -739,6 +739,11 @@ def _setup_ceo_workspace():
 
 	if frappe.db.exists("Workspace", ws_name):
 		frappe.db.set_value("Workspace", ws_name, "content", ceo_content)
+		# Clear sidebar links
+		frappe.db.sql(
+			"DELETE FROM `tabWorkspace Link` WHERE parent = %s AND parenttype = 'Workspace'",
+			ws_name,
+		)
 	else:
 		frappe.db.sql("""
 			INSERT INTO `tabWorkspace`
@@ -769,12 +774,20 @@ def _setup_aims_desk_workspace():
 	aims_shortcuts = [
 		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "New Assignment", "icon": "add"},
 		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "All Assignments", "icon": "list", "doc_view": "list"},
+		{"type": "DocType", "link_to": "Alpha Project Template", "label": "Project Templates", "icon": "file"},
+		{"type": "DocType", "link_to": "Project", "label": "Active Projects", "icon": "list"},
+		{"type": "DocType", "link_to": "Project", "label": "Pending Projects", "icon": "list"},
+		{"type": "DocType", "link_to": "Alpha Engagement SLA", "label": "Engagement SLA", "icon": "file"},
 		{"type": "DocType", "link_to": "Task", "label": "My Tasks", "icon": "task"},
-		{"type": "Report", "link_to": "Staff Productivity", "label": "Staff Productivity", "icon": "chart"},
+		{"type": "DocType", "link_to": "Timesheet", "label": "My Timesheets", "icon": "list"},
 		{"type": "DocType", "link_to": "Document Request Register", "label": "Document Requests", "icon": "file"},
 		{"type": "DocType", "link_to": "Review Gate Register", "label": "Review Queue", "icon": "review"},
 		{"type": "DocType", "link_to": "Client Delay Log", "label": "Client Delays", "icon": "warn"},
 		{"type": "DocType", "link_to": "Client Risk Register", "label": "Risk Register", "icon": "list"},
+		{"type": "DocType", "link_to": "Assignment Closure Certificate", "label": "Closure Certificate", "icon": "file"},
+		{"type": "DocType", "link_to": "Performance Feedback", "label": "Performance", "icon": "list"},
+		{"type": "Report", "link_to": "SLA Compliance Overview", "label": "SLA Compliance", "icon": "chart"},
+		{"type": "Report", "link_to": "Staff Productivity", "label": "Staff Productivity", "icon": "chart"},
 	]
 
 	aims_content = json.dumps([
@@ -794,6 +807,11 @@ def _setup_aims_desk_workspace():
 
 	if frappe.db.exists("Workspace", ws_name):
 		frappe.db.set_value("Workspace", ws_name, "content", aims_content)
+		# Clear sidebar links that Frappe renders as extra Quick Action cards
+		frappe.db.sql(
+			"DELETE FROM `tabWorkspace Link` WHERE parent = %s AND parenttype = 'Workspace'",
+			ws_name,
+		)
 	else:
 		frappe.db.sql("""
 			INSERT INTO `tabWorkspace`
