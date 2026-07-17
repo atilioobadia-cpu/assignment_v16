@@ -1,0 +1,23 @@
+/* ==========================================
+   1. LIGHT THEME CONFIGURATION 
+   ========================================== */
+:root, [data-theme="light"] {
+    --primary: #066B8E;
+    --bg-color: #ffffff;
+    --fg-color: #ffffff;
+    --blue-500: #16C1F3;
+    --text-color: #171717;
+    --gray-500: #0EA5D0;
+}
+
+/* ==========================================
+   2. DARK THEME CONFIGURATION 
+   ========================================== */
+[data-theme="dark"] {
+    --surface-gray-7: #066B8E;
+    --surface-menu-bar: #044B64;
+    --surface-white: #044B64;
+    --surface-modal: #0EA5D0;
+    --surface-gray-1: #16C1F3;
+    --ink-gray-9: #ffffff;
+}
