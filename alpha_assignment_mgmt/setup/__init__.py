@@ -19,6 +19,7 @@ def after_install():
 	_setup_aims_desk_workspace()
 	_create_ceo_api_method()
 	_clear_number_card_currencies()
+	_clear_dashboard_chart_currencies()
 	frappe.db.commit()
 
 
@@ -31,6 +32,7 @@ def after_migrate():
 	_setup_ceo_workspace()
 	_setup_aims_desk_workspace()
 	_clear_number_card_currencies()
+	_clear_dashboard_chart_currencies()
 	frappe.db.commit()
 
 
@@ -418,6 +420,16 @@ def _clear_number_card_currencies():
 	""")
 
 
+def _clear_dashboard_chart_currencies():
+	"""Clear currency on all Dashboard Charts that should show plain numbers, not currency."""
+	frappe.db.sql("""
+		UPDATE `tabDashboard Chart`
+		SET currency = ''
+		WHERE module = 'Alpha Assignment Management'
+		AND currency != ''
+	""")
+
+
 def _create_task_dashboard_charts():
 	charts = [
 		{
@@ -484,6 +496,7 @@ def _create_task_dashboard_charts():
 				"module": "Alpha Assignment Management",
 				"timeseries": ch.get("timeseries", 0),
 				"chart_name": ch["name"],
+				"currency": "",
 			}
 			if ch.get("based_on"):
 				vals["based_on"] = ch["based_on"]
@@ -502,6 +515,7 @@ def _create_task_dashboard_charts():
 			doc.is_standard = 0
 			doc.is_public = 1
 			doc.module = "Alpha Assignment Management"
+			doc.currency = ""
 			doc.insert(ignore_permissions=True)
 
 

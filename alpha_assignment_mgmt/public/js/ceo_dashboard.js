@@ -1,47 +1,62 @@
 // CEO Dashboard - Top 5 / Bottom 5 Employee Performance
 // Loaded globally via app_include_js, renders only on CEO workspace page.
 
+var CEO_TARGET_ID = "ceo-top-bottom-lists";
+
 frappe.ready(function () {
-	if (frappe.get_route_str() !== "workspace/CEO") return;
+	var route = frappe.get_route_str();
+	if (route.indexOf("CEO") === -1) return;
 
-	const TARGET_ID = "ceo-top-bottom-lists";
-	if (document.getElementById(TARGET_ID)) return;
+	if (document.getElementById(CEO_TARGET_ID)) return;
 
-	frappe.after_ajax(function () {
-		render_employee_lists();
+	function try_render() {
+		if (document.getElementById(CEO_TARGET_ID)) return;
+		var container = document.querySelector(".layout-main-section");
+		if (container && container.querySelector(".widget")) {
+			render_employee_lists();
+		} else {
+			setTimeout(try_render, 500);
+		}
+	}
+
+	try_render();
+	frappe.after_ajax(try_render);
+
+	var observer = new MutationObserver(function () {
+		if (!document.getElementById(CEO_TARGET_ID)) {
+			render_employee_lists();
+		}
 	});
-	if (frappe.model && frappe.model.docinfo) {
-		render_employee_lists();
+	var target = document.querySelector(".layout-main-section");
+	if (target) {
+		observer.observe(target, { childList: true, subtree: true });
 	}
 });
 
 function render_employee_lists() {
-	if (document.getElementById(TARGET_ID)) return;
+	if (document.getElementById(CEO_TARGET_ID)) return;
 
-	const container = document.querySelector(".layout-main-section");
+	var container = document.querySelector(".layout-main-section");
 	if (!container) return;
 
-	const wrapper = document.createElement("div");
-	wrapper.id = TARGET_ID;
+	var wrapper = document.createElement("div");
+	wrapper.id = CEO_TARGET_ID;
 	wrapper.className = "ceo-top-bottom-container";
-	wrapper.innerHTML = `
-		<div style="margin-bottom: 20px;">
-			<h5 style="margin-bottom: 15px;"><b>Employee Task Performance</b></h5>
-			<div style="display: flex; gap: 20px; flex-wrap: wrap;">
-				<div style="flex: 1; min-width: 300px; border-left: 4px solid #28a745; padding: 15px; background: #f8f9fa; border-radius: 4px;">
-					<h6 style="color: #28a745; font-weight: bold; margin-bottom: 10px;">Top 5 - Most Completed Tasks</h6>
-					<div id="top-5-list"><p class="text-muted">Loading...</p></div>
-				</div>
-				<div style="flex: 1; min-width: 300px; border-left: 4px solid #dc3545; padding: 15px; background: #f8f9fa; border-radius: 4px;">
-					<h6 style="color: #dc3545; font-weight: bold; margin-bottom: 10px;">Bottom 5 - Needs Attention</h6>
-					<p style="font-size:11px;color:#999;margin-bottom:8px;">Employees with fewer completed tasks</p>
-					<div id="bottom-5-list"><p class="text-muted">Loading...</p></div>
-				</div>
-			</div>
-		</div>`;
+	wrapper.innerHTML = '<div style="margin-bottom: 20px;">' +
+		'<h5 style="margin-bottom: 15px;"><b>Employee Task Performance</b></h5>' +
+		'<div style="display: flex; gap: 20px; flex-wrap: wrap;">' +
+		'<div style="flex: 1; min-width: 300px; border-left: 4px solid #28a745; padding: 15px; background: #f8f9fa; border-radius: 4px;">' +
+		'<h6 style="color: #28a745; font-weight: bold; margin-bottom: 10px;">Top 5 - Most Completed Tasks</h6>' +
+		'<div id="top-5-list"><p class="text-muted">Loading...</p></div>' +
+		'</div>' +
+		'<div style="flex: 1; min-width: 300px; border-left: 4px solid #dc3545; padding: 15px; background: #f8f9fa; border-radius: 4px;">' +
+		'<h6 style="color: #dc3545; font-weight: bold; margin-bottom: 10px;">Bottom 5 - Needs Attention</h6>' +
+		'<p style="font-size:11px;color:#999;margin-bottom:8px;">Employees with fewer completed tasks</p>' +
+		'<div id="bottom-5-list"><p class="text-muted">Loading...</p></div>' +
+		'</div>' +
+		'</div></div>';
 
-	// Insert after the number cards row, before charts
-	const firstChart = container.querySelector('[data-widget-type="chart"]');
+	var firstChart = container.querySelector('[data-widget-type="chart"]');
 	if (firstChart) {
 		firstChart.parentNode.insertBefore(wrapper, firstChart);
 	} else {
