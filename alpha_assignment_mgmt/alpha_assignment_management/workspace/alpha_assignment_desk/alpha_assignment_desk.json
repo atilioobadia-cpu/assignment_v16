@@ -47,30 +47,10 @@
    "is_query_report": 0,
    "dependencies": ""
   },
-   {
-    "type": "Link",
-    "label": "Active Projects",
-    "link_to": "Project",
-    "link_type": "DocType",
-    "onboard": 0,
-    "hidden": 0,
-    "is_query_report": 0,
-    "dependencies": ""
-   },
-   {
-    "type": "Link",
-    "label": "Pending Projects",
-    "link_to": "Project",
-    "link_type": "DocType",
-    "onboard": 0,
-    "hidden": 0,
-    "is_query_report": 0,
-    "dependencies": ""
-   },
   {
    "type": "Link",
-   "label": "Engagement SLAs",
-   "link_to": "Alpha Engagement SLA",
+   "label": "Active Projects",
+   "link_to": "Project",
    "link_type": "DocType",
    "onboard": 0,
    "hidden": 0,
@@ -137,26 +117,26 @@
    "is_query_report": 0,
    "dependencies": ""
   },
-   {
-    "type": "Link",
-    "label": "Closure Certificates",
-    "link_to": "Assignment Closure Certificate",
-    "link_type": "DocType",
-    "onboard": 0,
-    "hidden": 0,
-    "is_query_report": 0,
-    "dependencies": ""
-   },
-   {
-    "type": "Link",
-    "label": "Performance Feedback",
-    "link_to": "Performance Feedback",
-    "link_type": "DocType",
-    "onboard": 0,
-    "hidden": 0,
-    "is_query_report": 0,
-    "dependencies": ""
-   },
+  {
+   "type": "Link",
+   "label": "Closure Certificates",
+   "link_to": "Assignment Closure Certificate",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
+  {
+   "type": "Link",
+   "label": "Performance Feedback",
+   "link_to": "Performance Feedback",
+   "link_type": "DocType",
+   "onboard": 0,
+   "hidden": 0,
+   "is_query_report": 0,
+   "dependencies": ""
+  },
   {
    "type": "Link",
    "label": "Customers",
@@ -244,34 +224,6 @@
    "icon": "list"
   },
   {
-   "label": "Project Templates",
-   "type": "DocType",
-   "link_to": "Alpha Project Template",
-   "doc_type": "Alpha Project Template",
-   "icon": "bookmark"
-  },
-  {
-   "label": "Active Projects",
-   "type": "DocType",
-   "link_to": "Project",
-   "doc_type": "Project",
-   "icon": "project"
-  },
-  {
-   "label": "Pending Projects",
-   "type": "DocType",
-   "link_to": "Project",
-   "doc_type": "Project",
-   "icon": "project"
-  },
-  {
-   "label": "Engagement SLAs",
-   "type": "DocType",
-   "link_to": "Alpha Engagement SLA",
-   "doc_type": "Alpha Engagement SLA",
-   "icon": "deadline"
-  },
-  {
    "label": "My Tasks",
    "type": "DocType",
    "link_to": "Task",
@@ -279,11 +231,11 @@
    "icon": "task"
   },
   {
-   "label": "My Timesheets",
-   "type": "DocType",
-   "link_to": "Timesheet",
-   "doc_type": "Timesheet",
-   "icon": "clock"
+   "label": "Staff Productivity",
+   "type": "Report",
+   "link_to": "Staff Productivity",
+   "doc_type": "Staff Productivity",
+   "icon": "chart"
   },
   {
    "label": "Document Requests",
@@ -312,35 +264,7 @@
    "link_to": "Client Risk Register",
    "doc_type": "Client Risk Register",
    "icon": "list"
-  },
-  {
-   "label": "Closure Certificates",
-   "type": "DocType",
-   "link_to": "Assignment Closure Certificate",
-   "doc_type": "Assignment Closure Certificate",
-   "icon": "certificate"
-  },
-  {
-   "label": "Performance Feedback",
-   "type": "DocType",
-   "link_to": "Performance Feedback",
-   "doc_type": "Performance Feedback",
-   "icon": "rating"
-  },
-  {
-   "label": "SLA Compliance",
-   "type": "Report",
-   "link_to": "SLA Compliance Overview",
-   "doc_type": "SLA Compliance Overview",
-   "icon": "chart"
-  },
-  {
-   "label": "Staff Productivity",
-   "type": "Report",
-   "link_to": "Staff Productivity",
-   "doc_type": "Staff Productivity",
-   "icon": "chart"
   }
  ],
- "content": "[{\"id\":\"h1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>AIMS Desk</b></span>\",\"col\":12}},{\"id\":\"2g7-cclBl4\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Assignments Trend (Last 12 Months)\",\"col\":12}},{\"id\":\"p1\",\"type\":\"paragraph\",\"data\":{\"text\":\"Manage client assignments from origination to closure. Track SLAs, reviews, document requests, and team productivity.\",\"col\":12}},{\"id\":\"nc1\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Active Assignments\",\"col\":3}},{\"id\":\"nc2\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Active Projects\",\"col\":3}},{\"id\":\"nc3\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Pending Reviews\",\"col\":3}},{\"id\":\"nc4\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Pending Projects\",\"col\":3}},{\"id\":\"sp1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"sh2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h5\\\"><b>Quick Actions</b></span>\",\"col\":12}},{\"id\":\"s1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Assignment Origination\",\"col\":3}},{\"id\":\"s2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"All Assignments\",\"col\":3}},{\"id\":\"s3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Active Projects\",\"col\":3}},{\"id\":\"s4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Engagement SLAs\",\"col\":3}},{\"id\":\"s5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Tasks\",\"col\":3}},{\"id\":\"s6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Timesheets\",\"col\":3}},{\"id\":\"s7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Document Requests\",\"col\":3}},{\"id\":\"s8\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Review Queue\",\"col\":3}},{\"id\":\"s9\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Client Delays\",\"col\":3}},{\"id\":\"s10\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Risk Register\",\"col\":3}},{\"id\":\"s11\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Closure Certificates\",\"col\":3}},{\"id\":\"s12\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"SLA Compliance\",\"col\":3}},{\"id\":\"s13\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Staff Productivity\",\"col\":3}}]"
+ "content": "[{\"id\": \"h1\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>AIMS Desk</b></span>\", \"col\": 12}}, {\"id\": \"p1\", \"type\": \"paragraph\", \"data\": {\"text\": \"Manage client assignments from origination to closure.\", \"col\": 12}}, {\"id\": \"nc1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Active Assignments\", \"col\": 3}}, {\"id\": \"nc2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Active Projects\", \"col\": 3}}, {\"id\": \"nc3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Tasks Completed\", \"col\": 3}}, {\"id\": \"nc4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Tasks Pending\", \"col\": 3}}, {\"id\": \"c1\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Employee Performance Trend\", \"col\": 12}}, {\"id\": \"sp1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"sh2\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h5\\\"><b>Quick Actions</b></span>\", \"col\": 12}}, {\"id\": \"s1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Assignment Origination\", \"col\": 3}}, {\"id\": \"s2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"All Assignments\", \"col\": 3}}, {\"id\": \"s3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"My Tasks\", \"col\": 3}}, {\"id\": \"s4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Staff Productivity\", \"col\": 3}}, {\"id\": \"s5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Document Requests\", \"col\": 3}}, {\"id\": \"s6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Review Queue\", \"col\": 3}}, {\"id\": \"s7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Client Delays\", \"col\": 3}}, {\"id\": \"s8\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Risk Register\", \"col\": 3}}, {\"id\": \"s9\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Closure Certificates\", \"col\": 3}}, {\"id\": \"s10\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SLA Compliance\", \"col\": 3}}]"
 }
