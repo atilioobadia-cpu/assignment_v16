@@ -4,18 +4,34 @@ import os
 
 
 def after_install():
+	"""Set up roles, workflows, templates, dashboards and workspaces after app install."""
 	create_roles()
 	create_workflow_states()
 	create_naming_series()
 	create_project_types()
 	create_activity_types()
 	create_project_templates()
-	create_dashboard_charts()
-	create_number_cards()
-	create_ceo_dashboard_charts()
-	create_ceo_number_cards()
-	update_workspace_with_charts()
-	update_ceo_dashboard_with_charts()
+	_create_assignment_number_cards()
+	_create_assignment_dashboard_charts()
+	_create_task_number_cards()
+	_create_task_dashboard_charts()
+	_create_custom_html_block()
+	_setup_ceo_workspace()
+	_setup_aims_desk_workspace()
+	_create_ceo_api_method()
+	frappe.db.commit()
+
+
+def after_migrate():
+	"""Re-sync components after migration."""
+	create_workflow_states()
+	create_project_templates()
+	_create_task_number_cards()
+	_create_task_dashboard_charts()
+	_create_custom_html_block()
+	_setup_ceo_workspace()
+	_setup_aims_desk_workspace()
+	frappe.db.commit()
 
 
 def create_roles():
@@ -38,8 +54,7 @@ def create_roles():
 
 
 def create_workflow_states():
-	"""Create Workflow State records used by the Alpha Assignment Origination Workflow.
-	These are referenced in the workflow JSON fixture and must exist before the workflow is created."""
+	"""Create Workflow State records used by the Alpha Assignment Origination Workflow."""
 	states = [
 		{"state": "Draft", "doc_status": "0", "allow_edit": "Alpha Tax Officer"},
 		{"state": "Submitted", "doc_status": "1", "allow_edit": "Alpha Engagement Manager"},
@@ -58,7 +73,7 @@ def create_workflow_states():
 
 
 def create_naming_series():
-	"""Set naming series via DocType JSON property or Property Setter."""
+	"""Set naming series via Property Setter."""
 	series_map = {
 		"Alpha Assignment Origination": "AOR-.YYYY.-.#####",
 		"Alpha Engagement SLA": "AATL-SLA-.YYYY.-.#####",
@@ -245,7 +260,9 @@ def _get_template_definitions():
 	]
 
 
-def create_dashboard_charts():
+# ── Assignment-related charts & cards (AIMS Desk originals) ──────────────
+
+def _create_assignment_dashboard_charts():
 	charts = [
 		{
 			"chart_name": "Assignments Trend (Last 12 Months)",
@@ -267,7 +284,7 @@ def create_dashboard_charts():
 			}).insert(ignore_permissions=True)
 
 
-def create_number_cards():
+def _create_assignment_number_cards():
 	cards = [
 		{
 			"label": "Active Assignments",
@@ -297,80 +314,6 @@ def create_number_cards():
 			"function": "Count",
 			"filters_json": '[["Project","status","=","Open"]]',
 		},
-	]
-	for card in cards:
-		if not frappe.db.exists("Number Card", card["label"]):
-			frappe.get_doc({
-				"doctype": "Number Card",
-				**card,
-			}).insert(ignore_permissions=True)
-
-
-def create_ceo_dashboard_charts():
-	charts = [
-		{
-			"chart_name": "Monthly Assignment Intake",
-			"chart_type": "Count",
-			"document_type": "Alpha Assignment Origination",
-			"based_on": "creation",
-			"type": "Bar",
-			"timespan": "Last Year",
-			"timeseries_based_on": "creation",
-			"time_interval": "Monthly",
-			"filters_json": "[]",
-		},
-		{
-			"chart_name": "Risk Distribution",
-			"chart_type": "Group By",
-			"document_type": "Alpha Assignment Origination",
-			"group_by_type": "Count",
-			"group_by_based_on": "risk_rating",
-			"type": "Pie",
-			"filters_json": "[]",
-		},
-		{
-			"chart_name": "Client Delays by Impact",
-			"chart_type": "Group By",
-			"document_type": "Client Delay Log",
-			"group_by_type": "Count",
-			"group_by_based_on": "impact",
-			"type": "Bar",
-			"filters_json": "[]",
-		},
-		{
-			"chart_name": "Open Risks by Type",
-			"chart_type": "Group By",
-			"document_type": "Client Risk Register",
-			"group_by_type": "Count",
-			"group_by_based_on": "risk_type",
-			"type": "Bar",
-			"filters_json": '[["Client Risk Register","status","!=","Closed"]]',
-		},
-	]
-	for chart in charts:
-		if not frappe.db.exists("Dashboard Chart", chart["chart_name"]):
-			frappe.get_doc({
-				"doctype": "Dashboard Chart",
-				**chart,
-			}).insert(ignore_permissions=True)
-
-
-def create_ceo_number_cards():
-	cards = [
-		{
-			"label": "Total Assignments YTD",
-			"type": "Document Type",
-			"document_type": "Alpha Assignment Origination",
-			"function": "Count",
-			"filters_json": '[]',
-		},
-		{
-			"label": "Open Risks",
-			"type": "Document Type",
-			"document_type": "Client Risk Register",
-			"function": "Count",
-			"filters_json": '[["Client Risk Register","status","!=","Closed"]]',
-		},
 		{
 			"label": "Active Staff",
 			"type": "Document Type",
@@ -392,248 +335,390 @@ def create_ceo_number_cards():
 				"doctype": "Number Card",
 				**card,
 			}).insert(ignore_permissions=True)
+		else:
+			frappe.db.set_value("Number Card", card["label"], {"is_public": 1})
 
+
+# ── Task-performance cards & charts (CEO dashboard) ─────────────────────
+
+def _create_task_number_cards():
+	cards = [
+		{
+			"name": "Tasks Completed",
+			"label": "Tasks Completed",
+			"filters": '[["Task","status","=","Completed"]]',
+			"color": "#28a745",
+		},
+		{
+			"name": "Tasks Pending",
+			"label": "Tasks Pending",
+			"filters": '[["Task","status","in",["Open","Working","Overdue"]]]',
+			"color": "#ff6b6b",
+		},
+	]
+	for c in cards:
+		if frappe.db.exists("Number Card", c["name"]):
+			frappe.db.set_value("Number Card", c["name"], {
+				"document_type": "Task",
+				"function": "Count",
+				"type": "Document Type",
+				"is_standard": 0,
+				"is_public": 1,
+				"filters_json": c["filters"],
+				"show_percentage_stats": 1,
+				"stats_time_interval": "Daily",
+				"color": c["color"],
+				"module": "Alpha Assignment Management",
+			})
+		else:
+			doc = frappe.new_doc("Number Card")
+			doc.name = c["name"]
+			doc.label = c["label"]
+			doc.document_type = "Task"
+			doc.function = "Count"
+			doc.type = "Document Type"
+			doc.is_public = 1
+			doc.is_standard = 0
+			doc.module = "Alpha Assignment Management"
+			doc.filters_json = c["filters"]
+			doc.show_percentage_stats = 1
+			doc.stats_time_interval = "Daily"
+			doc.color = c["color"]
+			doc.insert(ignore_permissions=True)
+
+
+def _create_task_dashboard_charts():
+	charts = [
+		{
+			"name": "Employee Performance Trend",
+			"chart_type": "Count",
+			"document_type": "Task",
+			"based_on": "completed_on",
+			"type": "Line",
+			"filters": '[["Task","status","=","Completed"]]',
+			"timeseries": 1,
+			"time_interval": "Monthly",
+			"custom_options": json.dumps({"colors": ["#5e64ff"]}),
+		},
+		{
+			"name": "Tasks by Status",
+			"chart_type": "Group By",
+			"document_type": "Task",
+			"group_by_based_on": "status",
+			"type": "Pie",
+			"filters": "[]",
+			"custom_options": json.dumps({"colors": ["#5e64ff", "#28a745", "#ff6b6b", "#ffa726", "#42a5f5"]}),
+		},
+		{
+			"name": "Tasks Completed Over Time",
+			"chart_type": "Count",
+			"document_type": "Task",
+			"based_on": "completed_on",
+			"type": "Bar",
+			"filters": '[["Task","status","=","Completed"]]',
+			"timeseries": 1,
+			"time_interval": "Monthly",
+			"custom_options": json.dumps({"colors": ["#28a745"]}),
+		},
+		{
+			"name": "Open Tasks by Project",
+			"chart_type": "Group By",
+			"document_type": "Task",
+			"group_by_based_on": "project",
+			"type": "Bar",
+			"filters": '[["Task","status","in",["Open","Working","Overdue"]]]',
+			"custom_options": json.dumps({"colors": ["#ffa726", "#5e64ff", "#ff6b6b", "#28a745"]}),
+		},
+		{
+			"name": "Task Priority Distribution",
+			"chart_type": "Group By",
+			"document_type": "Task",
+			"group_by_based_on": "priority",
+			"type": "Bar",
+			"filters": "[]",
+			"custom_options": json.dumps({"colors": ["#ff6b6b", "#ffa726", "#5e64ff", "#28a745"]}),
+		},
+	]
+
+	for ch in charts:
+		if frappe.db.exists("Dashboard Chart", ch["name"]):
+			vals = {
+				"chart_type": ch["chart_type"],
+				"document_type": ch["document_type"],
+				"type": ch["type"],
+				"filters_json": ch["filters"],
+				"custom_options": ch.get("custom_options"),
+				"is_standard": 0,
+				"is_public": 1,
+				"module": "Alpha Assignment Management",
+				"timeseries": ch.get("timeseries", 0),
+				"chart_name": ch["name"],
+			}
+			if ch.get("based_on"):
+				vals["based_on"] = ch["based_on"]
+			if ch.get("group_by_based_on"):
+				vals["group_by_based_on"] = ch["group_by_based_on"]
+			if ch.get("time_interval"):
+				vals["time_interval"] = ch["time_interval"]
+			frappe.db.set_value("Dashboard Chart", ch["name"], vals)
+		else:
+			doc = frappe.new_doc("Dashboard Chart")
+			for k, v in ch.items():
+				setattr(doc, k, v)
+			doc.chart_name = ch["name"]
+			doc.is_standard = 0
+			doc.is_public = 1
+			doc.module = "Alpha Assignment Management"
+			doc.insert(ignore_permissions=True)
+
+
+# ── Custom HTML Block ────────────────────────────────────────────────────
+
+def _create_custom_html_block():
+	html = """<div id="ceo-top-bottom" style="padding: 10px;">
+<h5 style="margin-bottom: 15px;"><b>Employee Task Performance</b></h5>
+<div class="row">
+    <div class="col-md-6">
+        <div style="border-left: 4px solid #28a745; padding: 15px; background: #f8f9fa; border-radius: 4px;">
+            <h6 style="color: #28a745; font-weight: bold; margin-bottom: 10px;">Top 5 - Most Completed Tasks</h6>
+            <div id="top-5-list"><p class="text-muted">Loading...</p></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div style="border-left: 4px solid #dc3545; padding: 15px; background: #f8f9fa; border-radius: 4px;">
+            <h6 style="color: #dc3545; font-weight: bold; margin-bottom: 10px;">Bottom 5 - Needs Attention</h6>
+            <div id="bottom-5-list"><p class="text-muted">Loading...</p></div>
+        </div>
+    </div>
+</div>
+</div>"""
+
+	script = """frappe.ready(function() {
+    frappe.call({
+        method: 'alpha_assignment_mgmt.alpha_assignment_management.api.ceo_dashboard.get_ceo_top_bottom',
+        callback: function(r) {
+            if (!r.message) return;
+            var data = r.message;
+            renderList('#top-5-list', data.top5, true);
+            renderList('#bottom-5-list', data.bottom5, false);
+        }
+    });
+
+    function renderList(selector, items, isTop) {
+        if (!items || !items.length) {
+            $(selector).html('<p class="text-muted">No data</p>');
+            return;
+        }
+        var html = '<table class="table table-sm table-borderless mb-0">';
+        html += '<tr style="font-weight:bold;color:#666;font-size:12px;"><td style="width:30px">#</td><td>Employee</td><td style="width:80px;text-align:center;">Completed</td><td style="width:80px;text-align:center;">Pending</td></tr>';
+        items.forEach(function(item, i) {
+            var rank = i + 1;
+            var medal = '';
+            if (isTop && rank === 1) medal = ' \\ud83e\\udd47';
+            else if (isTop && rank === 2) medal = ' \\ud83e\\udd48';
+            else if (isTop && rank === 3) medal = ' \\ud83e\\udd49';
+            var completedBadge = item.completed > 0
+                ? '<span class="badge" style="background:#28a745;color:#fff;font-size:12px;">' + item.completed + '</span>'
+                : '<span class="badge" style="background:#6c757d;color:#fff;font-size:12px;">0</span>';
+            var pendingBadge = item.pending > 0
+                ? '<span class="badge" style="background:#dc3545;color:#fff;font-size:12px;">' + item.pending + '</span>'
+                : '<span class="badge" style="background:#28a745;color:#fff;font-size:12px;">0</span>';
+            html += '<tr><td><b>' + rank + '</b></td><td>' + item.name + medal + '</td><td style="text-align:center;">' + completedBadge + '</td><td style="text-align:center;">' + pendingBadge + '</td></tr>';
+        });
+        html += '</table>';
+        $(selector).html(html);
+    }
+});"""
+
+	block_name = "CEO Top Bottom Employees"
+	if frappe.db.exists("Custom HTML Block", block_name):
+		frappe.db.set_value("Custom HTML Block", block_name, {
+			"html": html, "script": script, "private": 0,
+		})
+	else:
+		doc = frappe.new_doc("Custom HTML Block")
+		doc.name = block_name
+		doc.html = html
+		doc.script = script
+		doc.private = 0
+		doc.insert(ignore_permissions=True)
+
+
+# ── CEO API method ───────────────────────────────────────────────────────
+
+def _create_ceo_api_method():
+	"""Ensure the CEO dashboard API method file exists."""
+	api_dir = os.path.join(
+		os.path.dirname(__file__),
+		"alpha_assignment_management",
+		"api",
+	)
+	os.makedirs(api_dir, exist_ok=True)
+
+	init_file = os.path.join(api_dir, "__init__.py")
+	if not os.path.exists(init_file):
+		with open(init_file, "w") as f:
+			f.write("")
+
+	api_file = os.path.join(api_dir, "ceo_dashboard.py")
+	if not os.path.exists(api_file):
+		with open(api_file, "w") as f:
+			f.write("""import frappe
+
+
+@frappe.whitelist()
+def get_ceo_top_bottom():
+    employees = frappe.get_all(
+        "Employee",
+        filters={"status": "Active", "user_id": ["is", "set"]},
+        fields=["name", "employee_name", "user_id"],
+    )
+    if not employees:
+        return {"top5": [], "bottom5": []}
+
+    results = []
+    for emp in employees:
+        uid = emp.user_id
+        completed = frappe.db.sql(\"\\"\\"\"\"
+            SELECT COUNT(DISTINCT t.name)
+            FROM tabTask t
+            WHERE t.status = 'Completed'
+            AND (JSON_CONTAINS(t._assign, %s) OR t.owner = %s)
+        \"\"\\"\\"\"\", (frappe.json.dumps(uid), uid))[0][0]
+
+        pending = frappe.db.sql(\"\\"\\"\"\"
+            SELECT COUNT(DISTINCT t.name)
+            FROM tabTask t
+            WHERE t.status IN ('Open', 'Working', 'Overdue')
+            AND (JSON_CONTAINS(t._assign, %s) OR t.owner = %s)
+        \"\"\\"\\"\"\", (frappe.json.dumps(uid), uid))[0][0]
+
+        results.append({
+            "name": emp.employee_name or emp.name,
+            "completed": completed,
+            "pending": pending,
+        })
+
+    results.sort(key=lambda x: x["completed"], reverse=True)
+    return {
+        "top5": results[:5],
+        "bottom5": list(reversed(results[-5:])) if len(results) >= 5 else list(reversed(results)),
+    }
+""")
+
+
+# ── Workspace setup ──────────────────────────────────────────────────────
 
 def _insert_workspace_charts(ws_name, chart_names):
-	frappe.db.delete("Workspace Chart", {"parent": ws_name, "parenttype": "Workspace"})
+	frappe.db.sql(
+		"DELETE FROM `tabWorkspace Chart` WHERE parent = %s AND parenttype = 'Workspace'",
+		ws_name,
+	)
 	for cname in chart_names:
 		if frappe.db.exists("Dashboard Chart", cname):
 			frappe.db.sql("""
 				INSERT INTO `tabWorkspace Chart`
-				(name, creation, modified, owner, modified_by, parent, parenttype,
-				 parentfield, chart_name, label)
-				VALUES (%s, NOW(), NOW(), 'Administrator', 'Administrator', %s,
-				        'Workspace', 'charts', %s, %s)
-			""", (frappe.generate_hash(length=10), ws_name, cname, cname))
+				(name, chart_name, label, parent, parentfield, parenttype, idx, docstatus, creation, modified, owner, modified_by)
+				VALUES (%s, %s, %s, %s, 'charts', 'Workspace', %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')
+			""", (f"{ws_name}_c{cname}", cname, cname, ws_name, cname))
 
 
 def _insert_workspace_number_cards(ws_name, card_names):
-	frappe.db.delete("Workspace Number Card", {"parent": ws_name, "parenttype": "Workspace"})
+	frappe.db.sql(
+		"DELETE FROM `tabWorkspace Number Card` WHERE parent = %s AND parenttype = 'Workspace'",
+		ws_name,
+	)
 	for cname in card_names:
 		if frappe.db.exists("Number Card", cname):
 			frappe.db.sql("""
 				INSERT INTO `tabWorkspace Number Card`
-				(name, creation, modified, owner, modified_by, parent, parenttype,
-				 parentfield, number_card_name, label)
-				VALUES (%s, NOW(), NOW(), 'Administrator', 'Administrator', %s,
-				        'Workspace', 'number_cards', %s, %s)
-			""", (frappe.generate_hash(length=10), ws_name, cname, cname))
+				(name, number_card_name, label, parent, parentfield, parenttype, idx, docstatus, creation, modified, owner, modified_by)
+				VALUES (%s, %s, %s, %s, 'number_cards', 'Workspace', %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')
+			""", (f"{ws_name}_nc{cname}", cname, cname, ws_name, cname))
 
 
-def _insert_workspace_shortcuts(ws_name):
-	"""Sync pinned shortcut icons in tabWorkspace Shortcut from the workspace JSON fixture."""
-	frappe.db.delete("Workspace Shortcut", {"parent": ws_name, "parenttype": "Workspace"})
-	ws_path = os.path.join(
-		os.path.dirname(os.path.dirname(__file__)),
-		"alpha_assignment_management", "workspace",
-		"alpha_assignment_desk", "alpha_assignment_desk.json",
+def _insert_workspace_custom_blocks(ws_name, block_names):
+	frappe.db.sql(
+		"DELETE FROM `tabWorkspace Custom Block` WHERE parent = %s AND parenttype = 'Workspace'",
+		ws_name,
 	)
-	if not os.path.exists(ws_path):
-		return
-	with open(ws_path) as f:
-		ws_data = json.load(f)
-	for idx, sc in enumerate(ws_data.get("shortcuts", []), 1):
-		frappe.db.sql("""
-			INSERT INTO `tabWorkspace Shortcut`
-			(name, creation, modified, owner, modified_by, parent, parenttype,
-			 parentfield, idx, type, link_to, label, icon)
-			VALUES (%s, NOW(), NOW(), 'Administrator', 'Administrator', %s,
-			        'Workspace', 'shortcuts', %s, %s, %s, %s, %s)
-		""", (
-			frappe.generate_hash(length=10), ws_name,
-			idx, sc.get("type", "DocType"),
-			sc.get("link_to", ""), sc.get("label", ""),
-			sc.get("icon", "link"),
-		))
+	for bname in block_names:
+		if frappe.db.exists("Custom HTML Block", bname):
+			frappe.db.sql("""
+				INSERT INTO `tabWorkspace Custom Block`
+				(name, custom_block_name, label, parent, parentfield, parenttype, idx, docstatus, creation, modified, owner, modified_by)
+				VALUES (%s, %s, %s, %s, 'custom_blocks', 'Workspace', %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')
+			""", (f"{ws_name}_cb{bname}", bname, bname, ws_name, bname))
 
 
-def _insert_workspace_links(ws_name):
-	"""Sync left sidebar links in tabWorkspace Link from the workspace JSON fixture."""
-	frappe.db.delete("Workspace Link", {"parent": ws_name, "parenttype": "Workspace"})
-	ws_path = os.path.join(
-		os.path.dirname(os.path.dirname(__file__)),
-		"alpha_assignment_management", "workspace",
-		"alpha_assignment_desk", "alpha_assignment_desk.json",
-	)
-	if not os.path.exists(ws_path):
-		return
-	with open(ws_path) as f:
-		ws_data = json.load(f)
-	for idx, lnk in enumerate(ws_data.get("links", []), 1):
-		frappe.db.sql("""
-			INSERT INTO `tabWorkspace Link`
-			(name, creation, modified, owner, modified_by, parent, parenttype,
-			 parentfield, idx, type, link_to, label, link_type, onboard, hidden,
-			 is_query_report, dependencies)
-			VALUES (%s, NOW(), NOW(), 'Administrator', 'Administrator', %s,
-			        'Workspace', 'links', %s, 'Link', %s, %s, %s, %s, %s, %s, %s)
-		""", (
-			frappe.generate_hash(length=10), ws_name,
-			idx, lnk.get("link_to", ""), lnk.get("label", ""),
-			lnk.get("link_type", "DocType"), lnk.get("onboard", 0),
-			lnk.get("hidden", 0), lnk.get("is_query_report", 0),
-			lnk.get("dependencies", ""),
-		))
-
-
-def update_workspace_with_charts():
-	ws_name = "AIMS Desk"
-	if not frappe.db.exists("Workspace", ws_name):
-		return
-
-	content = [
-		{
-			"id": "h1",
-			"type": "header",
-			"data": {
-				"text": '<span class="h4"><b>AIMS Desk</b></span>',
-				"col": 12
-			}
-		},
-		{
-			"id": "p1",
-			"type": "paragraph",
-			"data": {
-				"text": "Manage client assignments from origination to closure. Track SLAs, reviews, document requests, and team productivity.",
-				"col": 12
-			}
-		},
-	]
-
-	card_names = ["Active Assignments", "Active Projects", "Pending Reviews", "Pending Projects"]
-	card_items = []
-	for i, cname in enumerate(card_names):
-		if frappe.db.exists("Number Card", cname):
-			card_items.append({
-				"id": f"nc{i+1}", "type": "number_card",
-				"data": {"number_card_name": cname, "col": 3}
-			})
-
-	chart_names = [
-		"Assignments Trend (Last 12 Months)",
-	]
-	chart_items = []
-	for i, cname in enumerate(chart_names):
-		if frappe.db.exists("Dashboard Chart", cname):
-			chart_items.append({
-				"id": f"c{i+1}", "type": "chart",
-				"data": {"chart_name": cname, "col": 12}
-			})
-
-	content += card_items + chart_items
-
-	content += [
-		{"id": "sp1", "type": "spacer", "data": {"col": 12}},
-		{
-			"id": "sh2",
-			"type": "header",
-			"data": {
-				"text": '<span class="h5"><b>Quick Actions</b></span>',
-				"col": 12
-			}
-		},
-	]
-
-	shortcuts = [
-		("s1", "New Assignment Origination"), ("s2", "All Assignments"),
-		("s3", "Project Templates"), ("s4", "Active Projects"),
-		("s5", "Pending Projects"), ("s6", "Engagement SLAs"),
-		("s7", "My Tasks"), ("s8", "My Timesheets"),
-		("s9", "Document Requests"), ("s10", "Review Queue"),
-		("s11", "Client Delays"), ("s12", "Risk Register"),
-		("s13", "Closure Certificates"), ("s14", "Performance Feedback"),
-		("s15", "SLA Compliance"), ("s16", "Staff Productivity"),
-	]
-	for sid, sname in shortcuts:
-		content.append({
-			"id": sid, "type": "shortcut",
-			"data": {"shortcut_name": sname, "col": 3}
-		})
-
-	frappe.db.set_value("Workspace", ws_name, "content", json.dumps(content))
-	_insert_workspace_charts(ws_name, chart_names)
-	_insert_workspace_number_cards(ws_name, card_names)
-	_insert_workspace_shortcuts(ws_name)
-	_insert_workspace_links(ws_name)
-
-
-def update_ceo_dashboard_with_charts():
+def _setup_ceo_workspace():
 	ws_name = "CEO"
-	if not frappe.db.exists("Workspace", ws_name):
-		return
-
-	content = [
-		{
-			"id": "h1",
-			"type": "header",
-			"data": {
-				"text": '<span class="h4"><b>CEO</b></span>',
-				"col": 12
-			}
-		},
-		{
-			"id": "p1",
-			"type": "paragraph",
-			"data": {
-				"text": "High-level overview of firm performance, risk exposure, and staff productivity.",
-				"col": 12
-			}
-		},
-	]
-
-	card_names = ["Total Assignments YTD", "Open Risks", "Active Staff", "Active Clients"]
-	card_items = []
-	for i, cname in enumerate(card_names):
-		if frappe.db.exists("Number Card", cname):
-			card_items.append({
-				"id": f"nc{i+1}", "type": "number_card",
-				"data": {"number_card_name": cname, "col": 3}
-			})
-
-	chart_names = [
-		"Monthly Assignment Intake",
-		"Risk Distribution",
-		"Client Delays by Impact",
-		"Open Risks by Type",
-	]
-	chart_items = []
-	for i, cname in enumerate(chart_names):
-		if frappe.db.exists("Dashboard Chart", cname):
-			chart_items.append({
-				"id": f"c{i+1}", "type": "chart",
-				"data": {"chart_name": cname, "col": 12 if i == 0 else 4}
-			})
-
-	content += card_items + chart_items
-
-	content += [
+	ceo_content = json.dumps([
+		{"id": "h1", "type": "header", "data": {"text": "<span class=\"h4\"><b>CEO Dashboard</b></span>", "col": 12}},
+		{"id": "p1", "type": "paragraph", "data": {"text": "Overview of employee task completion and project productivity.", "col": 12}},
+		{"id": "nc1", "type": "number_card", "data": {"number_card_name": "Tasks Completed", "col": 3}},
+		{"id": "nc2", "type": "number_card", "data": {"number_card_name": "Tasks Pending", "col": 3}},
+		{"id": "nc3", "type": "number_card", "data": {"number_card_name": "Active Staff", "col": 3}},
+		{"id": "nc4", "type": "number_card", "data": {"number_card_name": "Active Clients", "col": 3}},
+		{"id": "cb1", "type": "custom_block", "data": {"custom_block_name": "CEO Top Bottom Employees", "col": 12}},
+		{"id": "c1", "type": "chart", "data": {"chart_name": "Employee Performance Trend", "col": 12}},
+		{"id": "c2", "type": "chart", "data": {"chart_name": "Tasks by Status", "col": 6}},
+		{"id": "c3", "type": "chart", "data": {"chart_name": "Tasks Completed Over Time", "col": 6}},
+		{"id": "c4", "type": "chart", "data": {"chart_name": "Open Tasks by Project", "col": 6}},
+		{"id": "c5", "type": "chart", "data": {"chart_name": "Task Priority Distribution", "col": 6}},
 		{"id": "sp1", "type": "spacer", "data": {"col": 12}},
-		{
-			"id": "sh2",
-			"type": "header",
-			"data": {
-				"text": '<span class="h5"><b>CEO Quick Actions</b></span>',
-				"col": 12
-			}
-		},
-	]
+		{"id": "sh2", "type": "header", "data": {"text": "<span class=\"h5\"><b>Quick Actions</b></span>", "col": 12}},
+		{"id": "s1", "type": "shortcut", "data": {"shortcut_name": "Staff Productivity", "col": 3}},
+		{"id": "s2", "type": "shortcut", "data": {"shortcut_name": "Employee Performance", "col": 3}},
+	])
 
-	shortcuts = [
-		("s1", "Staff Productivity"), ("s2", "Employee Performance"),
-	]
-	for sid, sname in shortcuts:
-		content.append({
-			"id": sid, "type": "shortcut",
-			"data": {"shortcut_name": sname, "col": 3}
-		})
+	if frappe.db.exists("Workspace", ws_name):
+		frappe.db.set_value("Workspace", ws_name, "content", ceo_content)
+	else:
+		frappe.db.sql("""
+			INSERT INTO `tabWorkspace`
+			(name, label, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by)
+			VALUES (%s, %s, 'Alpha Assignment Management', 0, 1, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')
+		""", (ws_name, ws_name, ceo_content))
 
-	frappe.db.set_value("Workspace", ws_name, "content", json.dumps(content))
-	_insert_workspace_charts(ws_name, chart_names)
-	_insert_workspace_number_cards(ws_name, card_names)
+	_insert_workspace_charts(ws_name, [
+		"Employee Performance Trend", "Tasks by Status", "Tasks Completed Over Time",
+		"Open Tasks by Project", "Task Priority Distribution",
+	])
+	_insert_workspace_number_cards(ws_name, [
+		"Tasks Completed", "Tasks Pending", "Active Staff", "Active Clients",
+	])
+	_insert_workspace_custom_blocks(ws_name, ["CEO Top Bottom Employees"])
 
 
-def after_migrate():
-	create_workflow_states()
-	update_workspace_with_charts()
-	update_ceo_dashboard_with_charts()
-	create_project_templates()
+def _setup_aims_desk_workspace():
+	ws_name = "AIMS Desk"
+	aims_content = json.dumps([
+		{"id": "h1", "type": "header", "data": {"text": "<span class=\"h4\"><b>AIMS Desk</b></span>", "col": 12}},
+		{"id": "p1", "type": "paragraph", "data": {"text": "Manage client assignments from origination to closure.", "col": 12}},
+		{"id": "nc1", "type": "number_card", "data": {"number_card_name": "Active Assignments", "col": 3}},
+		{"id": "nc2", "type": "number_card", "data": {"number_card_name": "Active Projects", "col": 3}},
+		{"id": "nc3", "type": "number_card", "data": {"number_card_name": "Tasks Completed", "col": 3}},
+		{"id": "nc4", "type": "number_card", "data": {"number_card_name": "Tasks Pending", "col": 3}},
+		{"id": "c1", "type": "chart", "data": {"chart_name": "Employee Performance Trend", "col": 12}},
+		{"id": "sp1", "type": "spacer", "data": {"col": 12}},
+		{"id": "sh2", "type": "header", "data": {"text": "<span class=\"h5\"><b>Quick Actions</b></span>", "col": 12}},
+		{"id": "s1", "type": "shortcut", "data": {"shortcut_name": "New Assignment Origination", "col": 3}},
+		{"id": "s2", "type": "shortcut", "data": {"shortcut_name": "All Assignments", "col": 3}},
+		{"id": "s3", "type": "shortcut", "data": {"shortcut_name": "My Tasks", "col": 3}},
+		{"id": "s4", "type": "shortcut", "data": {"shortcut_name": "Staff Productivity", "col": 3}},
+	])
+
+	if frappe.db.exists("Workspace", ws_name):
+		frappe.db.set_value("Workspace", ws_name, "content", aims_content)
+	else:
+		frappe.db.sql("""
+			INSERT INTO `tabWorkspace`
+			(name, label, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by)
+			VALUES (%s, %s, 'Alpha Assignment Management', 0, 1, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')
+		""", (ws_name, ws_name, aims_content))
+
+	_insert_workspace_charts(ws_name, ["Employee Performance Trend"])
+	_insert_workspace_number_cards(ws_name, [
+		"Active Assignments", "Active Projects", "Tasks Completed", "Tasks Pending",
+	])
