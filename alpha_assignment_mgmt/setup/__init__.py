@@ -344,21 +344,19 @@ def _create_assignment_number_cards():
 def _create_task_number_cards():
 	cards = [
 		{
-			"name": "Tasks Completed",
 			"label": "Tasks Completed",
 			"filters": '[["Task","status","=","Completed"]]',
 			"color": "#28a745",
 		},
 		{
-			"name": "Tasks Pending",
 			"label": "Tasks Pending",
 			"filters": '[["Task","status","in",["Open","Working","Overdue"]]]',
 			"color": "#ff6b6b",
 		},
 	]
 	for c in cards:
-		if frappe.db.exists("Number Card", c["name"]):
-			frappe.db.set_value("Number Card", c["name"], {
+		if frappe.db.exists("Number Card", c["label"]):
+			frappe.db.set_value("Number Card", c["label"], {
 				"document_type": "Task",
 				"function": "Count",
 				"type": "Document Type",
@@ -368,23 +366,31 @@ def _create_task_number_cards():
 				"show_percentage_stats": 1,
 				"stats_time_interval": "Daily",
 				"color": c["color"],
+				"currency": "",
 				"module": "Alpha Assignment Management",
 			})
 		else:
-			doc = frappe.new_doc("Number Card")
-			doc.name = c["name"]
-			doc.label = c["label"]
-			doc.document_type = "Task"
-			doc.function = "Count"
-			doc.type = "Document Type"
-			doc.is_public = 1
-			doc.is_standard = 0
-			doc.module = "Alpha Assignment Management"
-			doc.filters_json = c["filters"]
-			doc.show_percentage_stats = 1
-			doc.stats_time_interval = "Daily"
-			doc.color = c["color"]
+			doc = frappe.get_doc({
+				"doctype": "Number Card",
+				"label": c["label"],
+				"document_type": "Task",
+				"function": "Count",
+				"type": "Document Type",
+				"is_public": 1,
+				"is_standard": 0,
+				"module": "Alpha Assignment Management",
+				"filters_json": c["filters"],
+				"show_percentage_stats": 1,
+				"stats_time_interval": "Daily",
+				"color": c["color"],
+				"currency": "",
+			})
 			doc.insert(ignore_permissions=True)
+
+	# Also clear currency on Active Staff / Active Clients so they show numbers not TZS
+	for name in ["Active Staff", "Active Clients"]:
+		if frappe.db.exists("Number Card", name):
+			frappe.db.set_value("Number Card", name, {"currency": ""})
 
 
 def _create_task_dashboard_charts():
@@ -489,6 +495,7 @@ def _create_custom_html_block():
     <div class="col-md-6">
         <div style="border-left: 4px solid #dc3545; padding: 15px; background: #f8f9fa; border-radius: 4px;">
             <h6 style="color: #dc3545; font-weight: bold; margin-bottom: 10px;">Bottom 5 - Needs Attention</h6>
+            <p style="font-size:11px;color:#999;margin-bottom:8px;">Employees with fewer completed tasks</p>
             <div id="bottom-5-list"><p class="text-muted">Loading...</p></div>
         </div>
     </div>
