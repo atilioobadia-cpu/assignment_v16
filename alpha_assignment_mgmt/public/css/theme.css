@@ -1,94 +1,112 @@
 /* ==========================================================================
    Alpha Associates Custom Green Logo Theme
+   All variables use !important to override Frappe's built-in theme system.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
    1. LIGHT THEME
    -------------------------------------------------------------------------- */
-:root, [data-theme="light"] {
+:root, [data-theme="light"], [data-theme-mode="light"] {
     /* Brand & Primary */
-    --primary: #2B5129;
-    --primary-color: #2B5129;
-    --brand-color: #2B5129;
-    --blue-500: #2B5129;
+    --primary: #2B5129 !important;
+    --primary-color: #2B5129 !important;
+    --brand-color: #2B5129 !important;
+    --blue-500: #2B5129 !important;
 
     /* Layout Backgrounds */
-    --bg-color: #FFFFFF;
-    --fg-color: #FFFFFF;
-    --layout-bg: #FFFFFF;
-    --card-bg: #FFFFFF;
+    --bg-color: #FFFFFF !important;
+    --fg-color: #FFFFFF !important;
+    --layout-bg: #FFFFFF !important;
+    --card-bg: #FFFFFF !important;
 
     /* Sidebar & Surfaces */
-    --sidebar-bg: #F5F7F5;
-    --surface-gray-1: #F5F7F5;
+    --sidebar-bg: #F5F7F5 !important;
+    --surface-gray-1: #F5F7F5 !important;
 
     /* Typography */
-    --text-color: #1A1C1A;
-    --heading-color: #1A1C1A;
-    --gray-500: #4A4E4A;
-    --text-muted: #4A4E4A;
+    --text-color: #1A1C1A !important;
+    --heading-color: #1A1C1A !important;
+    --gray-500: #4A4E4A !important;
+    --text-muted: #4A4E4A !important;
 
     /* Buttons */
-    --btn-primary: #2B5129;
-    --btn-primary-text-color: #FFFFFF;
-    --border-primary: #2B5129;
+    --btn-primary: #2B5129 !important;
+    --btn-primary-text-color: #FFFFFF !important;
+    --border-primary: #2B5129 !important;
 
     /* Controls */
-    --control-bg: #F5F7F5;
+    --control-bg: #F5F7F5 !important;
 
     /* Checkboxes */
-    --checkbox-color: #2B5129;
-    --checkbox-gradient: linear-gradient(180deg, #2B5129 -124.51%, #2B5129 100%);
+    --checkbox-color: #2B5129 !important;
+    --checkbox-gradient: linear-gradient(180deg, #2B5129 -124.51%, #2B5129 100%) !important;
 }
 
 /* --------------------------------------------------------------------------
    2. DARK THEME
    -------------------------------------------------------------------------- */
-[data-theme="dark"] {
+[data-theme="dark"], [data-theme-mode="dark"] {
     /* Layout Backgrounds */
-    --surface-gray-7: #1A1C1A;
-    --bg-color: #1A1C1A;
-    --layout-bg: #1A1C1A;
+    --surface-gray-7: #1A1C1A !important;
+    --bg-color: #1A1C1A !important;
+    --layout-bg: #1A1C1A !important;
 
     /* Navigation & Bars */
-    --surface-menu-bar: #111211;
-    --navbar-bg: #111211;
-    --surface-white: #111211;
+    --surface-menu-bar: #111211 !important;
+    --navbar-bg: #111211 !important;
+    --surface-white: #111211 !important;
 
     /* Cards, Forms & Controls - Deep Green */
-    --surface-modal: #2B5129;
-    --card-bg: #2B5129;
-    --fg-color: #2B5129;
-    --control-bg: #2B5129;
+    --surface-modal: #2B5129 !important;
+    --card-bg: #2B5129 !important;
+    --fg-color: #2B5129 !important;
+    --control-bg: #2B5129 !important;
 
     /* Sidebar & Structural */
-    --surface-gray-1: #1A1C1A;
-    --sidebar-bg: #1A1C1A;
+    --surface-gray-1: #1A1C1A !important;
+    --sidebar-bg: #1A1C1A !important;
 
     /* Typography - White */
-    --ink-gray-9: #FFFFFF;
-    --text-color: #FFFFFF;
-    --heading-color: #FFFFFF;
-    --icon-fill: #FFFFFF;
-    --text-muted: #E6EEE6;
+    --ink-gray-9: #FFFFFF !important;
+    --text-color: #FFFFFF !important;
+    --heading-color: #FFFFFF !important;
+    --icon-fill: #FFFFFF !important;
+    --text-muted: #E6EEE6 !important;
 
     /* Brand & Primary */
-    --primary: #2B5129;
-    --primary-color: #2B5129;
-    --brand-color: #2B5129;
-    --btn-primary: #2B5129;
-    --btn-primary-text-color: #FFFFFF;
-    --border-primary: #2B5129;
+    --primary: #2B5129 !important;
+    --primary-color: #2B5129 !important;
+    --brand-color: #2B5129 !important;
+    --btn-primary: #2B5129 !important;
+    --btn-primary-text-color: #FFFFFF !important;
+    --border-primary: #2B5129 !important;
 
     /* Secondary Buttons */
-    --btn-default-bg: #2B2E2B;
-    --btn-default-text-color: #FFFFFF;
+    --btn-default-bg: #2B2E2B !important;
+    --btn-default-text-color: #FFFFFF !important;
 
     /* Charts */
-    --chart-axis-label-color: #FFFFFF;
-    --chart-grid-line-color: rgba(255, 255, 255, 0.15);
+    --chart-axis-label-color: #FFFFFF !important;
+    --chart-grid-line-color: rgba(255, 255, 255, 0.15) !important;
 
     /* Checkboxes */
-    --checkbox-color: #2B5129;
-    --checkbox-gradient: linear-gradient(180deg, #2B5129 -124.51%, #2B5129 100%);
+    --checkbox-color: #2B5129 !important;
+    --checkbox-gradient: linear-gradient(180deg, #2B5129 -124.51%, #2B5129 100%) !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Fallback: also target frappe's theme switcher selector
+   -------------------------------------------------------------------------- */
+[data-theme-mode="light"] {
+    --primary: #2B5129 !important;
+    --bg-color: #FFFFFF !important;
+    --fg-color: #FFFFFF !important;
+}
+
+[data-theme-mode="dark"] {
+    --primary: #2B5129 !important;
+    --bg-color: #1A1C1A !important;
+    --fg-color: #2B5129 !important;
+    --card-bg: #2B5129 !important;
+    --text-color: #FFFFFF !important;
 }
