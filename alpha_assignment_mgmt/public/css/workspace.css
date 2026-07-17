@@ -1,0 +1,27 @@
+/* Alpha Assignment Management - Workspace Overrides */
+
+/* Fix shortcut widget text truncation - allow wrapping */
+[data-page-route="Workspaces"] .shortcut-widget-box {
+	height: auto !important;
+	min-height: 60px;
+}
+
+[data-page-route="Workspaces"] .shortcut-widget-box .widget-title .ellipsis {
+	white-space: normal !important;
+	text-overflow: unset !important;
+	overflow: visible !important;
+	word-wrap: break-word;
+	hyphens: auto;
+}
+
+/* CEO Dashboard - Top 5/Bottom 5 list styling */
+.ceo-top-bottom-container {
+	margin-bottom: 20px;
+}
+.ceo-top-bottom-container .table {
+	margin-bottom: 0;
+}
+.ceo-top-bottom-container .table td {
+	padding: 4px 8px;
+	vertical-align: middle;
+}

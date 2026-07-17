@@ -15,7 +15,6 @@ def after_install():
 	_create_assignment_dashboard_charts()
 	_create_task_number_cards()
 	_create_task_dashboard_charts()
-	_create_custom_html_block()
 	_setup_ceo_workspace()
 	_setup_aims_desk_workspace()
 	_create_ceo_api_method()
@@ -29,7 +28,6 @@ def after_migrate():
 	create_project_templates()
 	_create_task_number_cards()
 	_create_task_dashboard_charts()
-	_create_custom_html_block()
 	_setup_ceo_workspace()
 	_setup_aims_desk_workspace()
 	_clear_number_card_currencies()
@@ -294,6 +292,7 @@ def _create_assignment_number_cards():
 			"document_type": "Alpha Assignment Origination",
 			"function": "Count",
 			"filters_json": '[]',
+			"currency": "",
 		},
 		{
 			"label": "Active Projects",
@@ -301,6 +300,7 @@ def _create_assignment_number_cards():
 			"document_type": "Project",
 			"function": "Count",
 			"filters_json": '[["Project","status","=","Completed"]]',
+			"currency": "",
 		},
 		{
 			"label": "Pending Reviews",
@@ -308,6 +308,7 @@ def _create_assignment_number_cards():
 			"document_type": "Review Gate Register",
 			"function": "Count",
 			"filters_json": '[["Review Gate Register","docstatus","=",0]]',
+			"currency": "",
 		},
 		{
 			"label": "Pending Projects",
@@ -315,6 +316,7 @@ def _create_assignment_number_cards():
 			"document_type": "Project",
 			"function": "Count",
 			"filters_json": '[["Project","status","=","Open"]]',
+			"currency": "",
 		},
 		{
 			"label": "Active Staff",
@@ -322,6 +324,7 @@ def _create_assignment_number_cards():
 			"document_type": "Employee",
 			"function": "Count",
 			"filters_json": '[["Employee","status","=","Active"]]',
+			"currency": "",
 		},
 		{
 			"label": "Active Clients",
@@ -329,6 +332,7 @@ def _create_assignment_number_cards():
 			"document_type": "Customer",
 			"function": "Count",
 			"filters_json": '[["Customer","disabled","=",0]]',
+			"currency": "",
 		},
 	]
 	for card in cards:
@@ -338,7 +342,7 @@ def _create_assignment_number_cards():
 				**card,
 			}).insert(ignore_permissions=True)
 		else:
-			frappe.db.set_value("Number Card", card["label"], {"is_public": 1})
+			frappe.db.set_value("Number Card", card["label"], {"is_public": 1, "currency": ""})
 
 
 # ── Task-performance cards & charts (CEO dashboard) ─────────────────────
@@ -396,19 +400,22 @@ def _create_task_number_cards():
 
 
 def _clear_number_card_currencies():
-	"""Clear currency on all count-based Number Cards that should show whole numbers, not TZS.
+	"""Clear currency on all count-based Number Cards via direct SQL.
 
-	Workspace sync creates Number Cards with the company's default currency (TZS).
-	We need to run this AFTER workspace sync to override that default.
+	Workspace sync and fixture import may set currency to company default (TZS).
+	We run this AFTER all setup to override that default.
 	"""
-	count_cards = [
-		"Tasks Completed", "Tasks Pending",
-		"Active Staff", "Active Clients",
-		"Active Assignments", "Active Projects",
-	]
-	for name in count_cards:
-		if frappe.db.exists("Number Card", name):
-			frappe.db.set_value("Number Card", name, {"currency": ""})
+	frappe.db.sql("""
+		UPDATE `tabNumber Card`
+		SET currency = ''
+		WHERE name IN (
+			'Tasks Completed', 'Tasks Pending',
+			'Active Staff', 'Active Clients',
+			'Active Assignments', 'Active Projects',
+			'Pending Reviews', 'Pending Projects'
+		)
+		AND currency != ''
+	""")
 
 
 def _create_task_dashboard_charts():
@@ -719,7 +726,6 @@ def _setup_ceo_workspace():
 		{"id": "nc2", "type": "number_card", "data": {"number_card_name": "Tasks Pending", "col": 3}},
 		{"id": "nc3", "type": "number_card", "data": {"number_card_name": "Active Staff", "col": 3}},
 		{"id": "nc4", "type": "number_card", "data": {"number_card_name": "Active Clients", "col": 3}},
-		{"id": "cb1", "type": "custom_block", "data": {"custom_block_name": "CEO Top Bottom Employees", "col": 12}},
 		{"id": "c1", "type": "chart", "data": {"chart_name": "Employee Performance Trend", "col": 12}},
 		{"id": "c2", "type": "chart", "data": {"chart_name": "Tasks by Status", "col": 6}},
 		{"id": "c3", "type": "chart", "data": {"chart_name": "Tasks Completed Over Time", "col": 6}},
@@ -747,7 +753,11 @@ def _setup_ceo_workspace():
 	_insert_workspace_number_cards(ws_name, [
 		"Tasks Completed", "Tasks Pending", "Active Staff", "Active Clients",
 	])
-	_insert_workspace_custom_blocks(ws_name, ["CEO Top Bottom Employees"])
+	# No custom blocks - Top 5/Bottom 5 is rendered by public/js/ceo_dashboard.js via app_include_js
+	frappe.db.sql(
+		"DELETE FROM `tabWorkspace Custom Block` WHERE parent = %s AND parenttype = 'Workspace'",
+		ws_name,
+	)
 	_insert_workspace_shortcuts(ws_name, [
 		{"type": "Report", "link_to": "Staff Productivity", "label": "Staff Productivity", "icon": "chart"},
 		{"type": "Report", "link_to": "Employee Performance", "label": "Employee Performance", "icon": "chart"},
@@ -757,7 +767,7 @@ def _setup_ceo_workspace():
 def _setup_aims_desk_workspace():
 	ws_name = "AIMS Desk"
 	aims_shortcuts = [
-		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "New Assignment Origination", "icon": "add"},
+		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "New Assignment", "icon": "add"},
 		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "All Assignments", "icon": "list", "doc_view": "list"},
 		{"type": "DocType", "link_to": "Task", "label": "My Tasks", "icon": "task"},
 		{"type": "Report", "link_to": "Staff Productivity", "label": "Staff Productivity", "icon": "chart"},
