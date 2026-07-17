@@ -464,6 +464,8 @@ def _create_task_dashboard_charts():
 		else:
 			doc = frappe.new_doc("Dashboard Chart")
 			for k, v in ch.items():
+				if k == "filters":
+					k = "filters_json"
 				setattr(doc, k, v)
 			doc.chart_name = ch["name"]
 			doc.is_standard = 0
