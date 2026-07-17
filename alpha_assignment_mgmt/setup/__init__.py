@@ -521,19 +521,27 @@ def _create_custom_html_block():
 </div>"""
 
 	script = """frappe.ready(function() {
+    var topList = root_element.querySelector('#top-5-list');
+    var bottomList = root_element.querySelector('#bottom-5-list');
+
     frappe.call({
         method: 'alpha_assignment_mgmt.alpha_assignment_management.api.ceo_dashboard.get_ceo_top_bottom',
         callback: function(r) {
             if (!r.message) return;
             var data = r.message;
-            renderList('#top-5-list', data.top5, true);
-            renderList('#bottom-5-list', data.bottom5, false);
+            renderList(topList, data.top5, true);
+            renderList(bottomList, data.bottom5, false);
+        },
+        error: function() {
+            if (topList) topList.innerHTML = '<p class="text-muted">Error loading data</p>';
+            if (bottomList) bottomList.innerHTML = '<p class="text-muted">Error loading data</p>';
         }
     });
 
-    function renderList(selector, items, isTop) {
+    function renderList(container, items, isTop) {
+        if (!container) return;
         if (!items || !items.length) {
-            $(selector).html('<p class="text-muted">No data</p>');
+            container.innerHTML = '<p class="text-muted">No data</p>';
             return;
         }
         var html = '<table class="table table-sm table-borderless mb-0">';
@@ -553,7 +561,7 @@ def _create_custom_html_block():
             html += '<tr><td><b>' + rank + '</b></td><td>' + item.name + medal + '</td><td style="text-align:center;">' + completedBadge + '</td><td style="text-align:center;">' + pendingBadge + '</td></tr>';
         });
         html += '</table>';
-        $(selector).html(html);
+        container.innerHTML = html;
     }
 });"""
 
@@ -678,6 +686,30 @@ def _insert_workspace_custom_blocks(ws_name, block_names):
 			""", (f"{ws_name}_cb{idx}", bname, bname, ws_name, idx))
 
 
+def _insert_workspace_shortcuts(ws_name, shortcuts):
+	"""Insert shortcut entries into tabWorkspace Shortcut.
+
+	shortcuts: list of dicts with keys: type, link_to, label, icon, doc_view (optional)
+	"""
+	frappe.db.sql(
+		"DELETE FROM `tabWorkspace Shortcut` WHERE parent = %s AND parenttype = 'Workspace'",
+		ws_name,
+	)
+	for idx, sc in enumerate(shortcuts):
+		frappe.db.sql("""
+			INSERT INTO `tabWorkspace Shortcut`
+			(name, type, link_to, url, doc_view, kanban_board, label, icon,
+			 restrict_to_domain, report_ref_doctype, stats_filter, color, format,
+			 parent, parentfield, parenttype, idx, docstatus, creation, modified, owner, modified_by)
+			VALUES (%s, %s, %s, NULL, %s, NULL, %s, %s, NULL, NULL, NULL, NULL, NULL,
+			 %s, 'shortcuts', 'Workspace', %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')
+		""", (
+			f"{ws_name}_sc{idx}", sc["type"], sc["link_to"],
+			sc.get("doc_view"), sc["label"], sc.get("icon", "link"),
+			ws_name, idx,
+		))
+
+
 def _setup_ceo_workspace():
 	ws_name = "CEO"
 	ceo_content = json.dumps([
@@ -716,10 +748,25 @@ def _setup_ceo_workspace():
 		"Tasks Completed", "Tasks Pending", "Active Staff", "Active Clients",
 	])
 	_insert_workspace_custom_blocks(ws_name, ["CEO Top Bottom Employees"])
+	_insert_workspace_shortcuts(ws_name, [
+		{"type": "Report", "link_to": "Staff Productivity", "label": "Staff Productivity", "icon": "chart"},
+		{"type": "Report", "link_to": "Employee Performance", "label": "Employee Performance", "icon": "chart"},
+	])
 
 
 def _setup_aims_desk_workspace():
 	ws_name = "AIMS Desk"
+	aims_shortcuts = [
+		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "New Assignment Origination", "icon": "add"},
+		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "All Assignments", "icon": "list", "doc_view": "list"},
+		{"type": "DocType", "link_to": "Task", "label": "My Tasks", "icon": "task"},
+		{"type": "Report", "link_to": "Staff Productivity", "label": "Staff Productivity", "icon": "chart"},
+		{"type": "DocType", "link_to": "Document Request Register", "label": "Document Requests", "icon": "file"},
+		{"type": "DocType", "link_to": "Review Gate Register", "label": "Review Queue", "icon": "review"},
+		{"type": "DocType", "link_to": "Client Delay Log", "label": "Client Delays", "icon": "warn"},
+		{"type": "DocType", "link_to": "Client Risk Register", "label": "Risk Register", "icon": "list"},
+	]
+
 	aims_content = json.dumps([
 		{"id": "h1", "type": "header", "data": {"text": "<span class=\"h4\"><b>AIMS Desk</b></span>", "col": 12}},
 		{"id": "p1", "type": "paragraph", "data": {"text": "Manage client assignments from origination to closure.", "col": 12}},
@@ -730,10 +777,9 @@ def _setup_aims_desk_workspace():
 		{"id": "c1", "type": "chart", "data": {"chart_name": "Employee Performance Trend", "col": 12}},
 		{"id": "sp1", "type": "spacer", "data": {"col": 12}},
 		{"id": "sh2", "type": "header", "data": {"text": "<span class=\"h5\"><b>Quick Actions</b></span>", "col": 12}},
-		{"id": "s1", "type": "shortcut", "data": {"shortcut_name": "New Assignment Origination", "col": 3}},
-		{"id": "s2", "type": "shortcut", "data": {"shortcut_name": "All Assignments", "col": 3}},
-		{"id": "s3", "type": "shortcut", "data": {"shortcut_name": "My Tasks", "col": 3}},
-		{"id": "s4", "type": "shortcut", "data": {"shortcut_name": "Staff Productivity", "col": 3}},
+	] + [
+		{"id": f"s{i+1}", "type": "shortcut", "data": {"shortcut_name": sc["label"], "col": 3}}
+		for i, sc in enumerate(aims_shortcuts)
 	])
 
 	if frappe.db.exists("Workspace", ws_name):
@@ -749,3 +795,4 @@ def _setup_aims_desk_workspace():
 	_insert_workspace_number_cards(ws_name, [
 		"Active Assignments", "Active Projects", "Tasks Completed", "Tasks Pending",
 	])
+	_insert_workspace_shortcuts(ws_name, aims_shortcuts)
