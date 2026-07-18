@@ -3,94 +3,71 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. LIGHT THEME (Bright & Clean with Green Highlights)
+   LIGHT THEME (Bright & Clean with Green Accents)
    -------------------------------------------------------------------------- */
 :root, [data-theme="light"] {
+    /* Primary buttons & interactive elements (Deep Green) */
     --primary: #2B5129;
+
+    /* Main background canvas & card grids (Pure White) */
     --bg-color: #ffffff;
     --fg-color: #ffffff;
     --layout-bg: #ffffff;
-    --blue-500: #2B5129;
-    --text-color: #1A1C1A;
-    --gray-500: #4a4e4a;
-    --sidebar-bg: #f5f7f5;
-    --surface-gray-1: #f5f7f5;
 
-    .btn-primary {
-        background-color: #2B5129 !important;
-        border-color: #2B5129 !important;
-        color: #ffffff !important;
-    }
-    .btn-primary:hover, .btn-primary:focus {
-        background-color: #1c361a !important;
-        border-color: #1c361a !important;
-    }
-    .btn-default {
-        background-color: #ffffff !important;
-        border-color: #d1d5db !important;
-        color: #1A1C1A !important;
-    }
+    /* Left Navigation Sidebar backdrop (Soft light green tint for brand identity) */
+    --sidebar-bg: #f2f6f2;
+    --surface-gray-1: #f2f6f2;
+
+    /* Active links, focus indicators, and indicators */
+    --blue-500: #2B5129;
+
+    /* CRITICAL TEXT CONTRAST FOR LIGHT MODE: Deep charcoal for clear reading */
+    --text-color: #1A1C1A !important;
+    --heading-color: #1A1C1A !important;
+    --ink-gray-9: #1A1C1A !important;
+    --gray-500: #555c55;
 }
 
 /* --------------------------------------------------------------------------
-   2. DARK THEME (Rich Logo Charcoal Canvas with Deep Green Elements)
+   DARK THEME (Rich Charcoal & Deep Green - No More Missing Text)
    -------------------------------------------------------------------------- */
 [data-theme="dark"] {
+    /* Primary desktop canvas structural backdrop (Dark Charcoal from logo) */
     --surface-gray-7: #1A1C1A;
     --bg-color: #1A1C1A;
     --layout-bg: #1A1C1A;
 
-    --surface-menu-bar: #111211;
-    --navbar-bg: #111211;
-    --surface-white: #111211;
+    /* Upper tracking navigation utility header section (Dark Charcoal) */
+    --surface-menu-bar: #121412;
+    --navbar-bg: #121412;
+    --surface-white: #121412;
 
+    /* Dashboard Cards & Pop-up panels (Deep Green from logo) */
     --surface-modal: #2B5129;
     --card-bg: #2B5129;
     --fg-color: #2B5129;
     --control-bg: #2B5129;
 
-    --surface-gray-1: #1A1C1A;
-    --sidebar-bg: #1A1C1A;
+    /* Primary sidebar vertical utility pane (Deep Green) */
+    --surface-gray-1: #2B5129;
+    --sidebar-bg: #2B5129;
 
-    --ink-gray-9: #ffffff;
-    --text-color: #ffffff;
-    --heading-color: #ffffff;
-    --icon-fill: #ffffff;
-    --text-muted: #e6eee6;
+    /* Forces all text layers inside dark cards to bright white */
+    --ink-gray-9: #ffffff !important;
+    --text-color: #ffffff !important;
+    --heading-color: #ffffff !important;
+    --text-muted: #e6eee6 !important;
+    --icon-fill: #ffffff !important;
 
+    /* Chart visualization adjustments */
     --chart-axis-label-color: #ffffff;
-    --chart-grid-line-color: rgba(255, 255, 255, 0.15);
+    --chart-grid-line-color: rgba(255, 255, 255, 0.1);
+}
 
-    .btn-primary {
-        background-color: #2B5129 !important;
-        border-color: #2B5129 !important;
-        color: #ffffff !important;
-    }
-    .btn-primary:hover, .btn-primary:focus {
-        background-color: #386935 !important;
-        border-color: #386935 !important;
-    }
-
-    .btn-default, .btn-secondary {
-        background-color: #2b2e2b !important;
-        border-color: #4a4e4a !important;
-        color: #ffffff !important;
-    }
-    .btn-default:hover, .btn-secondary:hover {
-        background-color: #3a3e3a !important;
-        border-color: #5a5e5a !important;
-    }
-
-    .shortcut-widget-box, .widget-box, .shortcut-item-action, .dashboard-widget-box {
-        background-color: #2B5129 !important;
-    }
-    .shortcut-widget-box .widget-label, .widget-box .widget-head .widget-title, .widget-box .widget-title, .widget-label, .number-card-title, .shortcut-widget-box .widget-title, .shortcut-widget-box a, .shortcut-widget-box span, .widget-box text {
-        color: #ffffff !important;
-        fill: #ffffff !important;
-        opacity: 1 !important;
-    }
-    .shortcut-widget-box .text-muted, .widget-box .text-muted, .number-card-trend, .widget-subtitle {
-        color: #ffffff !important;
-        opacity: 0.9 !important;
-    }
+/* Explicit widget and number card text targets for dark mode */
+[data-theme="dark"] .widget-head .widget-title,
+[data-theme="dark"] .widget-label,
+[data-theme="dark"] .number-card-title,
+[data-theme="dark"] .number-card-trend {
+    color: #ffffff !important;
 }
