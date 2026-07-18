@@ -19,7 +19,7 @@ app_include_css = [
 app_include_js = [
 	"/assets/alpha_assignment_mgmt/js/project.js",
 	"/assets/alpha_assignment_mgmt/js/task.js",
-	"/assets/alpha_assignment_mgmt/js/ceo_dashboard.js",
+	"/assets/alpha_assignment_mgmt/js/ceo_dashboard.js",,
 ]
 
 scheduler_events = {
