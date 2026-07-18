@@ -1,73 +1,41 @@
 /* ==========================================================================
-   Frappe/ERPNext v16 Custom Green Logo Theme Overrides
+   Frappe/ERPNext v16 Theme Overrides
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   LIGHT THEME (Bright & Clean with Green Accents)
+   LIGHT THEME 
    -------------------------------------------------------------------------- */
 :root, [data-theme="light"] {
-    /* Primary buttons & interactive elements (Deep Green) */
-    --primary: #2B5129;
-
-    /* Main background canvas & card grids (Pure White) */
+    --primary: #066B8E;
     --bg-color: #ffffff;
     --fg-color: #ffffff;
+    --blue-500: #16C1F3;
+    --text-color: #171717;
+    --gray-500: #0EA5D0;
+    --sidebar-bg: #f8f9fa;
     --layout-bg: #ffffff;
-
-    /* Left Navigation Sidebar backdrop (Soft light green tint for brand identity) */
-    --sidebar-bg: #f2f6f2;
-    --surface-gray-1: #f2f6f2;
-
-    /* Active links, focus indicators, and indicators */
-    --blue-500: #2B5129;
-
-    /* CRITICAL TEXT CONTRAST FOR LIGHT MODE: Deep charcoal for clear reading */
-    --text-color: #1A1C1A !important;
-    --heading-color: #1A1C1A !important;
-    --ink-gray-9: #1A1C1A !important;
-    --gray-500: #555c55;
 }
 
 /* --------------------------------------------------------------------------
-   DARK THEME (Rich Charcoal & Deep Green - No More Missing Text)
+   DARK THEME 
    -------------------------------------------------------------------------- */
 [data-theme="dark"] {
-    /* Primary desktop canvas structural backdrop (Dark Charcoal from logo) */
-    --surface-gray-7: #1A1C1A;
-    --bg-color: #1A1C1A;
-    --layout-bg: #1A1C1A;
-
-    /* Upper tracking navigation utility header section (Dark Charcoal) */
-    --surface-menu-bar: #121412;
-    --navbar-bg: #121412;
-    --surface-white: #121412;
-
-    /* Dashboard Cards & Pop-up panels (Deep Green from logo) */
-    --surface-modal: #2B5129;
-    --card-bg: #2B5129;
-    --fg-color: #2B5129;
-    --control-bg: #2B5129;
-
-    /* Primary sidebar vertical utility pane (Deep Green) */
-    --surface-gray-1: #2B5129;
-    --sidebar-bg: #2B5129;
-
-    /* Forces all text layers inside dark cards to bright white */
-    --ink-gray-9: #ffffff !important;
-    --text-color: #ffffff !important;
-    --heading-color: #ffffff !important;
-    --text-muted: #e6eee6 !important;
-    --icon-fill: #ffffff !important;
-
-    /* Chart visualization adjustments */
+    --surface-modal: #0EA5D0;
+    --card-bg: #0EA5D0;
+    --fg-color: #0EA5D0;
+    --surface-gray-1: #16C1F3;
+    --sidebar-bg: #16C1F3;
+    --surface-gray-7: #066B8E;
+    --bg-color: #066B8E;
+    --layout-bg: #066B8E;
+    --surface-menu-bar: #044B64;
+    --navbar-bg: #044B64;
+    --ink-gray-9: #ffffff;
+    --text-color: #ffffff;
+    --heading-color: #ffffff;
+    --surface-white: #044B64;
+    --text-muted: #e2f5fc;
+    --icon-fill: #ffffff;
     --chart-axis-label-color: #ffffff;
-    --chart-grid-line-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Explicit widget and number card text targets for dark mode */
-[data-theme="dark"] .widget-head .widget-title,
-[data-theme="dark"] .widget-label,
-[data-theme="dark"] .number-card-title,
-[data-theme="dark"] .number-card-trend {
-    color: #ffffff !important;
+    --chart-grid-line-color: rgba(255, 255, 255, 0.15);
 }
