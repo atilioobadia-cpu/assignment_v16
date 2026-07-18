@@ -11,7 +11,6 @@ required_apps = ["frappe/erpnext", "frappe/hrms"]
 after_install = "alpha_assignment_mgmt.setup.after_install"
 after_migrate = "alpha_assignment_mgmt.setup.after_migrate"
 
-app_include_css = ["/assets/alpha_assignment_mgmt/css/theme.css"]
 app_include_js = [
 	"/assets/alpha_assignment_mgmt/js/project.js",
 	"/assets/alpha_assignment_mgmt/js/task.js",
