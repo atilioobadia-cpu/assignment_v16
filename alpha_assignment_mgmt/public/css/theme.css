@@ -1,112 +1,177 @@
 /* ==========================================================================
-   Alpha Associates Custom Green Logo Theme
-   All variables use !important to override Frappe's built-in theme system.
+   Alpha Associates Custom Green Theme
+   Overrides Frappe 16 compiled CSS variables AND Bootstrap literal values.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. LIGHT THEME
+   1. CSS CUSTOM PROPERTY OVERRIDES (Light Theme)
    -------------------------------------------------------------------------- */
-:root, [data-theme="light"], [data-theme-mode="light"] {
-    /* Brand & Primary */
+:root,
+[data-theme="light"],
+[data-theme-mode="light"] {
     --primary: #2B5129 !important;
     --primary-color: #2B5129 !important;
     --brand-color: #2B5129 !important;
-    --blue-500: #2B5129 !important;
-
-    /* Layout Backgrounds */
+    --btn-primary: #2B5129 !important;
+    --border-primary: #2B5129 !important;
     --bg-color: #FFFFFF !important;
     --fg-color: #FFFFFF !important;
-    --layout-bg: #FFFFFF !important;
     --card-bg: #FFFFFF !important;
-
-    /* Sidebar & Surfaces */
     --sidebar-bg: #F5F7F5 !important;
     --surface-gray-1: #F5F7F5 !important;
-
-    /* Typography */
+    --control-bg: #F5F7F5 !important;
     --text-color: #1A1C1A !important;
     --heading-color: #1A1C1A !important;
-    --gray-500: #4A4E4A !important;
     --text-muted: #4A4E4A !important;
-
-    /* Buttons */
-    --btn-primary: #2B5129 !important;
-    --btn-primary-text-color: #FFFFFF !important;
-    --border-primary: #2B5129 !important;
-
-    /* Controls */
-    --control-bg: #F5F7F5 !important;
-
-    /* Checkboxes */
     --checkbox-color: #2B5129 !important;
     --checkbox-gradient: linear-gradient(180deg, #2B5129 -124.51%, #2B5129 100%) !important;
+    --progress-bar-bg: #2B5129 !important;
+    --subtle-accent: #F0F4F0 !important;
 }
 
 /* --------------------------------------------------------------------------
-   2. DARK THEME
+   2. CSS CUSTOM PROPERTY OVERRIDES (Dark Theme)
    -------------------------------------------------------------------------- */
-[data-theme="dark"], [data-theme-mode="dark"] {
-    /* Layout Backgrounds */
-    --surface-gray-7: #1A1C1A !important;
+[data-theme="dark"],
+[data-theme-mode="dark"] {
+    --primary: #2B5129 !important;
+    --primary-color: #2B5129 !important;
+    --brand-color: #2B5129 !important;
+    --btn-primary: #2B5129 !important;
+    --border-primary: #2B5129 !important;
     --bg-color: #1A1C1A !important;
+    --fg-color: #2B5129 !important;
+    --card-bg: #2B5129 !important;
     --layout-bg: #1A1C1A !important;
-
-    /* Navigation & Bars */
+    --surface-modal: #2B5129 !important;
     --surface-menu-bar: #111211 !important;
     --navbar-bg: #111211 !important;
     --surface-white: #111211 !important;
-
-    /* Cards, Forms & Controls - Deep Green */
-    --surface-modal: #2B5129 !important;
-    --card-bg: #2B5129 !important;
-    --fg-color: #2B5129 !important;
-    --control-bg: #2B5129 !important;
-
-    /* Sidebar & Structural */
     --surface-gray-1: #1A1C1A !important;
+    --surface-gray-7: #1A1C1A !important;
     --sidebar-bg: #1A1C1A !important;
-
-    /* Typography - White */
-    --ink-gray-9: #FFFFFF !important;
     --text-color: #FFFFFF !important;
     --heading-color: #FFFFFF !important;
-    --icon-fill: #FFFFFF !important;
     --text-muted: #E6EEE6 !important;
-
-    /* Brand & Primary */
-    --primary: #2B5129 !important;
-    --primary-color: #2B5129 !important;
-    --brand-color: #2B5129 !important;
-    --btn-primary: #2B5129 !important;
-    --btn-primary-text-color: #FFFFFF !important;
-    --border-primary: #2B5129 !important;
-
-    /* Secondary Buttons */
+    --icon-fill: #FFFFFF !important;
+    --ink-gray-9: #FFFFFF !important;
+    --control-bg: #2B5129 !important;
     --btn-default-bg: #2B2E2B !important;
     --btn-default-text-color: #FFFFFF !important;
-
-    /* Charts */
-    --chart-axis-label-color: #FFFFFF !important;
-    --chart-grid-line-color: rgba(255, 255, 255, 0.15) !important;
-
-    /* Checkboxes */
     --checkbox-color: #2B5129 !important;
     --checkbox-gradient: linear-gradient(180deg, #2B5129 -124.51%, #2B5129 100%) !important;
+    --chart-axis-label-color: #FFFFFF !important;
+    --chart-grid-line-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 /* --------------------------------------------------------------------------
-   3. Fallback: also target frappe's theme switcher selector
+   3. BOOTSTRAP COMPILED SELECTOR OVERRIDES (Light)
+   These override the literal #171717 values baked into desk.bundle.css
    -------------------------------------------------------------------------- */
-[data-theme-mode="light"] {
-    --primary: #2B5129 !important;
-    --bg-color: #FFFFFF !important;
-    --fg-color: #FFFFFF !important;
+.btn-primary,
+.btn-primary:focus {
+    background-color: #2B5129 !important;
+    border-color: #2B5129 !important;
+}
+.btn-primary:hover {
+    background-color: #1E3A1C !important;
+    border-color: #162C14 !important;
+}
+.btn-primary:active,
+.btn-primary.active,
+.show > .btn-primary.dropdown-toggle {
+    background-color: #162C14 !important;
+    border-color: #122410 !important;
+}
+.btn-primary:focus {
+    box-shadow: inset 0 1px rgba(255,255,255,0.15), 0 1px 1px rgba(0,0,0,0.075), 0 0 0 2px rgba(43,81,41,0.5) !important;
 }
 
-[data-theme-mode="dark"] {
-    --primary: #2B5129 !important;
-    --bg-color: #1A1C1A !important;
-    --fg-color: #2B5129 !important;
-    --card-bg: #2B5129 !important;
-    --text-color: #FFFFFF !important;
+.btn-outline-primary {
+    color: #2B5129 !important;
+    border-color: #2B5129 !important;
 }
+.btn-outline-primary:hover {
+    background-color: #2B5129 !important;
+    border-color: #2B5129 !important;
+    color: #fff !important;
+}
+.btn-outline-primary:focus {
+    box-shadow: 0 0 0 2px rgba(43,81,41,0.5) !important;
+}
+.btn-outline-primary:disabled,
+.btn-outline-primary.disabled {
+    color: #2B5129 !important;
+}
+.btn-outline-primary:not(:disabled):not(.disabled):active,
+.btn-outline-primary:not(:disabled):not(.disabled).active,
+.show > .btn-outline-primary.dropdown-toggle {
+    background-color: #2B5129 !important;
+    border-color: #2B5129 !important;
+    color: #fff !important;
+}
+
+.btn-primary-light {
+    color: #2B5129 !important;
+}
+.btn-primary-light:hover,
+.btn-primary-light:active {
+    color: #2B5129 !important;
+}
+
+.badge-primary {
+    background-color: #2B5129 !important;
+}
+a.badge-primary:hover,
+a.badge-primary:focus {
+    background-color: #1E3A1C !important;
+}
+.badge-primary:focus,
+.badge-primary.focus {
+    outline: 0;
+    box-shadow: 0 0 0 2px rgba(43,81,41,0.5) !important;
+}
+
+.bg-primary {
+    background-color: #2B5129 !important;
+}
+a.bg-primary:hover,
+a.bg-primary:focus,
+button.bg-primary:hover,
+button.bg-primary:focus {
+    background-color: #1E3A1C !important;
+}
+
+.text-primary {
+    color: #2B5129 !important;
+}
+a.text-primary:hover,
+a.text-primary:focus {
+    color: #162C14 !important;
+}
+
+.border-primary {
+    border-color: #2B5129 !important;
+}
+
+/* Custom checkbox/radio checked state */
+.custom-control-input:checked ~ .custom-control-label::before {
+    background-color: #2B5129 !important;
+    border-color: #2B5129 !important;
+}
+.custom-switch .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: #2B5129 !important;
+}
+
+/* Navbar dark primary */
+.navbar.bg-dark .nav-link:hover {
+    color: #2B5129 !important;
+}
+
+/* Form tabs active */
+.grid-row-open .form-in-grid .form-tabs-list .form-tabs .nav-item .nav-link.active {
+    color: #2B5129 !important;
+    border-bottom-color: #2B5129 !important;
+}
+
+/* Restricted button stays as-is (orange warning) */
