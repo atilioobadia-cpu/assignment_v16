@@ -8,10 +8,38 @@ def validate(doc, method):
 	check_review_gate(doc)
 	check_client_delay(doc)
 	check_task_dependencies(doc)
+	sync_assign_from_custom_assigned_to(doc)
+
+
+def sync_assign_from_custom_assigned_to(doc):
+	"""Sync _assign from custom_assigned_to for notification delivery."""
+	if doc.custom_assigned_to and not doc.get("_assign"):
+		doc._assign = frappe.as_json([doc.custom_assigned_to])
 
 
 def on_update(doc, method):
 	check_task_overdue(doc)
+	notify_blocked_tasks(doc)
+	create_notification_log(doc)
+	if doc.status == "Completed" and doc.project:
+		_check_project_completion(doc.project)
+
+
+def _check_project_completion(project_name):
+	"""Trigger closure cert + PF creation when all project tasks are complete."""
+	project = frappe.get_doc("Project", project_name)
+	if not project:
+		return
+	if frappe.db.exists("Assignment Closure Certificate", {"project": project_name}):
+		return
+	remaining = frappe.db.count(
+		"Task",
+		filters={"project": project_name, "status": ["not in", ["Completed", "Cancelled"]]},
+	)
+	if remaining > 0:
+		return
+	from alpha_assignment_mgmt.overrides.project import _auto_create_closure_certificate
+	_auto_create_closure_certificate(project)
 
 
 def get_permission_query_conditions(user):
@@ -64,13 +92,14 @@ def has_permission(doc, ptype, user):
 	if "Alpha Staff" in roles or "Alpha Reviewer" in roles:
 		if doc.owner == user:
 			return True
-		if doc._assign:
+		assigned = []
+		if doc.get("_assign"):
 			try:
 				assigned = json.loads(doc._assign)
-				if user in assigned:
-					return True
 			except (json.JSONDecodeError, TypeError):
 				pass
+		if user in assigned or user == doc.custom_assigned_to:
+			return True
 
 	if "Alpha Client Owner" in roles:
 		if doc.project:
@@ -201,7 +230,7 @@ def check_sla_breach(doc):
 
 def get_assigned_users(doc):
 	users = []
-	if doc._assign:
+	if doc.get("_assign"):
 		try:
 			users = json.loads(doc._assign)
 		except (json.JSONDecodeError, TypeError):
@@ -219,7 +248,8 @@ def send_overdue_notification(doc):
 			)
 			if email:
 				recipients.append(email)
-		for user_id in get_assigned_users(doc):
+		users = get_assigned_users(doc) or ([doc.custom_assigned_to] if doc.custom_assigned_to else [])
+		for user_id in users:
 			email = frappe.db.get_value("User", user_id, "email")
 			if email:
 				recipients.append(email)
@@ -234,3 +264,77 @@ def send_overdue_notification(doc):
 					f"<p>Please take immediate action.</p>"
 				),
 			)
+
+
+def notify_blocked_tasks(doc):
+	"""When a task is completed, notify assignees of downstream tasks that depend on it."""
+	if doc.status != "Completed":
+		return
+
+	blocked_tasks = frappe.get_all(
+		"Task",
+		filters={"custom_depends_on_tasks": ["like", f"%{doc.name}%"], "status": ["!=", "Completed"]},
+		fields=["name", "subject", "_assign", "custom_assigned_to"],
+	)
+
+	for bt in blocked_tasks:
+		users = get_assigned_users_of_task(bt.get("_assign")) or ([bt.custom_assigned_to] if bt.custom_assigned_to else [])
+		for user_id in users:
+			email = frappe.db.get_value("User", user_id, "email")
+			if not email:
+				continue
+			try:
+				frappe.sendmail(
+					recipients=[email],
+					subject=f"[AIMS] Dependency Completed: {bt.subject}",
+					message=(
+						f"<h3>Task Dependency Resolved</h3>"
+						f"<p>Task <b>{doc.subject}</b> that you were waiting on has been completed.</p>"
+						f"<p>You can now start working on <b>{bt.subject}</b>.</p>"
+					),
+				)
+			except Exception:
+				pass
+			_add_notification_log(user_id, f"Dependency completed: {doc.subject}. You can now start {bt.subject}.", bt.name)
+
+
+def get_assigned_users_of_task(assign_value):
+	if not assign_value:
+		return []
+	try:
+		users = json.loads(assign_value)
+		return users if isinstance(users, list) else []
+	except (json.JSONDecodeError, TypeError):
+		return []
+
+
+def create_notification_log(doc):
+	"""Create in-app notification for task assignment/status changes."""
+	subject = None
+	users = get_assigned_users_of_task(doc.get("_assign")) or ([doc.custom_assigned_to] if doc.custom_assigned_to else [])
+	if doc.status == "Completed":
+		subject = f"Task completed: {doc.subject}"
+	elif doc.status == "Overdue":
+		subject = f"Task overdue: {doc.subject}"
+	elif doc.get("_assign"):
+		for user_id in users:
+			_add_notification_log(user_id, f"You have been assigned task: {doc.subject}", doc.name)
+
+	if subject:
+		for user_id in users:
+			_add_notification_log(user_id, subject, doc.name)
+
+
+def _add_notification_log(user_id, subject, document=None):
+	"""Insert a Notification Log entry for the user."""
+	log = frappe.get_doc({
+		"doctype": "Notification Log",
+		"subject": subject,
+		"email_content": subject,
+		"for_user": user_id,
+		"type": "Alert",
+		"document_type": "Task",
+		"document_name": document,
+	})
+	log.flags.ignore_permissions = True
+	log.insert()

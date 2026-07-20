@@ -1,4 +1,5 @@
 import frappe
+from frappe.utils import today
 
 
 def before_insert(doc, method):
@@ -120,3 +121,116 @@ def check_project_closure(doc):
 		frappe.throw(
 			"Cannot close Project. Assignment Closure Certificate is required."
 		)
+	_auto_create_closure_certificate(doc)
+
+
+def _auto_create_closure_certificate(doc):
+	"""Auto-create Closure Certificate when all project tasks are completed."""
+	total = frappe.db.count("Task", filters={"project": doc.name})
+
+	if total == 0:
+		return
+
+	remaining = frappe.db.count(
+		"Task",
+		filters={"project": doc.name, "status": ["not in", ["Completed", "Cancelled"]]},
+	)
+
+	if remaining > 0:
+		return
+
+	if frappe.db.exists("Assignment Closure Certificate", {"project": doc.name}):
+		return
+
+	cert = frappe.get_doc({
+		"doctype": "Assignment Closure Certificate",
+		"project": doc.name,
+		"customer": doc.customer,
+		"assignment_origination": doc.custom_assignment_origination,
+		"closure_date": frappe.utils.today(),
+		"status": "Draft",
+	})
+	cert.flags.ignore_permissions = True
+	cert.insert()
+
+	doc.db_set("custom_closure_certificate", cert.name)
+
+	# Notify Engagement Manager
+	if doc.custom_engagement_manager:
+		email = frappe.db.get_value("User", doc.custom_engagement_manager, "email")
+		if email:
+			try:
+				frappe.sendmail(
+					recipients=[email],
+					subject=f"[AIMS] Closure Certificate Ready: {doc.name}",
+					message=(
+						f"<h3>Closure Certificate Auto-Created</h3>"
+						f"<p>All tasks for project <b>{doc.name}</b> are complete.</p>"
+						f"<p>A Closure Certificate has been auto-generated: <b>{cert.name}</b>.</p>"
+						f"<p>Please review and submit.</p>"
+					),
+				)
+			except Exception:
+				pass
+
+	_auto_create_performance_feedback(doc)
+
+
+def _auto_create_performance_feedback(doc):
+	import traceback
+	try:
+		_auto_create_performance_feedback_impl(doc)
+	except Exception:
+		frappe.log_error(f"PF Error for {doc.name}: {traceback.format_exc()}", "PF Debug")
+
+
+def _auto_create_performance_feedback_impl(doc):
+	team_members = frappe.get_all(
+		"Task",
+		filters={"project": doc.name},
+		fields=["custom_assigned_to"],
+		distinct=True,
+	)
+
+	users_processed = set()
+	for tm in team_members:
+		user_id = tm.custom_assigned_to
+		if not user_id or user_id in users_processed:
+			continue
+		users_processed.add(user_id)
+
+		if frappe.db.exists("Performance Feedback", {"project": doc.name, "custom_user": user_id}):
+			continue
+
+		employee = frappe.db.get_value("Employee", {"user_id": user_id}, "name")
+		if not employee:
+			continue
+
+		ao = frappe.db.get_value("Project", doc.name, "custom_assignment_origination")
+
+		pf = frappe.get_doc({
+			"doctype": "Performance Feedback",
+			"project": doc.name,
+			"custom_user": user_id,
+			"employee": employee,
+			"assignment_origination": ao,
+			"feedback_date": frappe.utils.today(),
+			"status": "Draft",
+		})
+		pf.flags.ignore_permissions = True
+		pf.insert()
+
+		email = frappe.db.get_value("User", user_id, "email")
+		if email:
+			try:
+				frappe.sendmail(
+					recipients=[email],
+					subject=f"[AIMS] Performance Feedback Requested: {doc.name}",
+					message=(
+						f"<h3>Performance Feedback</h3>"
+						f"<p>Project <b>{doc.name}</b> has been completed.</p>"
+						f"<p>Please provide your feedback on the engagement.</p>"
+					),
+				)
+			except Exception:
+				pass

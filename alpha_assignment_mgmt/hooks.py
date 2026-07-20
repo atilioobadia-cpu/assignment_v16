@@ -25,6 +25,8 @@ scheduler_events = {
 		"alpha_assignment_mgmt.tasks.sla.daily_sla_breach_check",
 		"alpha_assignment_mgmt.tasks.notifications.daily_overdue_task_notification",
 		"alpha_assignment_mgmt.tasks.performance.daily_performance_computation",
+		"alpha_assignment_mgmt.tasks.delays.daily_delay_escalation_check",
+		"alpha_assignment_mgmt.tasks.notifications.daily_document_reminder",
 	],
 	"weekly": [
 		"alpha_assignment_mgmt.tasks.notifications.weekly_productivity_report",
@@ -48,8 +50,13 @@ doc_events = {
 		"validate": "alpha_assignment_mgmt.overrides.appraisal.validate",
 		"on_submit": "alpha_assignment_mgmt.overrides.appraisal.on_submit",
 	},
+	"Customer": {
+		"on_update": "alpha_assignment_mgmt.overrides.customer.on_update",
+	},
 	"Alpha Assignment Origination": {
+		"before_insert": "alpha_assignment_mgmt.overrides.assignment_origination.before_insert",
 		"on_update": "alpha_assignment_mgmt.overrides.assignment_origination.on_update",
+		"on_update_after_submit": "alpha_assignment_mgmt.overrides.assignment_origination.on_update",
 	},
 }
 
@@ -77,7 +84,9 @@ fixtures = [
 				"Goal",
 				"Appraisal",
 				"Employee",
-				"Timesheet Detail"
+				"Timesheet Detail",
+				"Customer",
+				"Alpha Assignment Origination"
 			]]
 		]
 	},

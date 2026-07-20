@@ -2,96 +2,118 @@
 
 <p align="center">
   <strong>End-to-end assignment lifecycle management for professional service firms</strong>
-</p>
-
-<p align="center">
-  Built on <a href="https://erpnext.com/">ERPNext</a> v16 &amp; <a href="https://frappeframework.com/">Frappe</a> v16
-</p>
-
-<p align="center">
-  <a href="#features">Features</a> &bull;
-  <a href="#architecture">Architecture</a> &bull;
-  <a href="#installation">Installation</a> &bull;
-  <a href="#documentation">Documentation</a> &bull;
-  <a href="#license">License</a>
+  <br>
+  Built on <a href="https://frappeframework.com/">Frappe</a> v16 &amp; <a href="https://erpnext.com/">ERPNext</a> v16
+  <br><br>
+  <a href="https://github.com/atilioobadia-cpu/assignment_v16/releases"><img src="https://img.shields.io/badge/version-1.0.0-blue" alt="Version"></a>
+  <a href="https://frappeframework.com/"><img src="https://img.shields.io/badge/Frappe-16-green" alt="Frappe"></a>
+  <a href="https://erpnext.com/"><img src="https://img.shields.io/badge/ERPNext-16-green" alt="ERPNext"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10+-brightgreen" alt="Python"></a>
+  <a href="#license"><img src="https://img.shields.io/badge/license-Proprietary-red" alt="License"></a>
 </p>
 
 ---
 
-## About
+## Overview
 
-**AIMS** is a comprehensive assignment management platform built for professional service firms — accounting firms, consulting practices, and advisory organizations. It provides full visibility and control over client engagements from the moment an assignment is originated through to formal closure, with built-in SLA tracking, quality gates, risk management, and performance analytics.
+AIMS is a comprehensive **assignment management platform** purpose-built for professional service firms — accounting practices, audit firms, consulting organizations, and advisory firms. The system provides end-to-end visibility and control over client engagements, from origination through closure, with integrated SLA tracking, quality gates, risk management, and performance analytics.
 
-Every assignment follows a structured, auditable workflow. Every task has ownership. Every delay is tracked. Every engagement closes with a certificate.
+Every engagement follows a structured, auditable workflow. Every task has a designated owner. Every delay is logged and escalated. Every completed engagement closes with a formal certificate and triggers performance feedback.
+
+---
+
+## Architecture
+
+```
+Customer → Origination → Review/Approval → Project → Tasks → Closure → Performance Feedback
+    ↑                        ↑                   ↑                     ↑
+  ERPNext             7-state workflow     SLA tracking         360-degree reviews
+  Contacts            Review gates         Dependency gates     Utilization metrics
+  Templates           Risk assessment      Evidence mgmt        Certificates
+```
+
+The system extends ERPNext with custom doctypes, workflow states, server-side scripting, and client-side automation — all within a single Frappe app.
 
 ---
 
 ## Features
 
-### Origination & Workflow
-- **Structured Intake** — Capture client details, service line, risk rating, commercial terms, and evidence requirements in a single form
-- **Role-Based Workflow** — Seven-state approval process with clear ownership at each transition (Draft → Submitted → Under Review → Approved → Project Created → Closed)
-- **Auto-Population** — Client details, contact information, and project templates auto-fill from existing records
+### Assignment Origination & Workflow
+- **Structured Intake Form** — Single-point capture of client details, service line, engagement type, risk rating, commercial terms, and evidence requirements
+- **Seven-State Approval Workflow** — Draft → Submitted → Under Review → Approved → Project Created → Completed → Closed, with role-based transition ownership
+- **Intelligent Auto-Population** — Client name, contact details, tax information, and focal person auto-fill from existing ERPNext Customer and Contact records
+- **Template-Driven Task Generation** — Pre-configured task templates for Tax Compliance, Audit Readiness, Bookkeeping, TRA Support, and Accounting Reconstruction, each with mapped dependencies
 
-### Project Execution
-- **Template-Driven Task Generation** — Pre-built task sequences for Tax Compliance, Audit Readiness, Bookkeeping, TRA Support, and Accounting Reconstruction, with dependency mapping
-- **SLA Tracking** — Auto-created engagement SLAs with deadline calculation, breach detection, and escalation alerts
-- **Time Tracking** — Custom timesheet fields for billable hours, non-billable hours, and activity categorization
-
-### Quality & Compliance
-- **Review Gates** — Mandatory quality checkpoints before task completion
-- **Evidence Management** — Attachment requirements with exception handling for audit-ready documentation
-- **Closure Certification** — Multi-point completion checklist that blocks premature project closure
+### Project Execution & Compliance
+- **Review Gates** — Mandatory quality checkpoints enforced before task completion
+- **Evidence Management** — Document attachment requirements with exception handling for audit-ready engagement files
+- **SLA Tracking & Escalation** — Automated SLA creation on project start, with deadline calculation, breach detection, and escalation alerts for overdue tasks
+- **Time Tracking** — Custom time logs with billable/non-billable categorization and activity breakdown
 
 ### Risk & Delay Management
-- **Client Delay Logging** — Automated delay tracking with escalation levels and management override capability
-- **Risk Register** — Engagement risk assessment by type, severity, probability, and mitigation status
+- **Client Delay Logging** — Automated delay capture with escalation levels (Warning → Critical → Override) and management override capability
+- **Engagement Risk Register** — Risk assessment by type, severity, probability, and mitigation status, linked directly to the assignment
 
-### Performance & HR
-- **Employee Metrics** — Auto-computed utilization, billable ratio, task completion rate, and SLA compliance
-- **Role-Based Goal Templates** — Automatic goal creation linked to employee roles
-- **Structured Feedback** — 360-degree performance feedback with self, peer, and manager reviews
+### Performance & Human Resources
+- **Employee Performance Metrics** — Auto-computed utilization rates, billable ratios, task completion rates, and SLA compliance percentages
+- **Role-Based Goal Templates** — Automatic performance goal creation tied to employee job roles
+- **360-Degree Feedback** — Structured feedback collection with self-assessment, peer review, and manager review workflows
 
 ### Dashboards & Reporting
-- **Operational Dashboard (AIMS Desk)** — Real-time charts, KPIs, and quick actions for day-to-day management
-- **Executive Dashboard (CEO)** — High-level metrics, trend analysis, and assignment intake monitoring
-- **Reports** — Staff Productivity, SLA Compliance Overview, and Employee Performance reports
+- **Operations Dashboard (AIMS Desk)** — Real-time engagement charts, key performance indicators, and quick-action shortcuts for daily management
+- **Executive Dashboard (CEO)** — High-level portfolio metrics, trend analysis, and assignment intake monitoring
+- **Standard Reports** — Staff Productivity, SLA Compliance Overview, and Employee Performance reports
+
+---
 
 ## Installation
 
 ### Prerequisites
 
-| Component | Version |
-|-----------|---------|
+| Component | Required Version |
+|-----------|-----------------|
 | Frappe Framework | v16 |
 | ERPNext | v16 |
 | HRMS | v16 |
-| Python | 3.10+ |
-| MariaDB | 10.6+ |
+| Python | 3.10 or later |
+| MariaDB | 10.6 or later |
+| Node.js | 18+ (for assets) |
 
-### Install
+### Setup
 
 ```bash
+# 1. Download the app
 bench get-app https://github.com/atilioobadia-cpu/assignment_v16.git
+
+# 2. Install on your site
 bench --site your-site install-app alpha_assignment_mgmt
+
+# 3. Apply database migrations
 bench --site your-site migrate
+
+# 4. Build assets
+bench build
 ```
 
-The installer automatically provisions all configuration:
-- 7 custom roles
-- Naming series for assignments
-- Project types and activity types
-- 5 project templates with 55 tasks
-- Dashboard charts and number cards
-- Workspace layouts
+The installation process automatically provisions:
 
-### Post-Install Checklist
+| Resource | Count |
+|----------|-------|
+| Custom Roles | 7 |
+| Naming Series | 1 (AOR-YYYY-#####) |
+| Project Templates | 5 |
+| Template Tasks | 55 |
+| Custom DocTypes | 10+ |
+| Dashboard Charts | 6+ |
+| Workspaces | 2 (Operations + Executive) |
 
-1. **Enable scheduler** — `bench --site your-site enable-scheduler`
-2. **Configure email** — Set up outgoing email account in Setup → Email
-3. **Assign roles** — Map users to AIMS roles via Setup → Role Permission Manager
-4. **Create employees** — Link Employee records to Frappe user accounts
-5. **Add customers** — Create Customer records in ERPNext for client assignments
+### Post-Installation Checklist
+
+1. **Enable the scheduler** — `bench --site your-site enable-scheduler`
+2. **Configure outgoing email** — Setup an email account at *Settings → Email Account* for approval and notification dispatch
+3. **Assign user roles** — Map Frabe users to AIMS roles via *Settings → Role Permission Manager*
+4. **Create Employee records** — Link each Frabe user to an Employee record for performance tracking
+5. **Add Customer records** — Create Client entries in ERPNext before originating assignments
 
 ---
 
@@ -99,28 +121,40 @@ The installer automatically provisions all configuration:
 
 | Document | Description |
 |----------|-------------|
-| [Operational Guide](docs/OPERATIONAL_GUIDE.md) | Workflow procedures and role responsibilities |
-| [UI Testing Guide](docs/UI_TESTING_GUIDE.md) | 17-phase validation checklist with 75+ test steps |
+| [Operational Guide](docs/OPERATIONAL_GUIDE.md) | Step-by-step workflow procedures, role responsibilities, and operational policies |
+| [UI Testing Guide](docs/UI_TESTING_GUIDE.md) | Comprehensive 17-phase validation checklist with 75+ test scenarios covering the full engagement lifecycle |
 
 ---
 
 ## Testing
 
 ```bash
-bench --site your-site execute alpha_assignment_mgmt.tests.test_integration.run_all_tests
+bench --site your-site execute alpha_assignment_mgmt.e2e_test.run_test
 ```
 
-Run the full integration suite — 13 tests covering the complete assignment lifecycle from customer setup through performance feedback.
+The end-to-end integration suite validates the complete engagement lifecycle:
+- Customer creation with contact and tax information sync
+- Assignment origination with auto-population and workflow transitions
+- Task auto-generation, assignment, and dependency enforcement
+- SLA creation, breach detection, and delay escalation
+- Closure certificate generation and project completion
+- Performance feedback creation and notification dispatch
+- Timesheet API integration
+- Custom field and workspace availability
 
 ---
 
-## Developer
+## Support
 
-**Atilio Obadia**
-Email: [atilioobadia@gmail.com](mailto:atilioobadia@gmail.com)
+**Developer:** Atilio Obadia  
+**Email:** [atilioobadia@gmail.com](mailto:atilioobadia@gmail.com)  
+
+For issues, feature requests, or contributions, please open a ticket on the [GitHub repository](https://github.com/atilioobadia-cpu/assignment_v16/issues).
 
 ---
 
 ## License
 
 Proprietary — Alpha Associates (T) Limited. All rights reserved.
+
+This software is confidential and may not be reproduced, distributed, or transmitted without the express written permission of Alpha Associates (T) Limited.

@@ -1,11 +1,11 @@
 import frappe
-from frappe.utils import now_datetime
+from frappe.utils import now_datetime, getdate, add_days
 
 DEFAULT_THRESHOLD_HOURS = 24
 
 
 def daily_sla_breach_check():
-	"""Daily scheduler: check all active SLAs for impending breach."""
+	"""Daily scheduler: check all active SLAs for impending breach and escalate."""
 	threshold_hours = DEFAULT_THRESHOLD_HOURS
 
 	active_slas = frappe.get_all(
@@ -24,6 +24,7 @@ def daily_sla_breach_check():
 
 		if hours_remaining <= 0:
 			mark_breached(sla)
+			escalate_sla(sla, 1)
 		elif hours_remaining <= threshold_hours:
 			notify_breach_warning(sla, hours_remaining)
 
@@ -33,6 +34,58 @@ def mark_breached(sla):
 	frappe.db.set_value("Alpha Engagement SLA", sla.name, "status", "Breached")
 	sla.reload()
 	notify_breach(sla)
+
+
+def escalate_sla(sla, current_level):
+	"""Escalate SLA breach through levels: 1=EM, 2=BM, 3=Partner."""
+	project = frappe.get_cached_doc("Project", sla.project) if sla.project else None
+	if not project:
+		return
+
+	level_map = {
+		1: {"role": "Alpha Engagement Manager", "user_field": "custom_engagement_manager", "label": "Level 1"},
+		2: {"role": "Alpha Branch Manager", "user_field": "custom_branch_manager", "label": "Level 2"},
+		3: {"role": "Alpha Partner/Director", "user_field": None, "label": "Level 3"},
+	}
+
+	level = level_map.get(current_level)
+	if not level:
+		return
+
+	user_id = None
+	if level["user_field"]:
+		user_id = project.get(level["user_field"])
+	else:
+		partners = frappe.get_all(
+			"Has Role",
+			filters={"role": "Alpha Partner/Director", "parenttype": "User"},
+			fields=["parent"],
+			limit=1,
+		)
+		user_id = partners[0].parent if partners else None
+
+	if not user_id:
+		return
+
+	email = frappe.db.get_value("User", user_id, "email")
+	if email:
+		days_overdue = getdate() - sla.alpha_processing_deadline
+		frappe.sendmail(
+			recipients=[email],
+			subject=f"[AIMS] SLA Escalation {level['label']}: {sla.name}",
+			message=(
+				f"<div style='font-family: Arial, sans-serif; max-width: 600px;'>"
+				f"<h2 style='color: #dc3545;'>SLA Escalation - {level['label']}</h2>"
+				f"<p>SLA <b>{sla.name}</b> for project <b>{sla.project}</b> has been breached.</p>"
+				f"<p>Days overdue: <b>{days_overdue.days}</b></p>"
+				f"<p>This has been escalated to {level['role']}.</p>"
+				f"</div>"
+			),
+		)
+
+	# Check if we need to escalate further (every 3 days)
+	if current_level < 3 and days_overdue.days >= current_level * 3:
+		escalate_sla(sla, current_level + 1)
 
 
 def notify_breach(sla):

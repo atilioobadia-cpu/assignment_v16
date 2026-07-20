@@ -1,6 +1,6 @@
 import json
 import frappe
-from frappe.utils import today, add_days, now_datetime
+from frappe.utils import today, add_days, now_datetime, getdate
 
 
 def daily_overdue_task_notification():
@@ -62,6 +62,47 @@ def _get_assigned_users(assign_value):
 		return users if isinstance(users, list) else []
 	except (json.JSONDecodeError, TypeError):
 		return []
+
+
+def daily_document_reminder():
+	"""Daily scheduler: remind responsible persons about pending document requests."""
+	pending = frappe.get_all(
+		"Document Request Register",
+		filters={"status": ["in", ["Requested", "Overdue"]]},
+		fields=["name", "document_name", "project", "responsible_person", "requested_date"],
+	)
+
+	for doc_req in pending:
+		if not doc_req.responsible_person:
+			continue
+		email = frappe.db.get_value("User", doc_req.responsible_person, "email")
+		if not email:
+			continue
+
+		days_pending = (getdate() - doc_req.requested_date).days if doc_req.requested_date else 0
+
+		frappe.sendmail(
+			recipients=[email],
+			subject=f"[AIMS] Document Request Reminder: {doc_req.document_name}",
+			message=(
+				f"<div style='font-family: Arial, sans-serif; max-width: 600px;'>"
+				f"<h3>Document Request Reminder</h3>"
+				f"<p>The following document is still pending:</p>"
+				f"<table style='width: 100%; border-collapse: collapse; margin: 16px 0;'>"
+				f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>Document</td>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{doc_req.document_name}</td></tr>"
+				f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>Project</td>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{doc_req.project}</td></tr>"
+				f"<tr><td style='padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;'>Days Pending</td>"
+				f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{days_pending}</td></tr>"
+				f"</table>"
+				f"<p>Please upload the requested document at your earliest convenience.</p>"
+				f"</div>"
+			),
+		)
+
+		if days_pending > 7:
+			frappe.db.set_value("Document Request Register", doc_req.name, "status", "Overdue")
 
 
 def weekly_productivity_report():
