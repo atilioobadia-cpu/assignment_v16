@@ -58,6 +58,9 @@ doc_events = {
 		"on_update": "alpha_assignment_mgmt.overrides.assignment_origination.on_update",
 		"on_update_after_submit": "alpha_assignment_mgmt.overrides.assignment_origination.on_update",
 	},
+	"Communication": {
+		"after_insert": "alpha_assignment_mgmt.overrides.communication.auto_link_to_task",
+	},
 }
 
 permission_query_conditions = {

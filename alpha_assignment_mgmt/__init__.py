@@ -46,8 +46,25 @@ def _patched_get_incoming_server(self, in_receive=False, email_sync_rule="UNSEEN
 	return email_server
 
 EmailAccount.get_incoming_server = _patched_get_incoming_server
+
+_original_build_email_sync_rule = EmailAccount.build_email_sync_rule
+
+def _patched_build_email_sync_rule(self):
+	if not self.use_imap:
+		return "UNSEEN"
+	if self.email_sync_option == "ALL":
+		from frappe.email.doctype.email_account.email_account import get_max_email_uid
+		max_uid = get_max_email_uid(self.name)
+		if max_uid <= 1:
+			return "UID 1:*"
+		return f"UID {max_uid}:*"
+	return self.email_sync_option or "UNSEEN"
+
+EmailAccount.build_email_sync_rule = _patched_build_email_sync_rule
+
 try:
 	from helpdesk.overrides.email_account import CustomEmailAccount
 	CustomEmailAccount.get_incoming_server = _patched_get_incoming_server
+	CustomEmailAccount.build_email_sync_rule = _patched_build_email_sync_rule
 except ImportError:
 	pass

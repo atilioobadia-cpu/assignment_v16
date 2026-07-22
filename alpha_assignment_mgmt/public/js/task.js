@@ -87,6 +87,14 @@ frappe.ui.form.on("Task", {
 			}, __("Actions"));
 		}
 
+		// Send Email with #TASK-XXXXX tag for auto-linking
+		if (frm.doc.docstatus === 1 || frm.doc.docstatus === 0) {
+			frm.add_custom_button(__("Send Email"), () => {
+				let subject = __("Re: {0} (#{1})", [frm.doc.subject || frm.doc.name, frm.doc.name]);
+				frm.email_doc(subject);
+			}, __("Communication"));
+		}
+
 		// Show summary of employee contributions
 		if (frm.doc.custom_task_employee_log && frm.doc.custom_task_employee_log.length > 0) {
 			let total_hours = frm.doc.custom_task_employee_log.reduce(

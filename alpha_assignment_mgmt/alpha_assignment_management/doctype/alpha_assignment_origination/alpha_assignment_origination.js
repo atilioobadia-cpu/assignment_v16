@@ -38,6 +38,12 @@ frappe.ui.form.on("Alpha Assignment Origination", {
 			frm.set_df_property("customer", "read_only", 1);
 			frm.set_df_property("service_line", "read_only", 1);
 		}
+
+		if (frm.doc.docstatus === 1 && frm.doc.email) {
+			frm.add_custom_button(__("Send Email"), () => {
+				frm.email_doc(__("Re: {0} - {1}", [frm.doc.name, frm.doc.assignment_title || frm.doc.name]));
+			}, __("Communication"));
+		}
 	},
 
 	service_line(frm) {
