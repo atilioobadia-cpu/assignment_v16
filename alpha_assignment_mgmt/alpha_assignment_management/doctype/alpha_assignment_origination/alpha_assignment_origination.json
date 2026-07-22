@@ -537,7 +537,5 @@
   "sort_field": "modified",
   "sort_order": "DESC",
   "states": [],
-  "timeline_field": "email",
-  "track_changes": 1,
-  "track_email_status": 1
+  "track_changes": 1
 }
