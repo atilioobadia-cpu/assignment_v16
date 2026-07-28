@@ -1,0 +1,15 @@
+{
+ "doctype": "Report",
+ "name": "Project Profitability",
+ "report_name": "Project Profitability",
+ "report_type": "Script Report",
+ "is_standard": "Yes",
+ "module": "Alpha Assignment Management",
+ "disabled": 0,
+ "roles": [
+  {"role": "Accounts Manager"},
+  {"role": "Accounts User"},
+  {"role": "Alpha Partner/Director"},
+  {"role": "Alpha Managing Director"}
+ ]
+}

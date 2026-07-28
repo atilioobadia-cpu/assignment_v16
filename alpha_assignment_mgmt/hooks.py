@@ -61,6 +61,9 @@ doc_events = {
 	"Communication": {
 		"after_insert": "alpha_assignment_mgmt.overrides.communication.auto_link_to_task",
 	},
+	"Assignment Closure Certificate": {
+		"on_update_after_submit": "alpha_assignment_mgmt.overrides.closure_certificate.on_update_after_submit",
+	},
 }
 
 permission_query_conditions = {
@@ -112,7 +115,7 @@ fixtures = [
 	{
 		"doctype": "Report",
 		"filters": [
-			["name", "in", ["Employee Performance", "Staff Productivity", "SLA Compliance Overview"]]
+			["name", "in", ["Employee Performance", "Staff Productivity", "SLA Compliance Overview", "Project Profitability"]]
 		]
 	},
 	{

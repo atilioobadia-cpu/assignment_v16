@@ -26,6 +26,9 @@ def after_install():
 	_setup_branch_manager_workspace()
 	_setup_client_portal_workspace()
 	_setup_client_portal_workspace()
+	_create_default_items()
+	_add_billing_custom_fields()
+	_setup_accounts_billing_workspace()
 	_setup_technical_review_workspace()
 	_create_ceo_api_method()
 	_clear_number_card_currencies()
@@ -49,6 +52,9 @@ def after_migrate():
 	_setup_branch_manager_workspace()
 	_setup_client_portal_workspace()
 	_setup_client_portal_workspace()
+	_create_default_items()
+	_add_billing_custom_fields()
+	_setup_accounts_billing_workspace()
 	_setup_technical_review_workspace()
 	_clear_number_card_currencies()
 	_clear_dashboard_chart_currencies()
@@ -1101,6 +1107,88 @@ def _setup_client_portal_workspace():
 
     _insert_workspace_number_cards(ws_name, ["Active Projects", "Active Clients"])
     _insert_workspace_shortcuts(ws_name, shortcuts)
+
+
+def _create_default_items():
+    item_code = "AIMS Professional Services"
+    if not frappe.db.exists("Item", item_code):
+        doc = frappe.new_doc("Item")
+        doc.item_code = item_code
+        doc.item_name = "AIMS Professional Services"
+        doc.is_stock_item = 0
+        doc.description = "Professional services provided by Alpha Associates (T) Limited"
+        doc.stock_uom = "Nos"
+        doc.flags.ignore_permissions = True
+        doc.insert()
+
+
+
+def _add_billing_custom_fields():
+    fields = [
+        {
+            "dt": "Sales Order",
+            "fieldname": "custom_project",
+            "label": "Project",
+            "fieldtype": "Link",
+            "options": "Project",
+            "insert_after": "customer",
+            "read_only": 1,
+        },
+        {
+            "dt": "Sales Invoice",
+            "fieldname": "custom_project",
+            "label": "Project",
+            "fieldtype": "Link",
+            "options": "Project",
+            "insert_after": "customer",
+            "read_only": 1,
+        },
+    ]
+    for f in fields:
+        if not frappe.db.exists("Custom Field", {"dt": f["dt"], "fieldname": f["fieldname"]}):
+            frappe.get_doc({
+                "doctype": "Custom Field",
+                **f,
+            }).insert(ignore_permissions=True)
+
+
+
+def _setup_accounts_billing_workspace():
+    ws_name = "Accounts & Billing"
+    shortcuts = [
+        {"type": "DocType", "link_to": "Sales Order", "label": "Sales Orders", "icon": "list", "doc_view": "list"},
+        {"type": "DocType", "link_to": "Sales Invoice", "label": "Sales Invoices", "icon": "list", "doc_view": "list"},
+        {"type": "DocType", "link_to": "Payment Entry", "label": "Payment Entries", "icon": "list", "doc_view": "list"},
+        {"type": "DocType", "link_to": "Project", "label": "Projects", "icon": "list", "doc_view": "list"},
+        {"type": "DocType", "link_to": "Alpha Service Contract", "label": "Service Contracts", "icon": "file"},
+        {"type": "Report", "link_to": "Project Profitability", "label": "Project Profitability", "icon": "chart"},
+        {"type": "Report", "link_to": "Accounts Receivable", "label": "Accounts Receivable", "icon": "chart"},
+        {"type": "Report", "link_to": "Accounts Payable", "label": "Accounts Payable", "icon": "chart"},
+    ]
+    content = json.dumps([
+        {"id": "h1", "type": "header", "data": {"text": '<span class="h4"><b>Accounts & Billing</b></span>', "col": 12}},
+        {"id": "p1", "type": "paragraph", "data": {"text": "Manage billing, invoicing, and payments.", "col": 12}},
+        {"id": "nc1", "type": "number_card", "data": {"number_card_name": "Active Projects", "col": 3}},
+        {"id": "nc2", "type": "number_card", "data": {"number_card_name": "Active Clients", "col": 3}},
+        {"id": "sp1", "type": "spacer", "data": {"col": 12}},
+        {"id": "sh2", "type": "header", "data": {"text": '<span class="h5"><b>Quick Actions</b></span>', "col": 12}},
+    ] + [
+        {"id": "s" + str(i + 1), "type": "shortcut", "data": {"shortcut_name": sc["label"], "col": 3}}
+        for i, sc in enumerate(shortcuts)
+    ])
+
+    if frappe.db.exists("Workspace", ws_name):
+        frappe.db.set_value("Workspace", ws_name, "content", content)
+        frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s AND parenttype = 'Workspace'", ws_name)
+    else:
+        frappe.db.sql(
+            "INSERT INTO `tabWorkspace` (name, label, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by) VALUES (%s, %s, 'Alpha Assignment Management', 0, 1, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')",
+            (ws_name, ws_name, content),
+        )
+
+    _insert_workspace_number_cards(ws_name, ["Active Projects", "Active Clients"])
+    _insert_workspace_shortcuts(ws_name, shortcuts)
+
 
 def _setup_technical_review_workspace():
 	ws_name = "Technical Review"
