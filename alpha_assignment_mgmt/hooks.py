@@ -22,6 +22,7 @@ app_include_css = [
 
 scheduler_events = {
 	"daily": [
+		"alpha_assignment_mgmt.tasks.review_gate_escalation.daily_review_gate_escalation_check",
 		"alpha_assignment_mgmt.tasks.sla.daily_sla_breach_check",
 		"alpha_assignment_mgmt.tasks.notifications.daily_overdue_task_notification",
 		"alpha_assignment_mgmt.tasks.performance.daily_performance_computation",

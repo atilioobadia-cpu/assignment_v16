@@ -9,10 +9,12 @@ def after_install():
 	"""Set up roles, workflows, templates, dashboards and workspaces after app install."""
 	create_roles()
 	create_workflow_states()
+	_add_phase5_workflow_states()
 	create_naming_series()
 	create_project_types()
 	create_activity_types()
 	create_project_templates()
+	_create_additional_templates()
 	create_customer_fields()
 	create_rejection_reason_field()
 	_create_performance_feedback_fields()
@@ -31,6 +33,8 @@ def after_install():
 	_setup_accounts_billing_workspace()
 	_setup_technical_review_workspace()
 	_create_ceo_api_method()
+	_create_phase5_workflows()
+	_create_phase5_workflows()
 	_clear_number_card_currencies()
 	_clear_dashboard_chart_currencies()
 	frappe.db.commit()
@@ -41,7 +45,9 @@ def after_migrate():
 	_cleanup_workflow_state_field()
 	"""Re-sync components after migration."""
 	create_workflow_states()
+	_add_phase5_workflow_states()
 	create_project_templates()
+	_create_additional_templates()
 	create_customer_fields()
 	create_rejection_reason_field()
 	_create_task_number_cards()
@@ -56,6 +62,7 @@ def after_migrate():
 	_add_billing_custom_fields()
 	_setup_accounts_billing_workspace()
 	_setup_technical_review_workspace()
+	_create_phase5_workflows()
 	_clear_number_card_currencies()
 	_clear_dashboard_chart_currencies()
 	frappe.db.commit()
@@ -81,7 +88,8 @@ def create_roles():
 			)
 
 
-def create_workflow_states():
+def create_workflow_states()
+	_add_phase5_workflow_states():
 	"""Create Workflow State records used by the Alpha Assignment Origination Workflow."""
 	states = [
 		{"state": "Draft", "doc_status": "0", "allow_edit": "Alpha Tax Officer"},
@@ -104,6 +112,25 @@ def create_workflow_states():
 				"doctype": "Workflow State",
 				"workflow_state_name": state["state"],
 			}).insert(ignore_permissions=True)
+
+
+def _add_phase5_workflow_states():
+    states = [
+        {"state": "RG - Pending Review", "doc_status": "0", "allow_edit": "Alpha Reviewer"},
+        {"state": "RG - Approved", "doc_status": "1", "allow_edit": "Alpha Reviewer"},
+        {"state": "RG - Returned", "doc_status": "1", "allow_edit": "Alpha Reviewer"},
+        {"state": "RG - Escalated", "doc_status": "1", "allow_edit": "System Manager"},
+        {"state": "PF - Draft", "doc_status": "0", "allow_edit": "Alpha Staff"},
+        {"state": "PF - Submitted", "doc_status": "1", "allow_edit": "Alpha Reviewer"},
+        {"state": "PF - Acknowledged", "doc_status": "1", "allow_edit": "Alpha Engagement Manager"},
+    ]
+    for s in states:
+        if not frappe.db.exists("Workflow State", s["state"]):
+            frappe.get_doc({
+                "doctype": "Workflow State",
+                "workflow_state_name": s["state"],
+            }).insert(ignore_permissions=True)
+
 
 
 def create_naming_series():
@@ -131,6 +158,70 @@ def create_naming_series():
 				}).insert(ignore_permissions=True)
 		except Exception:
 			pass
+
+
+def _create_phase5_workflows():
+    workflows = [
+        {
+            "workflow_name": "Review Gate Workflow",
+            "document_type": "Review Gate Register",
+            "is_active": 1,
+            "override_status": 0,
+            "states": [
+                {"state": "RG - Pending Review", "doc_status": "0", "allow_edit": "Alpha Reviewer"},
+                {"state": "RG - Approved", "doc_status": "1", "allow_edit": "Alpha Partner/Director"},
+                {"state": "RG - Returned", "doc_status": "1", "allow_edit": "Alpha Reviewer"},
+                {"state": "RG - Escalated", "doc_status": "1", "allow_edit": "System Manager"},
+            ],
+            "transitions": [
+                {"state": "RG - Pending Review", "action": "Approve", "next_state": "RG - Approved", "allowed": "Alpha Reviewer", "allow_self_approval": 1},
+                {"state": "RG - Pending Review", "action": "Return for Correction", "next_state": "RG - Returned", "allowed": "Alpha Reviewer", "allow_self_approval": 1},
+                {"state": "RG - Pending Review", "action": "Escalate", "next_state": "RG - Escalated", "allowed": "Alpha Reviewer", "allow_self_approval": 1},
+                {"state": "RG - Returned", "action": "Resubmit", "next_state": "RG - Pending Review", "allowed": "Alpha Staff", "allow_self_approval": 1},
+            ],
+        },
+        {
+            "workflow_name": "Performance Feedback Workflow",
+            "document_type": "Performance Feedback",
+            "is_active": 1,
+            "override_status": 0,
+            "states": [
+                {"state": "PF - Draft", "doc_status": "0", "allow_edit": "Alpha Staff"},
+                {"state": "PF - Submitted", "doc_status": "1", "allow_edit": "Alpha Reviewer"},
+                {"state": "PF - Acknowledged", "doc_status": "1", "allow_edit": "Alpha Engagement Manager"},
+            ],
+            "transitions": [
+                {"state": "PF - Draft", "action": "Submit", "next_state": "PF - Submitted", "allowed": "Alpha Staff", "allow_self_approval": 1},
+                {"state": "PF - Submitted", "action": "Acknowledge", "next_state": "PF - Acknowledged", "allowed": "Alpha Engagement Manager", "allow_self_approval": 1},
+                {"state": "PF - Submitted", "action": "Return to Draft", "next_state": "PF - Draft", "allowed": "Alpha Reviewer", "allow_self_approval": 1},
+            ],
+        },
+    ]
+
+    for wf in workflows:
+        name = wf["workflow_name"]
+        if frappe.db.exists("Workflow", name):
+            continue
+
+        doc = frappe.new_doc("Workflow")
+        doc.workflow_name = name
+        doc.document_type = wf["document_type"]
+        doc.is_active = wf["is_active"]
+        doc.override_status = wf["override_status"]
+
+        for state in wf["states"]:
+            doc.append("states", {
+                "state": state["state"],
+                "doc_status": int(state["doc_status"]),
+                "allow_edit": state["allow_edit"],
+            })
+
+        for transition in wf["transitions"]:
+            doc.append("transitions", transition)
+
+        doc.flags.ignore_permissions = True
+        doc.insert()
+
 
 
 def create_project_types():
@@ -233,6 +324,59 @@ def create_rejection_reason_field():
 		}).insert(ignore_permissions=True)
 
 
+def _create_additional_templates():
+    templates = [
+        {
+            "template_name": "Advisory Engagement",
+            "project_type": "Advisory",
+            "service_line": "Advisory",
+            "description": "Standard task sequence for advisory and consulting engagements",
+            "tasks": [
+                {"task_subject": "Engagement confirmation and scope definition", "sequence": 1, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "expected_output": "Approved scope, objectives and timeline"},
+                {"task_subject": "Client briefing and data collection", "sequence": 2, "expected_hours": 2, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "1", "expected_output": "Client briefing notes and data request"},
+                {"task_subject": "Research and analysis", "sequence": 3, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "2", "expected_output": "Research findings and analysis report"},
+                {"task_subject": "Draft advisory report", "sequence": 4, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "3", "expected_output": "Draft advisory report with findings"},
+                {"task_subject": "Technical review of advisory report", "sequence": 5, "expected_hours": 2, "requires_review": 1, "default_owner_role": "Alpha Reviewer", "depends_on": "4", "expected_output": "Review clearance and sign-off"},
+                {"task_subject": "Client presentation and discussion", "sequence": 6, "expected_hours": 2, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "5", "expected_output": "Client presentation delivered"},
+                {"task_subject": "Final report and recommendations", "sequence": 7, "expected_hours": 2, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "6", "expected_output": "Final advisory report issued"},
+                {"task_subject": "Assignment closure", "sequence": 8, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "7", "expected_output": "Closure certificate submitted"},
+            ],
+        },
+        {
+            "template_name": "ERPNext Implementation",
+            "project_type": "ERPNext Implementation",
+            "service_line": "ERPNext Implementation",
+            "description": "Standard task sequence for ERPNext implementation engagements",
+            "tasks": [
+                {"task_subject": "Requirements gathering and scoping", "sequence": 1, "expected_hours": 4, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "expected_output": "Requirements document and scope statement"},
+                {"task_subject": "System setup and configuration", "sequence": 2, "expected_hours": 8, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "1", "expected_output": "Configured ERPNext instance"},
+                {"task_subject": "Chart of accounts and master data setup", "sequence": 3, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "2", "expected_output": "COA and master data approved"},
+                {"task_subject": "Data migration from legacy system", "sequence": 4, "expected_hours": 8, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "3", "expected_output": "Data migration complete with validation"},
+                {"task_subject": "User training and documentation", "sequence": 5, "expected_hours": 4, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "4", "expected_output": "Training delivered and user guide provided"},
+                {"task_subject": "User acceptance testing", "sequence": 6, "expected_hours": 4, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "5", "expected_output": "UAT sign-off obtained"},
+                {"task_subject": "Go-live and production deployment", "sequence": 7, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "6", "expected_output": "System live in production"},
+                {"task_subject": "Post go-live support", "sequence": 8, "expected_hours": 4, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "7", "expected_output": "Support period completed"},
+                {"task_subject": "Assignment closure", "sequence": 9, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "8", "expected_output": "Closure certificate submitted"},
+            ],
+        },
+    ]
+    for tmpl_def in templates:
+        if frappe.db.exists("Alpha Project Template", tmpl_def["template_name"]):
+            continue
+        doc = frappe.get_doc({
+            "doctype": "Alpha Project Template",
+            "template_name": tmpl_def["template_name"],
+            "project_type": tmpl_def["project_type"],
+            "service_line": tmpl_def.get("service_line", ""),
+            "description": tmpl_def.get("description", ""),
+            "is_active": 1,
+            "tasks": tmpl_def["tasks"],
+        })
+        doc.flags.ignore_permissions = True
+        doc.insert()
+
+
+
 def _create_performance_feedback_fields():
 	"""Add custom_user field to Performance Feedback."""
 	if not frappe.db.exists("Custom Field", {"dt": "Performance Feedback", "fieldname": "custom_user"}):
@@ -247,7 +391,8 @@ def _create_performance_feedback_fields():
 		}).insert(ignore_permissions=True)
 
 
-def create_project_templates():
+def create_project_templates()
+	_create_additional_templates():
 	"""Create standard project templates from the requirements document."""
 	templates = _get_template_definitions()
 	for tmpl_def in templates:
@@ -713,7 +858,8 @@ def _cleanup_workflow_state_field():
 		frappe.db.commit()
 
 
-def _create_ceo_api_method():
+def _create_ceo_api_method()
+	_create_phase5_workflows():
 	"""Ensure the CEO dashboard API method file exists."""
 	api_dir = os.path.join(
 		os.path.dirname(__file__),
