@@ -539,17 +539,6 @@ def _setup_hr_analytics_workspace():
 		"INSERT INTO `tabWorkspace` (name, label, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by) VALUES (%s, %s, 'Alpha Assignment Management', 0, 1, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')",
 		(ws_name, ws_name, content),
 	)
-	for role in ("Alpha HR Admin", "Alpha Managing Director", "System Manager"):
-		frappe.db.sql(
-			"INSERT INTO `tabWorkspace Role` (name, role, parent, parentfield, parenttype, idx, docstatus, creation, modified, owner, modified_by) VALUES (%s, %s, %s, 'roles', 'Workspace', 0, 0, NOW(), NOW(), 'Administrator', 'Administrator')",
-			(f"{ws_name}_role_{role.lower().replace(' ', '_')}", role, ws_name),
-		)
-	_insert_workspace_number_cards(ws_name, ["Active Staff", "Total Assignments", "Overdue Tasks"])
-	_insert_workspace_charts(ws_name, ["Staff Utilization Rate", "Overdue Tasks by Project", "Assignments by Status"])
-	_insert_workspace_shortcuts(ws_name, [
-		{"type": "Report", "link_to": "Staff Productivity", "label": "Staff Productivity", "icon": "chart"},
-		{"type": "Report", "link_to": "Employee Performance", "label": "Employee Performance", "icon": "chart"},
-		{"type": "Report", "link_to": "SLA Compliance Overview", "label": "SLA Compliance Overview", "icon": "chart"},
 		{"type": "DocType", "link_to": "Performance Feedback", "label": "Performance Feedback", "icon": "list"},
 		{"type": "DocType", "link_to": "Appraisal", "label": "Appraisal", "icon": "list"},
 	])
