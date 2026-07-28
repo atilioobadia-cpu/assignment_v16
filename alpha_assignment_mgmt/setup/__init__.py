@@ -37,6 +37,7 @@ def after_install():
 	_create_phase5_workflows()
 	_clear_number_card_currencies()
 	_clear_dashboard_chart_currencies()
+	after_migrate_all()
 	frappe.db.commit()
 
 
@@ -65,6 +66,7 @@ def after_migrate():
 	_create_phase5_workflows()
 	_clear_number_card_currencies()
 	_clear_dashboard_chart_currencies()
+	after_migrate_all()
 	frappe.db.commit()
 
 
@@ -1376,3 +1378,421 @@ def _setup_technical_review_workspace():
 	_insert_workspace_charts(ws_name, ["Tasks by Status"])
 	_insert_workspace_number_cards(ws_name, ["Pending Reviews", "Tasks Completed", "Tasks Pending"])
 	_insert_workspace_shortcuts(ws_name, shortcuts)
+
+
+# ===== Phases 6-12: Complete gap closure for AIMS =====
+
+MISSING_TEMPLATES = [
+    {
+        "template_name": "PAYE/SDL/WHT Compliance",
+        "project_type": "Tax Compliance",
+        "service_line": "Tax Compliance",
+        "description": "Monthly/quarterly statutory deduction filing (PAYE, SDL, WHT)",
+        "tasks": [
+            {"task_subject": "Receive payroll data from client", "sequence": 1, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Tax Officer", "expected_output": "Payroll data received"},
+            {"task_subject": "Reconcile deductions per employee", "sequence": 2, "expected_hours": 2, "requires_review": 1, "default_owner_role": "Alpha Tax Officer", "depends_on": "1", "expected_output": "Deduction reconciliation schedule"},
+            {"task_subject": "Prepare PAYE/SDL/WHT return", "sequence": 3, "expected_hours": 2, "requires_review": 1, "default_owner_role": "Alpha Tax Officer", "depends_on": "2", "expected_output": "Draft return"},
+            {"task_subject": "Obtain client approval", "sequence": 4, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "3", "expected_output": "Client approval"},
+            {"task_subject": "File through IDRAS and save evidence", "sequence": 5, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Tax Officer", "depends_on": "4", "expected_output": "Filing evidence"},
+            {"task_subject": "Assignment closure", "sequence": 6, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "5", "expected_output": "Closure certificate submitted"},
+        ],
+    },
+    {
+        "template_name": "Corporate Income Tax Return",
+        "project_type": "Tax Compliance",
+        "service_line": "Tax Compliance",
+        "description": "Annual corporate income tax return preparation and filing",
+        "tasks": [
+            {"task_subject": "Receive trial balance and financial statements", "sequence": 1, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "expected_output": "Financial data received"},
+            {"task_subject": "Review assessable income and allowable deductions", "sequence": 2, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Tax Officer", "depends_on": "1", "expected_output": "Taxable income computation"},
+            {"task_subject": "Review capital allowances and balancing charges", "sequence": 3, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Tax Officer", "depends_on": "1", "expected_output": "Capital allowance schedule"},
+            {"task_subject": "Prepare income tax computation", "sequence": 4, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Tax Officer", "depends_on": "2,3", "expected_output": "Tax computation"},
+            {"task_subject": "Technical review of return", "sequence": 5, "expected_hours": 2, "requires_review": 1, "default_owner_role": "Alpha Reviewer", "depends_on": "4", "expected_output": "Review clearance"},
+            {"task_subject": "Obtain client approval and representation letter", "sequence": 6, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "5", "expected_output": "Client sign-off"},
+            {"task_subject": "File and save evidence", "sequence": 7, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Tax Officer", "depends_on": "6", "expected_output": "Filing confirmation"},
+            {"task_subject": "Assignment closure", "sequence": 8, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "7", "expected_output": "Closure certificate submitted"},
+        ],
+    },
+    {
+        "template_name": "Management Accounts",
+        "project_type": "Monthly Bookkeeping",
+        "service_line": "Bookkeeping",
+        "description": "Monthly management accounts preparation with variance analysis",
+        "tasks": [
+            {"task_subject": "Receive month-end trial balance and schedules", "sequence": 1, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Staff", "expected_output": "Trial balance received"},
+            {"task_subject": "Post adjusting journals", "sequence": 2, "expected_hours": 2, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "1", "expected_output": "Adjusted trial balance"},
+            {"task_subject": "Prepare management accounts (P&L, Balance Sheet, Cash Flow)", "sequence": 3, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Engagement Manager", "depends_on": "2", "expected_output": "Draft management accounts"},
+            {"task_subject": "Variance analysis against budget/prior period", "sequence": 4, "expected_hours": 2, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "3", "expected_output": "Variance commentary"},
+            {"task_subject": "Technical review", "sequence": 5, "expected_hours": 2, "requires_review": 1, "default_owner_role": "Alpha Reviewer", "depends_on": "4", "expected_output": "Review clearance"},
+            {"task_subject": "Client presentation", "sequence": 6, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "5", "expected_output": "Client pack delivered"},
+            {"task_subject": "Assignment closure", "sequence": 7, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "6", "expected_output": "Closure certificate submitted"},
+        ],
+    },
+    {
+        "template_name": "Financial Statements",
+        "project_type": "Audit Readiness",
+        "service_line": "Audit & Assurance",
+        "description": "Annual financial statements preparation in compliance with IFRS/TAS",
+        "tasks": [
+            {"task_subject": "Receive trial balance and prior-period statements", "sequence": 1, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "expected_output": "Opening data received"},
+            {"task_subject": "Review accounting policies and IFRS/TAS compliance", "sequence": 2, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "1", "expected_output": "Policy compliance note"},
+            {"task_subject": "Draft financial statements (SOPL, SOFP, SCF, notes)", "sequence": 3, "expected_hours": 6, "requires_review": 1, "default_owner_role": "Alpha Engagement Manager", "depends_on": "2", "expected_output": "Draft financial statements"},
+            {"task_subject": "Technical review", "sequence": 4, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Reviewer", "depends_on": "3", "expected_output": "Review clearance"},
+            {"task_subject": "Client approval and representation letter", "sequence": 5, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "4", "expected_output": "Client sign-off"},
+            {"task_subject": "Final signed statements and archive", "sequence": 6, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "5", "expected_output": "Signed statements archived"},
+            {"task_subject": "Assignment closure", "sequence": 7, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "6", "expected_output": "Closure certificate submitted"},
+        ],
+    },
+    {
+        "template_name": "Due Diligence",
+        "project_type": "Advisory",
+        "service_line": "Business Advisory",
+        "description": "Financial and commercial due diligence for transactions",
+        "tasks": [
+            {"task_subject": "Engagement confirmation and scope definition", "sequence": 1, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "expected_output": "Approved scope"},
+            {"task_subject": "Document request and data room setup", "sequence": 2, "expected_hours": 2, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "1", "expected_output": "Data room established"},
+            {"task_subject": "Financial analysis (P&L, BS, CF, trends)", "sequence": 3, "expected_hours": 6, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "2", "expected_output": "Financial analysis working papers"},
+            {"task_subject": "Commercial and operational review", "sequence": 4, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "2", "expected_output": "Commercial review notes"},
+            {"task_subject": "Tax and legal exposure review", "sequence": 5, "expected_hours": 3, "requires_review": 1, "default_owner_role": "Alpha Tax Officer", "depends_on": "2", "expected_output": "Tax/legal findings"},
+            {"task_subject": "Draft due diligence report", "sequence": 6, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Engagement Manager", "depends_on": "3,4,5", "expected_output": "Draft DD report"},
+            {"task_subject": "Technical review", "sequence": 7, "expected_hours": 2, "requires_review": 1, "default_owner_role": "Alpha Reviewer", "depends_on": "6", "expected_output": "Review clearance"},
+            {"task_subject": "Client presentation and final report", "sequence": 8, "expected_hours": 2, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "7", "expected_output": "Final report delivered"},
+            {"task_subject": "Assignment closure", "sequence": 9, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "8", "expected_output": "Closure certificate submitted"},
+        ],
+    },
+    {
+        "template_name": "Training Assignment",
+        "project_type": "Advisory",
+        "service_line": "Business Advisory",
+        "description": "ERPNext or professional skills training for client teams",
+        "tasks": [
+            {"task_subject": "Training needs assessment and scope", "sequence": 1, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "expected_output": "Training plan"},
+            {"task_subject": "Develop training materials", "sequence": 2, "expected_hours": 4, "requires_review": 1, "default_owner_role": "Alpha Staff", "depends_on": "1", "expected_output": "Training materials approved"},
+            {"task_subject": "Conduct training sessions", "sequence": 3, "expected_hours": 4, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "2", "expected_output": "Training attendance record"},
+            {"task_subject": "Post-training assessment and feedback", "sequence": 4, "expected_hours": 1, "requires_review": 0, "default_owner_role": "Alpha Staff", "depends_on": "3", "expected_output": "Assessment results"},
+            {"task_subject": "Training report and certification", "sequence": 5, "expected_hours": 1, "requires_review": 1, "default_owner_role": "Alpha Engagement Manager", "depends_on": "4", "expected_output": "Training completion report"},
+            {"task_subject": "Assignment closure", "sequence": 6, "expected_hours": 0.5, "requires_review": 0, "default_owner_role": "Alpha Engagement Manager", "depends_on": "5", "expected_output": "Closure certificate submitted"},
+        ],
+    },
+]
+
+EMAIL_TEMPLATES = [
+    {
+        "name": "Document Request",
+        "subject": "[AIMS] Document Request: {{ doc.name }}",
+        "response": "Please provide the following documents for {{ doc.customer }}:\n\n{{ doc.description }}\n\nPlease upload via the Client Portal or reply to this email.",
+    },
+    {
+        "name": "Document Overdue Reminder",
+        "subject": "[AIMS] Reminder: Document Request Overdue: {{ doc.name }}",
+        "response": "The following document request is now overdue:\n\n{{ doc.description }}\n\nPlease action immediately.",
+    },
+    {
+        "name": "Tax Deadline Reminder",
+        "subject": "[AIMS] Tax Deadline Approaching: {{ doc.custom_client_name }}",
+        "response": "This is a reminder that the following tax deadline is approaching:\n\nClient: {{ doc.custom_client_name }}\nDeadline: {{ doc.custom_deadline }}\n\nPlease ensure all filings are completed on time.",
+    },
+    {
+        "name": "Review Query",
+        "subject": "[AIMS] Review Query: {{ doc.name }}",
+        "response": "The following item has been returned for correction:\n\n{{ doc.name }}\nReviewer Comments: {{ doc.custom_reviewer_remarks }}\n\nPlease correct and resubmit.",
+    },
+    {
+        "name": "Invoice Transmission",
+        "subject": "[AIMS] Invoice: {{ doc.name }}",
+        "response": "Dear {{ doc.customer }},\n\nPlease find attached invoice {{ doc.name }} for {{ doc.grand_total }}.\n\nPayment is due by {{ doc.due_date }}.",
+    },
+    {
+        "name": "Engagement Acceptance",
+        "subject": "[AIMS] Engagement Accepted: {{ doc.name }}",
+        "response": "We are pleased to confirm acceptance of the engagement: {{ doc.name }}.\n\nThe Project has been created and the team assigned.",
+    },
+    {
+        "name": "Closure Certificate",
+        "subject": "[AIMS] Closure Certificate: {{ doc.name }}",
+        "response": "The following assignment has been closed:\n\nProject: {{ doc.project }}\nClosure Certificate: {{ doc.name }}\n\nAll deliverables have been completed.",
+    },
+]
+
+NOTIFICATION_RECORDS = [
+    {
+        "name": "SLA At Risk",
+        "subject": "[AIMS] SLA At Risk: {{ doc.name }}",
+        "document_type": "Alpha Engagement SLA",
+        "event": "Days Before",
+        "days_before": 2,
+        "recipients": [
+            {"receiver_by_document_field": "engagement_manager", "cc": "branch_manager"},
+        ],
+    },
+    {
+        "name": "SLA Breached",
+        "subject": "[AIMS] SLA Breached: {{ doc.name }}",
+        "document_type": "Alpha Engagement SLA",
+        "event": "Days After",
+        "days_after": 0,
+        "condition": "doc.status == 'SLA Breached'",
+        "recipients": [
+            {"receiver_by_document_field": "engagement_manager"},
+            {"receiver_by_document_field": "branch_manager"},
+        ],
+    },
+    {
+        "name": "Task Overdue",
+        "subject": "[AIMS] Task Overdue: {{ doc.subject }}",
+        "document_type": "Task",
+        "event": "Days After",
+        "days_after": 0,
+        "condition": "doc.status == 'Overdue'",
+        "recipients": [
+            {"receiver_by_document_field": "custom_assigned_to"},
+        ],
+    },
+    {
+        "name": "Review Gate Pending",
+        "subject": "[AIMS] Review Gate Pending: {{ doc.name }}",
+        "document_type": "Review Gate Register",
+        "event": "Days After",
+        "days_after": 1,
+        "condition": "doc.status == 'Pending Review'",
+        "recipients": [
+            {"receiver_by_document_field": "custom_reviewer"},
+        ],
+    },
+    {
+        "name": "Invoice Overdue",
+        "subject": "[AIMS] Invoice Overdue: {{ doc.name }}",
+        "document_type": "Sales Invoice",
+        "event": "Days After",
+        "days_after": 1,
+        "condition": "doc.status == 'Overdue'",
+        "recipients": [
+            {"receiver_by_document_field": "custom_engagement_manager"},
+        ],
+    },
+    {
+        "name": "Closure Certificate Pending Approval",
+        "subject": "[AIMS] Closure Certificate Pending: {{ doc.name }}",
+        "document_type": "Assignment Closure Certificate",
+        "event": "Days After",
+        "days_after": 1,
+        "condition": "doc.workflow_state == 'CC - Review'",
+        "recipients": [
+            {"receiver_by_document_field": "custom_engagement_manager"},
+        ],
+    },
+]
+
+MAKER_CHECKER_FIELDS = [
+    {
+        "dt": "Alpha Assignment Origination",
+        "fieldname": "custom_maker",
+        "label": "Prepared By",
+        "fieldtype": "Link",
+        "options": "User",
+        "read_only": 1,
+        "insert_after": "custom_rejection_reason",
+    },
+    {
+        "dt": "Alpha Assignment Origination",
+        "fieldname": "custom_checker",
+        "label": "Checked By",
+        "fieldtype": "Link",
+        "options": "User",
+        "read_only": 1,
+        "insert_after": "custom_maker",
+    },
+    {
+        "dt": "Task",
+        "fieldname": "custom_maker",
+        "label": "Prepared By",
+        "fieldtype": "Link",
+        "options": "User",
+        "read_only": 1,
+        "insert_after": "custom_assigned_to",
+    },
+    {
+        "dt": "Task",
+        "fieldname": "custom_checker",
+        "label": "Checked By",
+        "fieldtype": "Link",
+        "options": "User",
+        "read_only": 1,
+        "insert_after": "custom_maker",
+    },
+]
+
+BILLING_CUSTOM_FIELDS = [
+    {
+        "dt": "Sales Order",
+        "fieldname": "custom_deposit_amount",
+        "label": "Deposit Amount",
+        "fieldtype": "Currency",
+        "insert_after": "custom_project",
+    },
+    {
+        "dt": "Sales Order",
+        "fieldname": "custom_deposit_received",
+        "label": "Deposit Received",
+        "fieldtype": "Check",
+        "read_only": 1,
+        "insert_after": "custom_deposit_amount",
+    },
+    {
+        "dt": "Sales Invoice",
+        "fieldname": "custom_billing_milestone",
+        "label": "Billing Milestone",
+        "fieldtype": "Data",
+        "insert_after": "custom_project",
+    },
+    {
+        "dt": "Project",
+        "fieldname": "custom_budget_hours",
+        "label": "Budget Hours",
+        "fieldtype": "Float",
+        "insert_after": "expected_end_date",
+    },
+    {
+        "dt": "Project",
+        "fieldname": "custom_hours_overage_alert",
+        "label": "Hours Overage Alert",
+        "fieldtype": "Check",
+        "read_only": 1,
+        "insert_after": "custom_budget_hours",
+    },
+]
+
+HR_METRICS_FIELDS = [
+    {"dt": "Employee", "fieldname": "custom_rework_rate", "label": "Review Rework Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_utilization_rate_30d"},
+    {"dt": "Employee", "fieldname": "custom_delay_followup_rate", "label": "Client Delay Follow-up Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_rework_rate"},
+    {"dt": "Employee", "fieldname": "custom_monthly_close_rate", "label": "Monthly Close Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_delay_followup_rate"},
+    {"dt": "Employee", "fieldname": "custom_profitability_contribution", "label": "Profitability Contribution", "fieldtype": "Currency", "read_only": 1, "insert_after": "custom_monthly_close_rate"},
+]
+
+
+def _setup_hr_analytics_workspace():
+    ws_name = "HR Analytics"
+    if frappe.db.exists("Workspace", ws_name):
+        return
+    content = json.dumps([
+        {"id": "h1", "type": "header", "data": {"text": "<span class=\"h4\"><b>HR Analytics</b></span>", "col": 12}},
+        {"id": "p1", "type": "paragraph", "data": {"text": "Staff performance, utilisation, and skills overview.", "col": 12}},
+        {"id": "nc1", "type": "number_card", "data": {"number_card_name": "Active Staff", "col": 4}},
+        {"id": "nc2", "type": "number_card", "data": {"number_card_name": "Total Assignments", "col": 4}},
+        {"id": "nc3", "type": "number_card", "data": {"number_card_name": "Overdue Tasks", "col": 4}},
+        {"id": "c1", "type": "chart", "data": {"chart_name": "Staff Utilisation Rate", "col": 12}},
+    ])
+    frappe.db.sql(
+        "INSERT INTO `tabWorkspace` (name, label, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by) VALUES (%s, %s, 'Alpha Assignment Management', 0, 0, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')",
+        (ws_name, ws_name, content),
+    )
+    _insert_workspace_number_cards(ws_name, ["Active Staff", "Total Assignments", "Overdue Tasks"])
+    _insert_workspace_charts(ws_name, ["Staff Utilisation Rate"])
+
+
+def _expand_ceo_dashboard():
+    ws_name = "CEO"
+    if not frappe.db.exists("Workspace", ws_name):
+        return
+    existing = frappe.db.get_value("Workspace", ws_name, "content")
+    if not existing:
+        return
+    content = json.loads(existing)
+    new_charts = [
+        {"id": "c6", "type": "chart", "data": {"chart_name": "Active Staff", "col": 4}},
+        {"id": "c7", "type": "chart", "data": {"chart_name": "Active Clients", "col": 4}},
+    ]
+    content.extend(new_charts)
+    frappe.db.set_value("Workspace", ws_name, "content", json.dumps(content))
+    _insert_workspace_charts(ws_name, [c["data"]["chart_name"] for c in new_charts])
+
+
+def _log_phase(msg):
+    print(f"[Phases 6-12] {msg}")
+
+
+def after_migrate_all():
+    _log_phase("Starting Phases 6-12 deployment...")
+
+    # Phase 6: Missing Templates
+    _log_phase("Phase 6: Creating missing project templates...")
+    for tmpl_def in MISSING_TEMPLATES:
+        if frappe.db.exists("Alpha Project Template", tmpl_def["template_name"]):
+            continue
+        doc = frappe.get_doc({
+            "doctype": "Alpha Project Template",
+            "template_name": tmpl_def["template_name"],
+            "project_type": tmpl_def["project_type"],
+            "service_line": tmpl_def["service_line"],
+            "description": tmpl_def.get("description", ""),
+            "is_active": 1,
+            "tasks": tmpl_def["tasks"],
+        })
+        doc.flags.ignore_permissions = True
+        doc.insert()
+        _log_phase(f"  Created template: {tmpl_def['template_name']}")
+
+    # Phase 7: Email Templates
+    _log_phase("Phase 7: Creating email templates...")
+    for et in EMAIL_TEMPLATES:
+        if not frappe.db.exists("Email Template", et["name"]):
+            frappe.get_doc({
+                "doctype": "Email Template",
+                "subject": et["subject"],
+                "response": et["response"],
+            }).insert(ignore_permissions=True)
+            _log_phase(f"  Created email template: {et['name']}")
+
+    # Phase 7: Notifications
+    _log_phase("Phase 7: Creating notification records...")
+    for nr in NOTIFICATION_RECORDS:
+        if not frappe.db.exists("Notification", nr["name"]):
+            try:
+                doc = frappe.get_doc({
+                    "doctype": "Notification",
+                    "subject": nr["subject"],
+                    "document_type": nr["document_type"],
+                    "event": nr.get("event", "Days After"),
+                    "condition": nr.get("condition", ""),
+                    "channel": "Email",
+                    "sender": "Administrator",
+                    "recipients": nr["recipients"],
+                })
+                if "days_before" in nr:
+                    doc.days_before = nr["days_before"]
+                if "days_after" in nr:
+                    doc.days_after = nr["days_after"]
+                doc.insert(ignore_permissions=True)
+                _log_phase(f"  Created notification: {nr['name']}")
+            except Exception as e:
+                _log_phase(f"  Notification {nr['name']} skipped: {e}")
+
+    # Phase 8: Maker-Checker fields
+    _log_phase("Phase 8: Creating maker-checker fields...")
+    for fd in MAKER_CHECKER_FIELDS:
+        if not frappe.db.exists("Custom Field", {"dt": fd["dt"], "fieldname": fd["fieldname"]}):
+            frappe.get_doc(fd).insert(ignore_permissions=True)
+            _log_phase(f"  Created field: {fd['dt']}.{fd['fieldname']}")
+
+    # Phase 9: Billing deepening fields
+    _log_phase("Phase 9: Creating billing deepening fields...")
+    for fd in BILLING_CUSTOM_FIELDS:
+        if not frappe.db.exists("Custom Field", {"dt": fd["dt"], "fieldname": fd["fieldname"]}):
+            frappe.get_doc(fd).insert(ignore_permissions=True)
+            _log_phase(f"  Created field: {fd['dt']}.{fd['fieldname']}")
+
+    # Phase 10: HR metrics fields
+    _log_phase("Phase 10: Creating HR metrics fields...")
+    for fd in HR_METRICS_FIELDS:
+        if not frappe.db.exists("Custom Field", {"dt": fd["dt"], "fieldname": fd["fieldname"]}):
+            frappe.get_doc(fd).insert(ignore_permissions=True)
+            _log_phase(f"  Created field: {fd['dt']}.{fd['fieldname']}")
+
+    # Phase 12: Workspace hardening
+    _log_phase("Phase 12: Hardening workspaces...")
+    _setup_hr_analytics_workspace()
+    _log_phase("  Created HR Analytics workspace")
+    _expand_ceo_dashboard()
+    _log_phase("  Expanded CEO dashboard")
+
+    _log_phase("Phases 6-12 deployment complete.")
