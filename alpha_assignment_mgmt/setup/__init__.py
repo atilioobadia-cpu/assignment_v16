@@ -1478,7 +1478,7 @@ def _create_analytics_number_cards():
 		},
 	]
 	for card_def in cards:
-		if not frappe.db.exists("Number Card", card_def["label"]):
+		if not frappe.db.exists("Number Card", {"label": card_def["label"]}):
 			frappe.get_doc({
 				"doctype": "Number Card",
 				**card_def,
@@ -1527,7 +1527,7 @@ def _create_analytics_dashboard_charts():
 		},
 	]
 	for chart_def in charts:
-		if not frappe.db.exists("Dashboard Chart", chart_def["chart_name"]):
+		if not frappe.db.exists("Dashboard Chart", {"chart_name": chart_def["chart_name"]}):
 			frappe.get_doc({
 				"doctype": "Dashboard Chart",
 				**chart_def,
