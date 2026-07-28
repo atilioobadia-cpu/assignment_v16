@@ -77,6 +77,15 @@ def get_permission_query_conditions(user):
 		) OR `tabTask`.`_assign` LIKE {user_like}
 		  OR `tabTask`.`owner` = %(user)s)"""
 
+	if "Alpha Client" in roles:
+		return f"""(`tabTask`.`project` IN (
+			SELECT `tabProject`.`name` FROM `tabProject`
+			WHERE `tabProject`.`customer` IN (
+				SELECT `tabCustomer`.`name` FROM `tabCustomer`
+				WHERE `tabCustomer`.`custom_portal_user` = %(user)s
+			)
+		))"""
+
 	return ""
 
 
@@ -106,6 +115,14 @@ def has_permission(doc, ptype, user):
 			owner = frappe.db.get_value("Project", doc.project, "custom_client_owner")
 			if owner == user:
 				return True
+
+	if "Alpha Client" in roles:
+		if doc.project:
+			customer = frappe.db.get_value("Project", doc.project, "customer")
+			if customer:
+				portal_user = frappe.db.get_value("Customer", customer, "custom_portal_user")
+				if portal_user == user:
+					return True
 
 	return False
 

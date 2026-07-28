@@ -24,6 +24,7 @@ def after_install():
 	_setup_aims_operations_desk()
 	_setup_client_owner_workspace()
 	_setup_branch_manager_workspace()
+	_setup_client_portal_workspace()
 	_setup_technical_review_workspace()
 	_create_ceo_api_method()
 	_clear_number_card_currencies()
@@ -45,6 +46,7 @@ def after_migrate():
 	_setup_aims_operations_desk()
 	_setup_client_owner_workspace()
 	_setup_branch_manager_workspace()
+	_setup_client_portal_workspace()
 	_setup_technical_review_workspace()
 	_clear_number_card_currencies()
 	_clear_dashboard_chart_currencies()
@@ -62,6 +64,7 @@ def create_roles():
 		"Alpha HR Admin",
 		"Alpha Tax Officer",
 		"Alpha Managing Director",
+		"Alpha Client",
 	]
 	for role in roles:
 		if not frappe.db.exists("Role", role):
@@ -1023,6 +1026,47 @@ def _setup_branch_manager_workspace():
 	_insert_workspace_number_cards(ws_name, ["Active Assignments", "Active Projects", "Pending Reviews", "Tasks Pending"])
 	_insert_workspace_shortcuts(ws_name, shortcuts)
 
+def _setup_client_portal_workspace():
+    ws_name = "Client Portal"
+    shortcuts = [
+        {"type": "DocType", "link_to": "Project", "label": "My Projects", "icon": "list", "doc_view": "list"},
+        {"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "My Assignments", "icon": "list", "doc_view": "list"},
+        {"type": "DocType", "link_to": "Document Request Register", "label": "Document Requests", "icon": "file"},
+        {"type": "DocType", "link_to": "Assignment Closure Certificate", "label": "Closure Certificates", "icon": "file"},
+        {"type": "DocType", "link_to": "Client Delay Log", "label": "Log Delay", "icon": "warn"},
+    ]
+    content = json.dumps([
+        {"id": "h1", "type": "header", "data": {"text": '<span class="h4"><b>Client Portal</b></span>', "col": 12}},
+        {"id": "p1", "type": "paragraph", "data": {"text": "View your assignments, projects, and documents.", "col": 12}},
+        {"id": "nc1", "type": "number_card", "data": {"number_card_name": "Active Projects", "col": 3}},
+        {"id": "nc2", "type": "number_card", "data": {"number_card_name": "Active Clients", "col": 3}},
+        {"id": "sp1", "type": "spacer", "data": {"col": 12}},
+        {"id": "sh2", "type": "header", "data": {"text": '<span class="h5"><b>Quick Actions</b></span>', "col": 12}},
+    ] + [
+        {"id": "s" + str(i + 1), "type": "shortcut", "data": {"shortcut_name": sc["label"], "col": 3}}
+        for i, sc in enumerate(shortcuts)
+    ])
+
+    if frappe.db.exists("Workspace", ws_name):
+        frappe.db.set_value("Workspace", ws_name, "content", content)
+        frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s AND parenttype = 'Workspace'", ws_name)
+    else:
+        frappe.db.sql(
+            "INSERT INTO `tabWorkspace` (name, label, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by) VALUES (%s, %s, 'Alpha Assignment Management', 0, 1, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')",
+            (ws_name, ws_name, content),
+        )
+
+    frappe.db.sql(
+        "DELETE FROM `tabWorkspace Role` WHERE parent = %s AND parenttype = 'Workspace'",
+        ws_name,
+    )
+    frappe.db.sql(
+        "INSERT INTO `tabWorkspace Role` (name, role, parent, parentfield, parenttype, idx, docstatus, creation, modified, owner, modified_by) VALUES (%s, %s, %s, 'roles', 'Workspace', 0, 0, NOW(), NOW(), 'Administrator', 'Administrator')",
+        (ws_name + "_role0", "Alpha Client", ws_name),
+    )
+
+    _insert_workspace_number_cards(ws_name, ["Active Projects", "Active Clients"])
+    _insert_workspace_shortcuts(ws_name, shortcuts)
 
 def _setup_technical_review_workspace():
 	ws_name = "Technical Review"

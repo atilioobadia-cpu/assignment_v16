@@ -64,11 +64,21 @@ doc_events = {
 }
 
 permission_query_conditions = {
-	"Task": "alpha_assignment_mgmt.overrides.task.get_permission_query_conditions"
+	"Task": "alpha_assignment_mgmt.overrides.task.get_permission_query_conditions",
+	"Project": "alpha_assignment_mgmt.overrides.portal.project_permission_query_conditions",
+	"Alpha Assignment Origination": "alpha_assignment_mgmt.overrides.portal.assignment_origination_permission_query_conditions",
+	"Document Request Register": "alpha_assignment_mgmt.overrides.portal.document_request_permission_query_conditions",
+	"Assignment Closure Certificate": "alpha_assignment_mgmt.overrides.portal.closure_certificate_permission_query_conditions",
+	"Client Delay Log": "alpha_assignment_mgmt.overrides.portal.client_delay_permission_query_conditions",
 }
 
 has_permission = {
-	"Task": "alpha_assignment_mgmt.overrides.task.has_permission"
+	"Task": "alpha_assignment_mgmt.overrides.task.has_permission",
+	"Project": "alpha_assignment_mgmt.overrides.portal.project_has_permission",
+	"Alpha Assignment Origination": "alpha_assignment_mgmt.overrides.portal.assignment_origination_has_permission",
+	"Document Request Register": "alpha_assignment_mgmt.overrides.portal.document_request_has_permission",
+	"Assignment Closure Certificate": "alpha_assignment_mgmt.overrides.portal.closure_certificate_has_permission",
+	"Client Delay Log": "alpha_assignment_mgmt.overrides.portal.client_delay_has_permission",
 }
 
 fixtures = [
