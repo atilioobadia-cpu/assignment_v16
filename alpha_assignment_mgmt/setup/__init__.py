@@ -390,7 +390,7 @@ def _create_performance_feedback_fields():
 		}).insert(ignore_permissions=True)
 
 
-def create_project_templates()
+def create_project_templates():
 	_create_additional_templates():
 	"""Create standard project templates from the requirements document."""
 	templates = _get_template_definitions()
@@ -857,7 +857,7 @@ def _cleanup_workflow_state_field():
 		frappe.db.commit()
 
 
-def _create_ceo_api_method()
+def _create_ceo_api_method():
 	_create_phase5_workflows():
 	"""Ensure the CEO dashboard API method file exists."""
 	api_dir = os.path.join(
