@@ -391,7 +391,7 @@ def _create_performance_feedback_fields():
 
 
 def create_project_templates():
-	_create_additional_templates():
+	_create_additional_templates()
 	"""Create standard project templates from the requirements document."""
 	templates = _get_template_definitions()
 	for tmpl_def in templates:
@@ -858,7 +858,7 @@ def _cleanup_workflow_state_field():
 
 
 def _create_ceo_api_method():
-	_create_phase5_workflows():
+	_create_phase5_workflows()
 	"""Ensure the CEO dashboard API method file exists."""
 	api_dir = os.path.join(
 		os.path.dirname(__file__),
