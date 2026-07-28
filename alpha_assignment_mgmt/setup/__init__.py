@@ -4,6 +4,8 @@ import os
 
 
 def after_install():
+	_cleanup_workflow_state_field()
+	_cleanup_workflow_state_field()
 	"""Set up roles, workflows, templates, dashboards and workspaces after app install."""
 	create_roles()
 	create_workflow_states()
@@ -24,14 +26,14 @@ def after_install():
 	_setup_branch_manager_workspace()
 	_setup_technical_review_workspace()
 	_create_ceo_api_method()
-	_create_closure_field()
 	_clear_number_card_currencies()
-	_create_closure_field()
 	_clear_dashboard_chart_currencies()
 	frappe.db.commit()
 
 
 def after_migrate():
+	_cleanup_workflow_state_field()
+	_cleanup_workflow_state_field()
 	"""Re-sync components after migration."""
 	create_workflow_states()
 	create_project_templates()
@@ -190,7 +192,7 @@ def create_rejection_reason_field():
 			"fieldname": "custom_rejection_reason",
 			"label": "Rejection Reason",
 			"fieldtype": "Small Text",
-			"insert_after": "workflow_state",
+			"insert_after": "acceptance_status",
 			"mandatory_depends_on": "eval:doc.workflow_state == 'Rejected'",
 		}).insert(ignore_permissions=True)
 
@@ -680,19 +682,11 @@ def _create_custom_html_block():
 
 # ── CEO API method ───────────────────────────────────────────────────────
 
-def _create_closure_field():
-	"""Add workflow_state field to Assignment Closure Certificate for workflow support."""
-	if not frappe.db.exists("Custom Field", {"dt": "Assignment Closure Certificate", "fieldname": "workflow_state"}):
-		frappe.get_doc({
-			"doctype": "Custom Field",
-			"dt": "Assignment Closure Certificate",
-			"fieldname": "workflow_state",
-			"label": "Workflow State",
-			"fieldtype": "Link",
-			"options": "Workflow State",
-			"insert_after": "status",
-			"read_only": 1,
-		}).insert(ignore_permissions=True)
+def _cleanup_workflow_state_field():
+	"""Remove custom workflow_state field if it exists (now a standard field in JSON)."""
+	if frappe.db.exists("Custom Field", {"dt": "Assignment Closure Certificate", "fieldname": "workflow_state"}):
+		frappe.delete_doc("Custom Field", "Assignment Closure Certificate-workflow_state")
+		frappe.db.commit()
 
 
 def _create_ceo_api_method():

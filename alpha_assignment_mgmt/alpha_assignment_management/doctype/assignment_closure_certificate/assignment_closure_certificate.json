@@ -25,6 +25,7 @@
     "approval_cb_1",
     "approval_date",
     "status",
+    "workflow_state",
     "section_notes",
     "final_notes"
   ],
@@ -140,6 +141,13 @@
       "in_list_view": 1,
       "label": "Status",
       "options": "Draft\nPending Review\nApproved\nRejected"
+    },
+    {
+      "fieldname": "workflow_state",
+      "fieldtype": "Link",
+      "label": "Workflow State",
+      "options": "Workflow State",
+      "read_only": 1
     },
     {
       "fieldname": "section_notes",
