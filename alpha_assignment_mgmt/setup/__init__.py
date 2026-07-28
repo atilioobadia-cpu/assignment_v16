@@ -199,6 +199,9 @@ def _setup_aims_operations_desk():
 		{"type": "DocType", "link_to": "Client Delay Log", "label": "Client Delays", "icon": "warn"},
 		{"type": "DocType", "link_to": "Client Risk Register", "label": "Risk Register", "icon": "list"},
 		{"type": "DocType", "link_to": "Assignment Closure Certificate", "label": "Closure Certificate", "icon": "file"},
+		{"type": "DocType", "link_to": "Performance Feedback", "label": "Performance", "icon": "list"},
+		{"type": "Report", "link_to": "SLA Compliance Overview", "label": "SLA Compliance", "icon": "chart"},
+		{"type": "Report", "link_to": "Staff Productivity", "label": "Staff Productivity", "icon": "chart"},
 	]
 
 	content = json.dumps([
@@ -348,15 +351,6 @@ def _setup_client_portal_workspace():
         frappe.db.sql(
             "INSERT INTO `tabWorkspace` (name, label, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by) VALUES (%s, %s, 'Alpha Assignment Management', 0, 1, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')",
             (ws_name, ws_name, content),
-	_insert_workspace_number_cards(ws_name, ["Active Staff", "Total Assignments", "Overdue Tasks"])
-	_insert_workspace_charts(ws_name, ["Staff Utilization Rate", "Overdue Tasks by Project", "Assignments by Status"])
-	_insert_workspace_shortcuts(ws_name, [
-		{"type": "Report", "link_to": "Staff Productivity", "label": "Staff Productivity", "icon": "chart"},
-		{"type": "Report", "link_to": "Employee Performance", "label": "Employee Performance", "icon": "chart"},
-		{"type": "Report", "link_to": "SLA Compliance Overview", "label": "SLA Compliance Overview", "icon": "chart"},
-		{"type": "DocType", "link_to": "Performance Feedback", "label": "Performance Feedback", "icon": "list"},
-		{"type": "DocType", "link_to": "Appraisal", "label": "Appraisal", "icon": "list"},
-	])
         )
 
     frappe.db.sql(
@@ -495,6 +489,9 @@ def _setup_technical_review_workspace():
 	shortcuts = [
 		{"type": "DocType", "link_to": "Review Gate Register", "label": "Pending Reviews", "icon": "review", "doc_view": "list"},
 		{"type": "DocType", "link_to": "Task", "label": "Tasks for Review", "icon": "task", "doc_view": "list"},
+		{"type": "DocType", "link_to": "Performance Feedback", "label": "Feedback", "icon": "list"},
+		{"type": "DocType", "link_to": "Document Request Register", "label": "Document Checks", "icon": "file"},
+		{"type": "Report", "link_to": "Staff Productivity", "label": "Productivity", "icon": "chart"},
 	]
 	content = json.dumps([
 		{"id": "h1", "type": "header", "data": {"text": "<span class=\"h4\"><b>Technical Review Desk</b></span>", "col": 12}},
@@ -542,6 +539,9 @@ def _setup_hr_analytics_workspace():
 		"INSERT INTO `tabWorkspace` (name, label, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by) VALUES (%s, %s, 'Alpha Assignment Management', 0, 1, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')",
 		(ws_name, ws_name, content),
 	)
+		{"type": "DocType", "link_to": "Performance Feedback", "label": "Performance Feedback", "icon": "list"},
+		{"type": "DocType", "link_to": "Appraisal", "label": "Appraisal", "icon": "list"},
+	])
 
 
 def _add_employee_skill_fields():
