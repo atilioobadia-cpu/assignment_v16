@@ -1422,9 +1422,7 @@ def _add_employee_skill_fields():
 			"dt": "Employee",
 			"fieldname": "custom_service_lines",
 			"label": "Service Lines",
-			"fieldtype": "Multi Select",
-			"options": "\nTax Compliance\nAudit & Assurance\nBookkeeping\nAccounting Reconstruction\nCompany Secretarial\nPayroll\nBusiness Advisory\nTRA Support\nInternal Audit\nConsultancy\nAdvisory\nERPNext Implementation",
-			"insert_after": "custom_utilization_rate_30d",
+			"fieldtype": "Small Text",
 		},
 		{
 			"doctype": "Custom Field",
