@@ -1482,7 +1482,7 @@ def _create_analytics_number_cards():
 			frappe.get_doc({
 				"doctype": "Number Card",
 				**card_def,
-				"is_standard": 0,
+				"is_standard": 1,
 				"module": "Alpha Assignment Management",
 			}).insert(ignore_permissions=True)
 
@@ -1531,6 +1531,6 @@ def _create_analytics_dashboard_charts():
 			frappe.get_doc({
 				"doctype": "Dashboard Chart",
 				**chart_def,
-				"is_standard": 0,
+				"is_standard": 1,
 				"module": "Alpha Assignment Management",
 			}).insert(ignore_permissions=True)
