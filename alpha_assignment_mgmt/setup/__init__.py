@@ -5,7 +5,6 @@ import os
 
 def after_install():
 	_cleanup_workflow_state_field()
-	_cleanup_workflow_state_field()
 	"""Set up roles, workflows, templates, dashboards and workspaces after app install."""
 	create_roles()
 	create_workflow_states()
@@ -27,21 +26,22 @@ def after_install():
 	_setup_client_owner_workspace()
 	_setup_branch_manager_workspace()
 	_setup_client_portal_workspace()
-	_setup_client_portal_workspace()
 	_create_default_items()
 	_add_billing_custom_fields()
 	_setup_accounts_billing_workspace()
 	_setup_technical_review_workspace()
 	_create_ceo_api_method()
 	_create_phase5_workflows()
-	_create_phase5_workflows()
 	_clear_number_card_currencies()
 	_clear_dashboard_chart_currencies()
+	_setup_hr_analytics_workspace()
+	_add_employee_skill_fields()
+	_create_analytics_number_cards()
+	_create_analytics_dashboard_charts()
 	frappe.db.commit()
 
 
 def after_migrate():
-	_cleanup_workflow_state_field()
 	_cleanup_workflow_state_field()
 	"""Re-sync components after migration."""
 	create_workflow_states()
@@ -57,7 +57,6 @@ def after_migrate():
 	_setup_client_owner_workspace()
 	_setup_branch_manager_workspace()
 	_setup_client_portal_workspace()
-	_setup_client_portal_workspace()
 	_create_default_items()
 	_add_billing_custom_fields()
 	_setup_accounts_billing_workspace()
@@ -65,6 +64,10 @@ def after_migrate():
 	_create_phase5_workflows()
 	_clear_number_card_currencies()
 	_clear_dashboard_chart_currencies()
+	_setup_hr_analytics_workspace()
+	_add_employee_skill_fields()
+	_create_analytics_number_cards()
+	_create_analytics_dashboard_charts()
 	frappe.db.commit()
 
 
@@ -1376,3 +1379,154 @@ def _setup_technical_review_workspace():
 	_insert_workspace_charts(ws_name, ["Tasks by Status"])
 	_insert_workspace_number_cards(ws_name, ["Pending Reviews", "Tasks Completed", "Tasks Pending"])
 	_insert_workspace_shortcuts(ws_name, shortcuts)
+
+def _setup_hr_analytics_workspace():
+	workspace_name = "HR Analytics"
+	if frappe.db.exists("Workspace", workspace_name):
+		return
+	doc = frappe.get_doc({
+		"doctype": "Workspace",
+		"title": workspace_name,
+		"module": "Alpha Assignment Management",
+		"icon": "hr",
+		"is_standard": 1,
+		"public": 0,
+		"roles": [
+			{"role": "Alpha HR Admin"},
+			{"role": "Alpha Managing Director"},
+			{"role": "System Manager"},
+		],
+		"links": [
+			{"type": "Report", "label": "Staff Productivity", "link_to": "Staff Productivity", "link_type": "Report", "only_for": [], "onboard": 0},
+			{"type": "Report", "label": "Employee Performance", "link_to": "Employee Performance", "link_type": "Report", "only_for": [], "onboard": 0},
+			{"type": "Report", "label": "SLA Compliance Overview", "link_to": "SLA Compliance Overview", "link_type": "Report", "only_for": [], "onboard": 0},
+			{"type": "DocType", "label": "Performance Feedback", "link_to": "Performance Feedback", "link_type": "DocType", "only_for": [], "onboard": 0},
+			{"type": "DocType", "label": "Appraisal", "link_to": "Appraisal", "link_type": "DocType", "only_for": [], "onboard": 0},
+		],
+	})
+	doc.flags.ignore_validate = True
+	doc.flags.ignore_mandatory = True
+	doc.insert(ignore_permissions=True)
+
+
+def _add_employee_skill_fields():
+	fields = [
+		{
+			"doctype": "Custom Field",
+			"dt": "Employee",
+			"fieldname": "custom_service_lines",
+			"label": "Service Lines",
+			"fieldtype": "Multi Select",
+			"options": "\nTax Compliance\nAudit & Assurance\nBookkeeping\nAccounting Reconstruction\nCompany Secretarial\nPayroll\nBusiness Advisory\nTRA Support\nInternal Audit\nConsultancy\nAdvisory\nERPNext Implementation",
+			"insert_after": "custom_utilization_rate_30d",
+		},
+		{
+			"doctype": "Custom Field",
+			"dt": "Employee",
+			"fieldname": "custom_proficiency_notes",
+			"label": "Proficiency Notes",
+			"fieldtype": "Small Text",
+			"insert_after": "custom_service_lines",
+		},
+		{
+			"doctype": "Custom Field",
+			"dt": "Employee",
+			"fieldname": "custom_on_leave",
+			"label": "On Leave",
+			"fieldtype": "Check",
+			"read_only": 1,
+			"insert_after": "custom_proficiency_notes",
+		},
+	]
+	for field_def in fields:
+		if not frappe.db.exists("Custom Field", {"dt": "Employee", "fieldname": field_def["fieldname"]}):
+			frappe.get_doc(field_def).insert(ignore_permissions=True)
+
+
+def _create_analytics_number_cards():
+	cards = [
+		{
+			"name": "Active Staff",
+			"label": "Active Staff",
+			"type": "Document Type",
+			"document_type": "Employee",
+			"function": "Count",
+			"filters_json": '{"status": "Active"}',
+			"show_percentage_change": 0,
+		},
+		{
+			"name": "Total Assignments",
+			"label": "Total Assignments",
+			"type": "Document Type",
+			"document_type": "Project",
+			"function": "Count",
+			"filters_json": '{"status": "Open"}',
+			"show_percentage_change": 0,
+		},
+		{
+			"name": "Overdue Tasks",
+			"label": "Overdue Tasks",
+			"type": "Document Type",
+			"document_type": "Task",
+			"function": "Count",
+			"filters_json": '{"status": "Overdue"}',
+			"show_percentage_change": 0,
+		},
+	]
+	for card_def in cards:
+		if not frappe.db.exists("Number Card", card_def["name"]):
+			frappe.get_doc({
+				"doctype": "Number Card",
+				**card_def,
+				"is_standard": 1,
+				"module": "Alpha Assignment Management",
+			}).insert(ignore_permissions=True)
+
+
+def _create_analytics_dashboard_charts():
+	charts = [
+		{
+			"name": "Staff Utilization Rate",
+			"chart_name": "Staff Utilization Rate",
+			"type": "Report",
+			"report_name": "Employee Performance",
+			"timeseries": 0,
+			"chart_type": "Bar",
+			"is_public": 1,
+			"filters_json": '{}',
+			"group_by_type": "Count",
+			"number_of_groups": 0,
+		},
+		{
+			"name": "Overdue Tasks by Project",
+			"chart_name": "Overdue Tasks by Project",
+			"type": "Report",
+			"report_name": "Staff Productivity",
+			"timeseries": 0,
+			"chart_type": "Bar",
+			"is_public": 1,
+			"filters_json": '{"status": "Overdue"}',
+			"group_by_type": "Count",
+			"number_of_groups": 0,
+		},
+		{
+			"name": "Assignments by Status",
+			"chart_name": "Assignments by Status",
+			"type": "Report",
+			"report_name": "Staff Productivity",
+			"timeseries": 0,
+			"chart_type": "Percentage",
+			"is_public": 1,
+			"filters_json": '{}',
+			"group_by_type": "Count",
+			"number_of_groups": 0,
+		},
+	]
+	for chart_def in charts:
+		if not frappe.db.exists("Dashboard Chart", chart_def["name"]):
+			frappe.get_doc({
+				"doctype": "Dashboard Chart",
+				**chart_def,
+				"is_standard": 1,
+				"module": "Alpha Assignment Management",
+			}).insert(ignore_permissions=True)
