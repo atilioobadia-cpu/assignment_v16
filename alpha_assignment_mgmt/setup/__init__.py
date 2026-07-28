@@ -1740,6 +1740,7 @@ def after_migrate_all():
                 "doctype": "Email Template",
                 "subject": et["subject"],
                 "response": et["response"],
+                "name": et["name"],
             }).insert(ignore_permissions=True)
             _log_phase(f"  Created email template: {et['name']}")
 
