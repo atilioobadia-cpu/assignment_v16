@@ -1585,6 +1585,7 @@ NOTIFICATION_RECORDS = [
 
 MAKER_CHECKER_FIELDS = [
     {
+        "doctype": "Custom Field",
         "dt": "Alpha Assignment Origination",
         "fieldname": "custom_maker",
         "label": "Prepared By",
@@ -1594,6 +1595,7 @@ MAKER_CHECKER_FIELDS = [
         "insert_after": "custom_rejection_reason",
     },
     {
+        "doctype": "Custom Field",
         "dt": "Alpha Assignment Origination",
         "fieldname": "custom_checker",
         "label": "Checked By",
@@ -1603,6 +1605,7 @@ MAKER_CHECKER_FIELDS = [
         "insert_after": "custom_maker",
     },
     {
+        "doctype": "Custom Field",
         "dt": "Task",
         "fieldname": "custom_maker",
         "label": "Prepared By",
@@ -1612,6 +1615,7 @@ MAKER_CHECKER_FIELDS = [
         "insert_after": "custom_assigned_to",
     },
     {
+        "doctype": "Custom Field",
         "dt": "Task",
         "fieldname": "custom_checker",
         "label": "Checked By",
@@ -1624,6 +1628,7 @@ MAKER_CHECKER_FIELDS = [
 
 BILLING_CUSTOM_FIELDS = [
     {
+        "doctype": "Custom Field",
         "dt": "Sales Order",
         "fieldname": "custom_deposit_amount",
         "label": "Deposit Amount",
@@ -1631,6 +1636,7 @@ BILLING_CUSTOM_FIELDS = [
         "insert_after": "custom_project",
     },
     {
+        "doctype": "Custom Field",
         "dt": "Sales Order",
         "fieldname": "custom_deposit_received",
         "label": "Deposit Received",
@@ -1639,6 +1645,7 @@ BILLING_CUSTOM_FIELDS = [
         "insert_after": "custom_deposit_amount",
     },
     {
+        "doctype": "Custom Field",
         "dt": "Sales Invoice",
         "fieldname": "custom_billing_milestone",
         "label": "Billing Milestone",
@@ -1646,6 +1653,7 @@ BILLING_CUSTOM_FIELDS = [
         "insert_after": "custom_project",
     },
     {
+        "doctype": "Custom Field",
         "dt": "Project",
         "fieldname": "custom_budget_hours",
         "label": "Budget Hours",
@@ -1653,6 +1661,7 @@ BILLING_CUSTOM_FIELDS = [
         "insert_after": "expected_end_date",
     },
     {
+        "doctype": "Custom Field",
         "dt": "Project",
         "fieldname": "custom_hours_overage_alert",
         "label": "Hours Overage Alert",
@@ -1663,10 +1672,10 @@ BILLING_CUSTOM_FIELDS = [
 ]
 
 HR_METRICS_FIELDS = [
-    {"dt": "Employee", "fieldname": "custom_rework_rate", "label": "Review Rework Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_utilization_rate_30d"},
-    {"dt": "Employee", "fieldname": "custom_delay_followup_rate", "label": "Client Delay Follow-up Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_rework_rate"},
-    {"dt": "Employee", "fieldname": "custom_monthly_close_rate", "label": "Monthly Close Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_delay_followup_rate"},
-    {"dt": "Employee", "fieldname": "custom_profitability_contribution", "label": "Profitability Contribution", "fieldtype": "Currency", "read_only": 1, "insert_after": "custom_monthly_close_rate"},
+    {"doctype": "Custom Field", "dt": "Employee", "fieldname": "custom_rework_rate", "label": "Review Rework Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_utilization_rate_30d"},
+    {"doctype": "Custom Field", "dt": "Employee", "fieldname": "custom_delay_followup_rate", "label": "Client Delay Follow-up Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_rework_rate"},
+    {"doctype": "Custom Field", "dt": "Employee", "fieldname": "custom_monthly_close_rate", "label": "Monthly Close Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_delay_followup_rate"},
+    {"doctype": "Custom Field", "dt": "Employee", "fieldname": "custom_profitability_contribution", "label": "Profitability Contribution", "fieldtype": "Currency", "read_only": 1, "insert_after": "custom_monthly_close_rate"},
 ]
 
 
@@ -1756,7 +1765,6 @@ def after_migrate_all():
                     "event": nr.get("event", "Days After"),
                     "condition": nr.get("condition", ""),
                     "channel": "Email",
-                    "sender": "Administrator",
                     "recipients": nr["recipients"],
                 })
                 if "days_before" in nr:
