@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AIMS End-to-End UI Test Checklist</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    line-height: 1.6;
+    padding: 40px 20px;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #fff;
+    padding: 40px 50px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  }
+
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+
+  .header .subtitle {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 20px;
+  }
+
+  .header .meta {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    font-size: 13px;
+  }
+
+  .header .meta span {
+    background: rgba(255,255,255,0.1);
+    padding: 6px 16px;
+    border-radius: 20px;
+  }
+
+  .header .meta .label { opacity: 0.6; }
+  .header .meta .value { font-weight: 600; }
+
+  /* SECTIONS */
+  .section {
+    background: #fff;
+    border-radius: 14px;
+    margin-bottom: 24px;
+    padding: 32px 40px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    border: 1px solid #e8ecf0;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #eef1f5;
+  }
+
+  .section-number {
+    background: #1a1a2e;
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+
+  .section-subtitle {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 2px;
+  }
+
+  /* STEPS */
+  .step {
+    padding: 16px 0;
+    border-bottom: 1px solid #f0f2f5;
+  }
+
+  .step:last-child { border-bottom: none; }
+
+  .step-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .step-num {
+    background: #eef2ff;
+    color: #4f46e5;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 2px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-desc {
+    font-size: 15px;
+    font-weight: 500;
+    color: #1a1a2e;
+  }
+
+  .step-details {
+    margin-left: 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .detail {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 8px;
+  }
+
+  .detail-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    width: 18px;
+    text-align: center;
+    margin-top: 1px;
+  }
+
+  .detail-fill {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+  }
+
+  .detail-auto {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+  }
+
+  .detail-expected {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+  }
+
+  .detail-note {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+  }
+
+  .detail-pass {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+  }
+
+  .detail-fail {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+  }
+
+  .detail-label {
+    font-weight: 600;
+    min-width: 70px;
+    color: #374151;
+    flex-shrink: 0;
+  }
+
+  .detail-text {
+    color: #4b5563;
+  }
+
+  .detail-text code {
+    background: #f1f5f9;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: #1e293b;
+  }
+
+  .check-box {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #94a3b8;
+    border-radius: 4px;
+    margin-right: 8px;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .empty-cell {
+    color: #94a3b8;
+    font-style: italic;
+  }
+
+  /* SUMMARY TABLE */
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+
+  .summary-table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    background: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  .summary-table td {
+    padding: 10px 14px;
+    font-size: 13px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+  }
+
+  .summary-table tr:hover td { background: #fafbfc; }
+
+  .summary-table .num {
+    font-weight: 600;
+    color: #4f46e5;
+    width: 40px;
+  }
+
+  .summary-table .feature { width: auto; }
+
+  .summary-table .status-cell {
+    width: 100px;
+    text-align: center;
+  }
+
+  .status-placeholder {
+    display: inline-block;
+    width: 60px;
+    border-bottom: 2px dashed #cbd5e1;
+    margin: 0 4px;
+  }
+
+  .footer {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 12px;
+    margin-top: 40px;
+    padding: 20px;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .section { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+    .header { break-inside: avoid; }
+    .detail { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>AIMS End-to-End UI Test Checklist</h1>
+    <div class="subtitle">Alpha Assignment Management System — Complete Manual Testing Guide</div>
+    <div class="meta">
+      <span><span class="label">Login as:</span> <span class="value">Administrator</span></span>
+      <span><span class="label">Site:</span> <span class="value">aims.local</span></span>
+      <span><span class="label">Date:</span> <span class="value">_______________</span></span>
+      <span><span class="label">Tester:</span> <span class="value">_______________</span></span>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- SECTION 1 -->
+  <!-- ========================================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div>
+        <div class="section-title">Create Customer (Central Hub)</div>
+        <div class="section-subtitle">Set up the central customer record — all other documents pull data from here.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 1.1</span>
+        <span class="step-desc">Navigate to Customer list and click <strong>"+ Add Customer"</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">📋</span>
+          <span class="detail-text">A new Customer form opens with standard fields (Customer Name, Group, Type, Territory) and custom fields at the bottom.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 1.2</span>
+        <span class="step-desc">Fill in the fields as shown below</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-fill">
+          <span class="detail-icon">✏️</span>
+          <span class="detail-label">Fill:</span>
+          <span class="detail-text">
+            <code>Customer Name</code> = <strong>E2E Test Corp</strong> [add your initials]<br>
+            <code>Customer Group</code> = <strong>Commercial</strong><br>
+            <code>Customer Type</code> = <strong>Company</strong><br>
+            <code>Territory</code> = <strong>All Territories</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 1.3</span>
+        <span class="step-desc">Scroll down to the <strong>Custom Fields</strong> section and fill</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-fill">
+          <span class="detail-icon">✏️</span>
+          <span class="detail-label">Fill:</span>
+          <span class="detail-text">
+            <code>Engagement Manager</code> = <strong>Administrator</strong><br>
+            <code>Client Owner</code> = <strong>Administrator</strong><br>
+            <code>Branch Manager</code> = <strong>Administrator</strong><br>
+            <code>Service Line</code> = <strong>Tax Compliance</strong><br>
+            <code>Risk Rating</code> = <strong>Medium</strong><br>
+            <code>Sector</code> = <strong>Financial Services</strong><br>
+            <code>TIN</code> = <strong>TIN-UI-99999</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 1.4</span>
+        <span class="step-desc">Click <strong>Save</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">Customer saved successfully. All fields visible on reload. No validation errors.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- SECTION 2 -->
+  <!-- ========================================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div>
+        <div class="section-title">Create Origination (Autofill from Customer)</div>
+        <div class="section-subtitle">When you select the Customer, 7 fields auto-populate. You only fill 4 more.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 2.1</span>
+        <span class="step-desc">Navigate to <strong>Alpha Assignment Origination</strong> list and click <strong>"+ Add"</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">📋</span>
+          <span class="detail-text">New Origination form opens — fields Engagement Manager, Client Owner, Branch Manager etc. are empty until you select a Customer.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 2.2</span>
+        <span class="step-desc">Set <strong>Customer</strong> = the Customer you just created</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-auto">
+          <span class="detail-icon">⚡</span>
+          <span class="detail-label">Auto-fills:</span>
+          <span class="detail-text">
+            ✅ <code>Engagement Manager</code> = Administrator<br>
+            ✅ <code>Client Owner</code> = Administrator<br>
+            ✅ <code>Branch Manager</code> = Administrator<br>
+            ✅ <code>Service Line</code> = Tax Compliance<br>
+            ✅ <code>Risk Rating</code> = Medium<br>
+            ✅ <code>Sector</code> = Financial Services<br>
+            ✅ <code>TIN</code> = TIN-UI-99999
+          </span>
+        </div>
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">All 7 fields above instantly fill from Customer data. No manual entry needed.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 2.3</span>
+        <span class="step-desc">Fill the 4 remaining required fields</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-fill">
+          <span class="detail-icon">✏️</span>
+          <span class="detail-label">Fill:</span>
+          <span class="detail-text">
+            <code>Assignment Title</code> = <strong>UI Test Tax Filing</strong><br>
+            <code>Date Received</code> = <strong>[today's date]</strong><br>
+            <code>Regulatory Deadline</code> = <strong>[30 days from today]</strong><br>
+            <code>Received By</code> = <strong>Administrator</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 2.4</span>
+        <span class="step-desc">Click <strong>Save</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">Origination saved. Confirm all autofilled fields (Step 2.2) still show correct values.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- SECTION 3 -->
+  <!-- ========================================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div>
+        <div class="section-title">Submit through Workflow → Project Auto-creation</div>
+        <div class="section-subtitle">4 workflow transitions take the Origination from Draft to Project Created. A Project is automatically generated at the end.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 3.1</span>
+        <span class="step-desc">With the Origination open, click <strong>Menu &gt; Workflow &gt; Submit</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">Workflow state changes to <strong>"Submitted"</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 3.2</span>
+        <span class="step-desc">Click <strong>Menu &gt; Workflow &gt; Send to Review</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">Workflow state changes to <strong>"Under Review"</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 3.3</span>
+        <span class="step-desc">Click <strong>Menu &gt; Workflow &gt; Approve</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">Workflow state changes to <strong>"Approved"</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 3.4</span>
+        <span class="step-desc">Click <strong>Menu &gt; Workflow &gt; Create Project</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">Workflow state changes to <strong>"Project Created"</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 3.5</span>
+        <span class="step-desc">Open the <strong>Project</strong> list (type "Project" in Awesome Bar)</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-auto">
+          <span class="detail-icon">⚡</span>
+          <span class="detail-label">Auto-created:</span>
+          <span class="detail-text">
+            ✅ A new <strong>PROJ-xxxx</strong> project exists<br>
+            ✅ Linked to Customer <em>E2E Test Corp</em><br>
+            ✅ Linked to Origination <em>AOR-xxxx</em>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 3.6</span>
+        <span class="step-desc">Open the new <strong>Project</strong> record</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-auto">
+          <span class="detail-icon">⚡</span>
+          <span class="detail-label">Auto-populated:</span>
+          <span class="detail-text">
+            ✅ <code>Status</code> = <strong>Open</strong><br>
+            ✅ <code>Customer</code> = E2E Test Corp<br>
+            ✅ <code>Assignment Origination</code> = AOR-xxxx<br>
+            ✅ <code>Service Line</code> = Tax Compliance<br>
+            ✅ <code>Engagement Manager</code> = Administrator<br>
+            ✅ <code>Branch Manager</code> = Administrator<br>
+            ✅ <code>Client Owner</code> = Administrator<br>
+            ✅ <code>Risk Rating</code> = Medium
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- SECTION 4 -->
+  <!-- ========================================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div>
+        <div class="section-title">Verify Project Contents</div>
+        <div class="section-subtitle">The Project comes with 10 Tasks, an Engagement SLA, and 7 Document Requests — all pre-built from the Tax Compliance template.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 4.1</span>
+        <span class="step-desc">In the Project form, scroll to the <strong>Tasks</strong> table (tab: "Tasks")</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-auto">
+          <span class="detail-icon">⚡</span>
+          <span class="detail-label">Auto-created:</span>
+          <span class="detail-text"><strong>10 tasks</strong> with sequence numbers 1–10, each with a subject, some with <code>Assign To</code> and <code>Depends On Tasks</code> populated.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 4.2</span>
+        <span class="step-desc">Check the <strong>Assign To</strong> column</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-auto">
+          <span class="detail-icon">⚡</span>
+          <span class="detail-label">Pre-assigned:</span>
+          <span class="detail-text">Tasks seq 2–9 have <code>custom_assigned_to</code> = <strong>avilla@alphaassociates.co.tz</strong>. Seq 1 and 10 are unassigned.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 4.3</span>
+        <span class="step-desc">Check the <strong>Depends On Tasks</strong> column</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-auto">
+          <span class="detail-icon">⚡</span>
+          <span class="detail-label">Pre-configured:</span>
+          <span class="detail-text">Tasks have dependency chains (e.g. seq 2 depends on seq 1, seq 6 depends on seq 3,4,5). 9 out of 10 tasks have at least one dependency.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 4.4</span>
+        <span class="step-desc">Scroll to <strong>Document Requests</strong> table</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-auto">
+          <span class="detail-icon">⚡</span>
+          <span class="detail-label">Auto-created:</span>
+          <span class="detail-text"><strong>7 document requests</strong> (Trial Balance, Fixed Asset Register, Payroll Records, etc.) with responsible persons assigned.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 4.5</span>
+        <span class="step-desc">Open <strong>Alpha Engagement SLA</strong> list (search in Awesome Bar)</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-auto">
+          <span class="detail-icon">⚡</span>
+          <span class="detail-label">Auto-created:</span>
+          <span class="detail-text">
+            ✅ SLA record exists for <strong>PROJ-xxxx</strong><br>
+            ✅ <code>Status</code> = <strong>Active</strong><br>
+            ✅ <code>SLA Level</code> = <strong>SLA A - Urgent Statutory</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- SECTION 5 -->
+  <!-- ========================================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div>
+        <div class="section-title">Test Dependency Gate</div>
+        <div class="section-subtitle">Tasks cannot start until their dependencies are completed. We verify this by trying to start seq 2 before seq 1 is done.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 5.1</span>
+        <span class="step-desc">Open Task <strong>seq 2</strong> ("Confirm tax period, IDRAS deadline...")</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 5.2</span>
+        <span class="step-desc">Set <code>Status</code> = <strong>In Progress</strong>, then click <strong>Save</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-fail">
+          <span class="detail-icon">❌</span>
+          <span class="detail-label">Should FAIL:</span>
+          <span class="detail-text"><strong>ValidationError:</strong> "Cannot start Task [name]. The following dependencies are not completed: [seq 1 name] (Open)"</span>
+        </div>
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Why?</span>
+          <span class="detail-text">Task seq 2 has <code>Depends On Tasks</code> = seq 1. Since seq 1 is still "Open", the dependency gate blocks the status change.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 5.3</span>
+        <span class="step-desc">Close the error dialog (Cancel)</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">Task remains unchanged (still "Open"). Error dismissed cleanly.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- SECTION 6 -->
+  <!-- ========================================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div>
+        <div class="section-title">Complete First Tasks (seq 1 &amp; 2)</div>
+        <div class="section-subtitle">Now we complete seq 1 (unlocks seq 2), then complete seq 2. Notifications are generated for both.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 6.1</span>
+        <span class="step-desc">Open Task <strong>seq 1</strong> ("Receive trial balance, draft financial statements...")</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 6.2</span>
+        <span class="step-desc">Fill completion details</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-fill">
+          <span class="detail-icon">✏️</span>
+          <span class="detail-label">Fill:</span>
+          <span class="detail-text">
+            <code>Status</code> = <strong>Completed</strong><br>
+            <code>Evidence Attachment</code> = <strong>/assets/test/evidence.pdf</strong> (or attach any file)
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 6.3</span>
+        <span class="step-desc">Click <strong>Save</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">Task seq 1 saved as Completed. A Notification Log entry "Task completed: Receive trial balance..." is created (no assigned user, so notification may not appear for anyone). A dependency notification is sent to avilla (seq 2's assignee).</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 6.4</span>
+        <span class="step-desc">Now open Task <strong>seq 2</strong> — its dependency is now resolved</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-fill">
+          <span class="detail-icon">✏️</span>
+          <span class="detail-label">Fill:</span>
+          <span class="detail-text">
+            <code>Status</code> = <strong>Completed</strong><br>
+            <code>Evidence Attachment</code> = <strong>/assets/test/evidence.pdf</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 6.5</span>
+        <span class="step-desc">Click <strong>Save</strong> on seq 2</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">Task seq 2 saved as Completed. A "Task completed" notification is created for avilla (the assigned user).</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 6.6</span>
+        <span class="step-desc">Check <strong>Notification Log</strong> (type "Notification Log" in Awesome Bar)</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">🔍</span>
+          <span class="detail-label">Look for:</span>
+          <span class="detail-text">
+            ✅ <strong>"Task completed: Confirm tax period..."</strong> for avilla@alphaassociates.co.tz<br>
+            ✅ <strong>"Dependency completed: Receive trial balance..."</strong> for avilla@alphaassociates.co.tz
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- SECTION 7 -->
+  <!-- ========================================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <div>
+        <div class="section-title">Complete Tasks with Review Gates (seq 3, 4, 5, 6)</div>
+        <div class="section-subtitle">These 4 tasks have <code>Requires Review = Yes</code>. They cannot be completed until an approved Review Gate Register exists. Repeat the 4-step process for each.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 7.1</span>
+        <span class="step-desc">Open Task <strong>seq 3</strong> ("Review revenue, expenses..."), set <code>Status = Completed</code>, click <strong>Save</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-fail">
+          <span class="detail-icon">❌</span>
+          <span class="detail-label">Should FAIL:</span>
+          <span class="detail-text"><strong>ValidationError:</strong> "Cannot mark Task... Review Gate approval is required for this task."</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 7.2</span>
+        <span class="step-desc">Open <strong>Review Gate Register</strong> → <strong>"+ Add"</strong> and fill</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-fill">
+          <span class="detail-icon">✏️</span>
+          <span class="detail-label">Fill:</span>
+          <span class="detail-text">
+            <code>Task</code> = <strong>[select seq 3 task name]</strong><br>
+            <code>Project</code> = <strong>PROJ-xxxx</strong><br>
+            <code>Approval Status</code> = <strong>Approved</strong><br>
+            <code>Reviewed By</code> = <strong>Administrator</strong><br>
+            <code>Reviewer</code> = <strong>Administrator</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 7.3</span>
+        <span class="step-desc">Click <strong>Save</strong>, then <strong>Menu &gt; Submit</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">Review Gate Register is saved and Submitted. <code>Approval Status</code> = Approved, <code>Docstatus</code> = 1.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 7.4</span>
+        <span class="step-desc">Go back to Task <strong>seq 3</strong>. Set <code>Status = Completed</code>, <code>Evidence Attachment</code>, click <strong>Save</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">Task completes successfully now — the review gate check finds an approved gate and allows the status change.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 7.5</span>
+        <span class="step-desc"><strong>Repeat</strong> steps 7.1–7.4 for seq <strong>4, 5, 6</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">All 4 review-gated tasks completed successfully.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- SECTION 8 -->
+  <!-- ========================================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <div>
+        <div class="section-title">Complete Remaining Tasks (seq 7, 8, 9, 10)</div>
+        <div class="section-subtitle">These 4 tasks do NOT require a review gate. Complete them directly. The last one (seq 10) triggers automated Closure Certificate and Performance Feedback creation.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 8.1</span>
+        <span class="step-desc">Open Task <strong>seq 7</strong> ("Obtain client approval...")</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-fill">
+          <span class="detail-icon">✏️</span>
+          <span class="detail-label">Fill:</span>
+          <span class="detail-text"><code>Status</code> = <strong>Completed</strong>, <code>Evidence Attachment</code> = <strong>/assets/test/evidence.pdf</strong></span>
+        </div>
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">Task seq 7 saved as Completed.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 8.2</span>
+        <span class="step-desc">Open Task <strong>seq 8</strong> ("File through IDRAS...")</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-fill">
+          <span class="detail-icon">✏️</span>
+          <span class="detail-label">Fill:</span>
+          <span class="detail-text"><code>Status</code> = <strong>Completed</strong>, <code>Evidence Attachment</code> = <strong>/assets/test/evidence.pdf</strong></span>
+        </div>
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">Task seq 8 saved as Completed.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 8.3</span>
+        <span class="step-desc">Open Task <strong>seq 9</strong> ("Prepare payment advice...")</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-fill">
+          <span class="detail-icon">✏️</span>
+          <span class="detail-label">Fill:</span>
+          <span class="detail-text"><code>Status</code> = <strong>Completed</strong>, <code>Evidence Attachment</code> = <strong>/assets/test/evidence.pdf</strong></span>
+        </div>
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">Task seq 9 saved as Completed.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 8.4</span>
+        <span class="step-desc">Open Task <strong>seq 10</strong> ("Close assignment and update client tax calendar...") — <strong>LAST TASK</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-fill">
+          <span class="detail-icon">✏️</span>
+          <span class="detail-label">Fill:</span>
+          <span class="detail-text"><code>Status</code> = <strong>Completed</strong>, <code>Evidence Attachment</code> = <strong>/assets/test/evidence.pdf</strong></span>
+        </div>
+        <div class="detail detail-auto">
+          <span class="detail-icon">⚡</span>
+          <span class="detail-label">Triggers:</span>
+          <span class="detail-text">
+            ✅ <strong>Project status</strong> automatically set to Completed (by ERPNext task completion)<br>
+            ✅ <strong>Closure Certificate</strong> auto-created (by AIMS hook)<br>
+            ✅ <strong>Performance Feedback</strong> auto-created for assigned users (by AIMS hook)
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- SECTION 9 -->
+  <!-- ========================================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <div>
+        <div class="section-title">Verify Closure Certificate &amp; Performance Feedback</div>
+        <div class="section-subtitle">These were automatically created when the last task was completed. Check both exist, then close the Project.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 9.1</span>
+        <span class="step-desc">Open <strong>Assignment Closure Certificate</strong> list (search in Awesome Bar)</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-auto">
+          <span class="detail-icon">⚡</span>
+          <span class="detail-label">Auto-created:</span>
+          <span class="detail-text">
+            ✅ A Closure Certificate exists for <strong>PROJ-xxxx</strong><br>
+            ✅ <code>Status</code> = <strong>Draft</strong><br>
+            ✅ <code>Project</code> linked, <code>Customer</code> linked, <code>Origination</code> linked
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 9.2</span>
+        <span class="step-desc">Open <strong>Performance Feedback</strong> list</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-auto">
+          <span class="detail-icon">⚡</span>
+          <span class="detail-label">Auto-created:</span>
+          <span class="detail-text">
+            ✅ Performance Feedback records exist for <strong>PROJ-xxxx</strong><br>
+            ✅ Created for each team member assigned to tasks (avilla)<br>
+            ✅ <code>Status</code> = <strong>Draft</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 9.3</span>
+        <span class="step-desc">Open the <strong>Project</strong> PROJ-xxxx again — check the <code>Closure Certificate</code> field</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-auto">
+          <span class="detail-icon">⚡</span>
+          <span class="detail-label">Linked:</span>
+          <span class="detail-text"><code>custom_closure_certificate</code> field shows the certificate name — it was linked automatically.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 9.4</span>
+        <span class="step-desc">Set Project <code>Status</code> = <strong>Completed</strong>, click <strong>Save</strong></span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">Project closes successfully. (The Closure Certificate exists, so the close is allowed.)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- SECTION 10 -->
+  <!-- ========================================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <div>
+        <div class="section-title">Test Customer Sync to Open Originations</div>
+        <div class="section-subtitle">Changes to the Customer record should propagate to open Originations (those without a linked Project).</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 10.1</span>
+        <span class="step-desc">Open <strong>Alpha Assignment Origination</strong> → <strong>"+ Add"</strong> (create a NEW Origination, do NOT submit through workflow)</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-fill">
+          <span class="detail-icon">✏️</span>
+          <span class="detail-label">Fill:</span>
+          <span class="detail-text">
+            <code>Customer</code> = <strong>E2E Test Corp</strong><br>
+            <code>Assignment Title</code> = <strong>Sync Test</strong><br>
+            <code>Service Line</code> = <strong>Tax Compliance</strong><br>
+            <code>Date Received</code> = <strong>today</strong><br>
+            <code>Received By</code> = <strong>Administrator</strong>
+          </span>
+        </div>
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">New Origination saved. Status = Draft (no project linked). Should be at "Open" workflow state.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 10.2</span>
+        <span class="step-desc">Open your <strong>Customer</strong> record (E2E Test Corp)</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-fill">
+          <span class="detail-icon">✏️</span>
+          <span class="detail-label">Change:</span>
+          <span class="detail-text">
+            <code>Risk Rating</code> → <strong>Critical</strong><br>
+            <code>Sector</code> → <strong>Telecom</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 10.3</span>
+        <span class="step-desc">Click <strong>Save</strong> on the Customer</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-auto">
+          <span class="detail-icon">⚡</span>
+          <span class="detail-label">Triggers:</span>
+          <span class="detail-text">The <code>on_update</code> hook on Customer runs. It finds open Originations (those with no <code>project_reference</code>) and syncs the changed fields.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">Step 10.4</span>
+        <span class="step-desc">Open the <strong>"Sync Test"</strong> Origination again. Click <strong>Refresh</strong> / reload.</span>
+      </div>
+      <div class="step-details">
+        <div class="detail detail-expected">
+          <span class="detail-icon">✅</span>
+          <span class="detail-label">Expected:</span>
+          <span class="detail-text">
+            ✅ <code>Risk Rating</code> = <strong>Critical</strong> (was Medium, now synced)<br>
+            ✅ <code>Sector</code> = <strong>Telecom</strong> (was Financial Services, now synced)<br>
+            Changes from Customer propagated automatically.
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- SUMMARY TABLE -->
+  <!-- ========================================================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number" style="background: #059669;">✓</div>
+      <div>
+        <div class="section-title">Summary Checklist</div>
+        <div class="section-subtitle">Mark each feature as Pass or Fail after testing.</div>
+      </div>
+    </div>
+
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th class="feature">Feature</th>
+          <th>What to verify</th>
+          <th class="status-cell">Pass / Fail</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="num">1</td>
+          <td class="feature">Customer hub fields</td>
+          <td>Engagement Manager, Service Line, Risk Rating, Sector, TIN all saved</td>
+          <td class="status-cell"><span class="status-placeholder"></span></td>
+        </tr>
+        <tr>
+          <td class="num">2</td>
+          <td class="feature">Origination autofill</td>
+          <td>7 fields auto-fill when Customer is selected</td>
+          <td class="status-cell"><span class="status-placeholder"></span></td>
+        </tr>
+        <tr>
+          <td class="num">3</td>
+          <td class="feature">Workflow → Project creation</td>
+          <td>4 transitions: Submit → Review → Approve → Create Project. Project auto-created.</td>
+          <td class="status-cell"><span class="status-placeholder"></span></td>
+        </tr>
+        <tr>
+          <td class="num">4</td>
+          <td class="feature">Project contents</td>
+          <td>10 Tasks, SLA (Active), 7 Document Requests all pre-built</td>
+          <td class="status-cell"><span class="status-placeholder"></span></td>
+        </tr>
+        <tr>
+          <td class="num">5</td>
+          <td class="feature">Dependency gate</td>
+          <td>Cannot start seq 2 until seq 1 is Completed</td>
+          <td class="status-cell"><span class="status-placeholder"></span></td>
+        </tr>
+        <tr>
+          <td class="num">6</td>
+          <td class="feature">Task completion notifications</td>
+          <td>"Task completed" + "Dependency completed" in Notification Log</td>
+          <td class="status-cell"><span class="status-placeholder"></span></td>
+        </tr>
+        <tr>
+          <td class="num">7</td>
+          <td class="feature">Review Gate requirement</td>
+          <td>Tasks seq 3-6 blocked until approved Review Gate submitted</td>
+          <td class="status-cell"><span class="status-placeholder"></span></td>
+        </tr>
+        <tr>
+          <td class="num">8</td>
+          <td class="feature">Closure Certificate</td>
+          <td>Auto-created after last task completed</td>
+          <td class="status-cell"><span class="status-placeholder"></span></td>
+        </tr>
+        <tr>
+          <td class="num">9</td>
+          <td class="feature">Performance Feedback</td>
+          <td>Auto-created for assigned users after last task</td>
+          <td class="status-cell"><span class="status-placeholder"></span></td>
+        </tr>
+        <tr>
+          <td class="num">10</td>
+          <td class="feature">Customer → Origination sync</td>
+          <td>Changing Customer Risk Rating/Sector updates open Originations</td>
+          <td class="status-cell"><span class="status-placeholder"></span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 20px; padding: 16px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; text-align: center; font-size: 15px;">
+      <strong>Total:</strong> Passed ___ / 10 &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Failed:</strong> ___ / 10
+    </div>
+  </div>
+
+  <div class="footer">
+    Alpha Assignment Management (AIMS) — End-to-End UI Test Checklist<br>
+    Generated from e2e_test.py automated test suite
+  </div>
+
+</div>
+</body>
+</html>

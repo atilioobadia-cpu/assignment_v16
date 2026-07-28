@@ -24,7 +24,9 @@ def after_install():
 	_setup_branch_manager_workspace()
 	_setup_technical_review_workspace()
 	_create_ceo_api_method()
+	_create_closure_field()
 	_clear_number_card_currencies()
+	_create_closure_field()
 	_clear_dashboard_chart_currencies()
 	frappe.db.commit()
 
@@ -72,10 +74,16 @@ def create_workflow_states():
 		{"state": "Draft", "doc_status": "0", "allow_edit": "Alpha Tax Officer"},
 		{"state": "Submitted", "doc_status": "1", "allow_edit": "Alpha Engagement Manager"},
 		{"state": "Under Review", "doc_status": "1", "allow_edit": "Alpha Branch Manager"},
+		{"state": "Partner Review", "doc_status": "1", "allow_edit": "Alpha Partner/Director"},
 		{"state": "Approved", "doc_status": "1", "allow_edit": "Alpha Managing Director"},
 		{"state": "Rejected", "doc_status": "1", "allow_edit": "System Manager"},
 		{"state": "Project Created", "doc_status": "1", "allow_edit": "Alpha Engagement Manager"},
 		{"state": "Closed", "doc_status": "1", "allow_edit": "System Manager"},
+		{"state": "CC - Draft", "doc_status": "0", "allow_edit": "Alpha Engagement Manager"},
+		{"state": "CC - Review", "doc_status": "1", "allow_edit": "Alpha Branch Manager"},
+		{"state": "CC - Approved", "doc_status": "1", "allow_edit": "Alpha Partner/Director"},
+		{"state": "CC - Rejected", "doc_status": "1", "allow_edit": "Alpha Partner/Director"},
+		{"state": "CC - Closed", "doc_status": "1", "allow_edit": "System Manager"},
 	]
 	for state in states:
 		if not frappe.db.exists("Workflow State", state["state"]):
@@ -671,6 +679,21 @@ def _create_custom_html_block():
 
 
 # ── CEO API method ───────────────────────────────────────────────────────
+
+def _create_closure_field():
+	"""Add workflow_state field to Assignment Closure Certificate for workflow support."""
+	if not frappe.db.exists("Custom Field", {"dt": "Assignment Closure Certificate", "fieldname": "workflow_state"}):
+		frappe.get_doc({
+			"doctype": "Custom Field",
+			"dt": "Assignment Closure Certificate",
+			"fieldname": "workflow_state",
+			"label": "Workflow State",
+			"fieldtype": "Link",
+			"options": "Workflow State",
+			"insert_after": "status",
+			"read_only": 1,
+		}).insert(ignore_permissions=True)
+
 
 def _create_ceo_api_method():
 	"""Ensure the CEO dashboard API method file exists."""

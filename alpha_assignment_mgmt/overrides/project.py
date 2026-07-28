@@ -148,7 +148,7 @@ def _auto_create_closure_certificate(doc):
 		"customer": doc.customer,
 		"assignment_origination": doc.custom_assignment_origination,
 		"closure_date": frappe.utils.today(),
-		"status": "Draft",
+		"workflow_state": "CC - Draft", "status": "Draft",
 	})
 	cert.flags.ignore_permissions = True
 	cert.insert()

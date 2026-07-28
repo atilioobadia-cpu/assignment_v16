@@ -75,7 +75,7 @@ fixtures = [
 	{
 		"doctype": "Workflow",
 		"filters": [
-			["name", "=", "Alpha Assignment Origination Workflow"]
+			["name", "in", ["Alpha Assignment Origination Workflow", "Closure Certificate Workflow"]]
 		]
 	},
 	{
@@ -96,7 +96,7 @@ fixtures = [
 	{
 		"doctype": "Report",
 		"filters": [
-			["name", "in", ["Employee Performance", "Staff Productivity"]]
+			["name", "in", ["Employee Performance", "Staff Productivity", "SLA Compliance Overview"]]
 		]
 	},
 	{

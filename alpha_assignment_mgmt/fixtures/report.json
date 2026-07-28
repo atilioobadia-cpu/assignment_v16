@@ -63,5 +63,50 @@
    }
   ],
   "timeout": 0
+ },
+ {
+  "add_total_row": 0,
+  "add_translate_data": 0,
+  "columns": [],
+  "disable_prepared_report_automation": 0,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Report",
+  "filters": [],
+  "is_standard": "Yes",
+  "javascript": null,
+  "json": null,
+  "letter_head": null,
+  "modified": "2026-07-28 00:00:00.000000",
+  "module": "Alpha Assignment Management",
+  "name": "SLA Compliance Overview",
+  "prepared_report": 0,
+  "query": "SELECT\n  `tabProject`.`name` AS \"Project:Link/Project:120\",\n  `tabProject`.`customer` AS \"Customer:Link/Customer:150\",\n  `tabProject`.`project_type` AS \"Type:Data:120\",\n  `tabProject`.`custom_engagement_manager` AS \"Engagement Manager:Link/User:150\",\n  `tabAlpha Engagement SLA`.`sla_level` AS \"SLA Level:Data:180\",\n  `tabAlpha Engagement SLA`.`status` AS \"SLA Status:Data:100\",\n  `tabAlpha Engagement SLA`.`alpha_processing_deadline` AS \"Alpha Deadline:Date:110\",\n  `tabAlpha Engagement SLA`.`client_due_date` AS \"Client Due:Date:110\"\nFROM `tabProject`\nLEFT JOIN `tabAlpha Engagement SLA` ON `tabProject`.`custom_engagement_sla` = `tabAlpha Engagement SLA`.`name`\nWHERE `tabProject`.`status` != 'Cancelled'\nORDER BY FIELD(`tabAlpha Engagement SLA`.`status`, 'Active', 'Breached', 'Completed', 'Closed'),\n  `tabAlpha Engagement SLA`.`alpha_processing_deadline` ASC",
+  "ref_doctype": "Project",
+  "reference_report": null,
+  "report_name": "SLA Compliance Overview",
+  "report_script": null,
+  "report_type": "Query Report",
+  "roles": [
+   {
+    "role": "Alpha Engagement Manager"
+   },
+   {
+    "role": "Alpha Branch Manager"
+   },
+   {
+    "role": "Alpha Partner/Director"
+   },
+   {
+    "role": "Alpha Managing Director"
+   },
+   {
+    "role": "Alpha Client Owner"
+   },
+   {
+    "role": "System Manager"
+   }
+  ],
+  "timeout": 0
  }
 ]
