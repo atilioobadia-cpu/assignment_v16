@@ -64,6 +64,9 @@ doc_events = {
 	"Assignment Closure Certificate": {
 		"on_update_after_submit": "alpha_assignment_mgmt.overrides.closure_certificate.on_update_after_submit",
 	},
+	"Assignment Closure Certificate": {
+		"on_update_after_submit": "alpha_assignment_mgmt.overrides.closure_certificate.on_update_after_submit",
+	},
 }
 
 permission_query_conditions = {

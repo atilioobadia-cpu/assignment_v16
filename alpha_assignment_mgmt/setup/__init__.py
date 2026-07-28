@@ -1115,6 +1115,7 @@ def _create_default_items():
         doc = frappe.new_doc("Item")
         doc.item_code = item_code
         doc.item_name = "AIMS Professional Services"
+        doc.item_group = "Services"
         doc.is_stock_item = 0
         doc.description = "Professional services provided by Alpha Associates (T) Limited"
         doc.stock_uom = "Nos"
@@ -1188,6 +1189,10 @@ def _setup_accounts_billing_workspace():
 
     _insert_workspace_number_cards(ws_name, ["Active Projects", "Active Clients"])
     _insert_workspace_shortcuts(ws_name, shortcuts)
+
+
+
+
 
 
 def _setup_technical_review_workspace():
