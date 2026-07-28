@@ -88,8 +88,7 @@ def create_roles():
 			)
 
 
-def create_workflow_states()
-	_add_phase5_workflow_states():
+def create_workflow_states():
 	"""Create Workflow State records used by the Alpha Assignment Origination Workflow."""
 	states = [
 		{"state": "Draft", "doc_status": "0", "allow_edit": "Alpha Tax Officer"},
