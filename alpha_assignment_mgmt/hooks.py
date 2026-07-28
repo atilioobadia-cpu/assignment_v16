@@ -73,6 +73,12 @@ has_permission = {
 
 fixtures = [
 	{
+		"doctype": "Alpha Service Contract",
+		"filters": [
+			["name", "=", "Alpha Service Contract"]
+		]
+	},
+	{
 		"doctype": "Workflow",
 		"filters": [
 			["name", "in", ["Alpha Assignment Origination Workflow", "Closure Certificate Workflow"]]

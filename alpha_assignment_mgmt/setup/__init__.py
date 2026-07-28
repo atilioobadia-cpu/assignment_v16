@@ -100,6 +100,7 @@ def create_naming_series():
 	series_map = {
 		"Alpha Assignment Origination": "AOR-.YYYY.-.#####",
 		"Alpha Engagement SLA": "AATL-SLA-.YYYY.-.#####",
+		"Alpha Service Contract": "ASC-.YYYY.-.#####",
 	}
 	for doctype, series in series_map.items():
 		try:
@@ -173,6 +174,18 @@ def create_customer_fields():
 		{"fieldname": "custom_service_line", "label": "Default Service Line", "fieldtype": "Link", "options": "Project Type", "insert_after": "custom_branch_manager"},
 		{"fieldname": "custom_risk_rating", "label": "Default Risk Rating", "fieldtype": "Select", "options": "Low\nMedium\nHigh\nCritical", "insert_after": "custom_service_line"},
 		{"fieldname": "custom_sector", "label": "Sector", "fieldtype": "Data", "insert_after": "custom_risk_rating"},
+		{"fieldname": "custom_tin", "label": "TIN", "fieldtype": "Data", "insert_after": "custom_sector"},
+		{"fieldname": "custom_service_category", "label": "Service Category", "fieldtype": "Select", "options": "Tax\nAudit\nBookkeeping\nAdvisory\nERPNext\nTRA Support", "insert_after": "custom_tin"},
+		{"fieldname": "custom_pricing_model", "label": "Pricing Model", "fieldtype": "Select", "options": "Fixed Fee\nTime Based\nMilestone\nRetainer", "insert_after": "custom_service_category"},
+		{"fieldname": "custom_contract_status", "label": "Contract Status", "fieldtype": "Select", "options": "Draft\nActive\nExpiring\nExpired\nTerminated", "insert_after": "custom_pricing_model"},
+		{"fieldname": "custom_collection_status", "label": "Collection Status", "fieldtype": "Select", "options": "Current\nOverdue 30\nOverdue 60\nOverdue 90+\nWritten Off", "insert_after": "custom_contract_status"},
+		{"fieldname": "custom_portal_user", "label": "Portal User", "fieldtype": "Link", "options": "User", "insert_after": "custom_collection_status"},
+		{"fieldname": "custom_accountant", "label": "Accountant", "fieldtype": "Link", "options": "User", "insert_after": "custom_portal_user"},
+		{"fieldname": "custom_tax_officer", "label": "Tax Officer", "fieldtype": "Link", "options": "User", "insert_after": "custom_accountant"},
+		{"fieldname": "custom_reviewer", "label": "Reviewer", "fieldtype": "Link", "options": "User", "insert_after": "custom_tax_officer"},
+		{"fieldname": "custom_kyc_completed", "label": "KYC Completed", "fieldtype": "Check", "insert_after": "custom_reviewer"},
+		{"fieldname": "custom_kyc_date", "label": "KYC Date", "fieldtype": "Date", "insert_after": "custom_kyc_completed"},
+		{"fieldname": "custom_onboarding_date", "label": "Onboarding Date", "fieldtype": "Date", "insert_after": "custom_kyc_date"},
 	]
 	for f in fields:
 		if not frappe.db.exists("Custom Field", {"dt": "Customer", "fieldname": f["fieldname"]}):
