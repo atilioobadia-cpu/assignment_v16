@@ -34,7 +34,6 @@ def after_install():
 	_setup_technical_review_workspace()
 	_create_ceo_api_method()
 	_create_phase5_workflows()
-	_create_phase5_workflows()
 	_clear_number_card_currencies()
 	_clear_dashboard_chart_currencies()
 	after_migrate_all()
@@ -161,7 +160,25 @@ def create_naming_series():
 			pass
 
 
+def _create_workflow_action_masters():
+    actions = [
+        "Approve",
+        "Return for Correction",
+        "Escalate",
+        "Resubmit",
+        "Submit",
+        "Acknowledge",
+        "Return to Draft",
+    ]
+    for action in actions:
+        if not frappe.db.exists("Workflow Action Master", action):
+            frappe.get_doc({
+                "doctype": "Workflow Action Master",
+                "workflow_action_name": action,
+            }).insert(ignore_permissions=True)
+
 def _create_phase5_workflows():
+    _create_workflow_action_masters()
     workflows = [
         {
             "workflow_name": "Review Gate Workflow",
