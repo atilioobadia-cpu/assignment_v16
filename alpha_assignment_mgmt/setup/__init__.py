@@ -1585,7 +1585,6 @@ NOTIFICATION_RECORDS = [
 
 MAKER_CHECKER_FIELDS = [
     {
-        "doctype": "Custom Field",
         "dt": "Alpha Assignment Origination",
         "fieldname": "custom_maker",
         "label": "Prepared By",
@@ -1595,7 +1594,6 @@ MAKER_CHECKER_FIELDS = [
         "insert_after": "custom_rejection_reason",
     },
     {
-        "doctype": "Custom Field",
         "dt": "Alpha Assignment Origination",
         "fieldname": "custom_checker",
         "label": "Checked By",
@@ -1605,7 +1603,6 @@ MAKER_CHECKER_FIELDS = [
         "insert_after": "custom_maker",
     },
     {
-        "doctype": "Custom Field",
         "dt": "Task",
         "fieldname": "custom_maker",
         "label": "Prepared By",
@@ -1615,7 +1612,6 @@ MAKER_CHECKER_FIELDS = [
         "insert_after": "custom_assigned_to",
     },
     {
-        "doctype": "Custom Field",
         "dt": "Task",
         "fieldname": "custom_checker",
         "label": "Checked By",
@@ -1628,7 +1624,6 @@ MAKER_CHECKER_FIELDS = [
 
 BILLING_CUSTOM_FIELDS = [
     {
-        "doctype": "Custom Field",
         "dt": "Sales Order",
         "fieldname": "custom_deposit_amount",
         "label": "Deposit Amount",
@@ -1636,7 +1631,6 @@ BILLING_CUSTOM_FIELDS = [
         "insert_after": "custom_project",
     },
     {
-        "doctype": "Custom Field",
         "dt": "Sales Order",
         "fieldname": "custom_deposit_received",
         "label": "Deposit Received",
@@ -1645,7 +1639,6 @@ BILLING_CUSTOM_FIELDS = [
         "insert_after": "custom_deposit_amount",
     },
     {
-        "doctype": "Custom Field",
         "dt": "Sales Invoice",
         "fieldname": "custom_billing_milestone",
         "label": "Billing Milestone",
@@ -1653,7 +1646,6 @@ BILLING_CUSTOM_FIELDS = [
         "insert_after": "custom_project",
     },
     {
-        "doctype": "Custom Field",
         "dt": "Project",
         "fieldname": "custom_budget_hours",
         "label": "Budget Hours",
@@ -1661,7 +1653,6 @@ BILLING_CUSTOM_FIELDS = [
         "insert_after": "expected_end_date",
     },
     {
-        "doctype": "Custom Field",
         "dt": "Project",
         "fieldname": "custom_hours_overage_alert",
         "label": "Hours Overage Alert",
@@ -1672,10 +1663,10 @@ BILLING_CUSTOM_FIELDS = [
 ]
 
 HR_METRICS_FIELDS = [
-    {"doctype": "Custom Field", "dt": "Employee", "fieldname": "custom_rework_rate", "label": "Review Rework Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_utilization_rate_30d"},
-    {"doctype": "Custom Field", "dt": "Employee", "fieldname": "custom_delay_followup_rate", "label": "Client Delay Follow-up Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_rework_rate"},
-    {"doctype": "Custom Field", "dt": "Employee", "fieldname": "custom_monthly_close_rate", "label": "Monthly Close Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_delay_followup_rate"},
-    {"doctype": "Custom Field", "dt": "Employee", "fieldname": "custom_profitability_contribution", "label": "Profitability Contribution", "fieldtype": "Currency", "read_only": 1, "insert_after": "custom_monthly_close_rate"},
+    {"dt": "Employee", "fieldname": "custom_rework_rate", "label": "Review Rework Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_utilization_rate_30d"},
+    {"dt": "Employee", "fieldname": "custom_delay_followup_rate", "label": "Client Delay Follow-up Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_rework_rate"},
+    {"dt": "Employee", "fieldname": "custom_monthly_close_rate", "label": "Monthly Close Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_delay_followup_rate"},
+    {"dt": "Employee", "fieldname": "custom_profitability_contribution", "label": "Profitability Contribution", "fieldtype": "Currency", "read_only": 1, "insert_after": "custom_monthly_close_rate"},
 ]
 
 
@@ -1713,7 +1704,9 @@ def _expand_ceo_dashboard():
     ]
     content.extend(new_charts)
     frappe.db.set_value("Workspace", ws_name, "content", json.dumps(content))
-    _insert_workspace_charts(ws_name, [c["data"]["chart_name"] for c in new_charts])
+    existing_charts = frappe.db.sql_list("SELECT chart_name FROM `tabWorkspace Chart` WHERE parent = %s AND parenttype = 'Workspace'", ws_name)
+    all_charts = list(set(existing_charts + [c["data"]["chart_name"] for c in new_charts]))
+    _insert_workspace_charts(ws_name, all_charts)
 
 
 def _log_phase(msg):
@@ -1753,48 +1746,27 @@ def after_migrate_all():
             }).insert(ignore_permissions=True)
             _log_phase(f"  Created email template: {et['name']}")
 
-    # Phase 7: Notifications
-    _log_phase("Phase 7: Creating notification records...")
-    for nr in NOTIFICATION_RECORDS:
-        if not frappe.db.exists("Notification", nr["name"]):
-            try:
-                doc = frappe.get_doc({
-                    "doctype": "Notification",
-                    "subject": nr["subject"],
-                    "document_type": nr["document_type"],
-                    "event": nr.get("event", "Days After"),
-                    "condition": nr.get("condition", ""),
-                    "channel": "Email",
-                    "recipients": nr["recipients"],
-                })
-                if "days_before" in nr:
-                    doc.days_before = nr["days_before"]
-                if "days_after" in nr:
-                    doc.days_after = nr["days_after"]
-                doc.insert(ignore_permissions=True)
-                _log_phase(f"  Created notification: {nr['name']}")
-            except Exception as e:
-                _log_phase(f"  Notification {nr['name']} skipped: {e}")
+    # Phase 7: Notifications — skipped in favor of scheduler-based alerts in tasks/
 
     # Phase 8: Maker-Checker fields
     _log_phase("Phase 8: Creating maker-checker fields...")
     for fd in MAKER_CHECKER_FIELDS:
         if not frappe.db.exists("Custom Field", {"dt": fd["dt"], "fieldname": fd["fieldname"]}):
-            frappe.get_doc(fd).insert(ignore_permissions=True)
+            frappe.get_doc({"doctype": "Custom Field", **fd}).insert(ignore_permissions=True)
             _log_phase(f"  Created field: {fd['dt']}.{fd['fieldname']}")
 
     # Phase 9: Billing deepening fields
     _log_phase("Phase 9: Creating billing deepening fields...")
     for fd in BILLING_CUSTOM_FIELDS:
         if not frappe.db.exists("Custom Field", {"dt": fd["dt"], "fieldname": fd["fieldname"]}):
-            frappe.get_doc(fd).insert(ignore_permissions=True)
+            frappe.get_doc({"doctype": "Custom Field", **fd}).insert(ignore_permissions=True)
             _log_phase(f"  Created field: {fd['dt']}.{fd['fieldname']}")
 
     # Phase 10: HR metrics fields
     _log_phase("Phase 10: Creating HR metrics fields...")
     for fd in HR_METRICS_FIELDS:
         if not frappe.db.exists("Custom Field", {"dt": fd["dt"], "fieldname": fd["fieldname"]}):
-            frappe.get_doc(fd).insert(ignore_permissions=True)
+            frappe.get_doc({"doctype": "Custom Field", **fd}).insert(ignore_permissions=True)
             _log_phase(f"  Created field: {fd['dt']}.{fd['fieldname']}")
 
     # Phase 12: Workspace hardening
