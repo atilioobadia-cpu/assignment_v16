@@ -349,13 +349,6 @@
       "label": "Workflow Control"
     },
     {
-      "fieldname": "workflow_state",
-      "fieldtype": "Link",
-      "label": "Workflow State",
-      "options": "Workflow State",
-      "read_only": 1
-    },
-    {
       "fieldname": "acceptance_status",
       "fieldtype": "Select",
       "label": "Acceptance Status",
