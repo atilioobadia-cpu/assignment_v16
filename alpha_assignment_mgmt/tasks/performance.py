@@ -67,15 +67,17 @@ def get_hours_logged(emp, since):
 
 
 def get_tasks_completed(emp, since):
-	"""Count tasks completed since date via Task Employee Log."""
+	"""Count tasks completed since date that were assigned to the employee."""
+	if not emp.user_id:
+		return 0
+	user_like = frappe.db.escape(f'%"{emp.user_id}"%')
 	result = frappe.db.sql("""
-		SELECT COUNT(DISTINCT tel.parent)
-		FROM `tabTask Employee Log` tel
-		JOIN `tabTask` task ON task.name = tel.parent
-		WHERE tel.employee = %s
-		AND task.status = 'Completed'
-		AND task.completed_on >= %s
-	""", (emp.name, since))
+		SELECT COUNT(*)
+		FROM `tabTask`
+		WHERE status = 'Completed'
+		AND completed_on >= %s
+		AND `_assign` LIKE {user_like}
+	""".format(user_like=user_like), (since,))
 	return int(result[0][0]) if result else 0
 
 

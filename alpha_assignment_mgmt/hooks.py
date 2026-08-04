@@ -12,9 +12,9 @@ after_install = "alpha_assignment_mgmt.setup.after_install"
 after_migrate = "alpha_assignment_mgmt.setup.after_migrate"
 
 app_include_js = [
-	"/assets/alpha_assignment_mgmt/js/project.js",
-	"/assets/alpha_assignment_mgmt/js/task.js",
-	"/assets/alpha_assignment_mgmt/js/ceo_dashboard.js",
+	"/assets/alpha_assignment_mgmt/js/project.js?v=2",
+	"/assets/alpha_assignment_mgmt/js/task.js?v=2",
+	"/assets/alpha_assignment_mgmt/js/ceo_dashboard.js?v=2",
 ]
 app_include_css = [
 	"/assets/alpha_assignment_mgmt/css/workspace.css",
@@ -56,6 +56,7 @@ doc_events = {
 	},
 	"Alpha Assignment Origination": {
 		"before_insert": "alpha_assignment_mgmt.overrides.assignment_origination.before_insert",
+		"before_submit": "alpha_assignment_mgmt.overrides.assignment_origination.before_submit",
 		"on_update": "alpha_assignment_mgmt.overrides.assignment_origination.on_update",
 		"on_update_after_submit": "alpha_assignment_mgmt.overrides.assignment_origination.on_update",
 	},

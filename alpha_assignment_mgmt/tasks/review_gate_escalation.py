@@ -19,7 +19,9 @@ def daily_review_gate_escalation_check():
         if days_pending < 2:
             continue
 
-        if days_pending >= 5:
+        if days_pending >= 8:
+            _escalate_gate(gate, "Level 4 - Management")
+        elif days_pending >= 5:
             _escalate_gate(gate, "Level 3 - Partner/Director")
         elif days_pending >= 3:
             _escalate_gate(gate, "Level 2 - Branch Manager")
@@ -46,6 +48,18 @@ def _escalate_gate(gate, level):
             distinct=True,
         )
         for user_id in partner_users:
+            email = frappe.db.get_value("User", user_id, "email")
+            if email:
+                _send_escalation_email(email, gate, level)
+        return
+    elif level == "Level 4 - Management":
+        management_users = frappe.get_all(
+            "Has Role",
+            filters={"role": "Alpha Managing Director", "parenttype": "User"},
+            pluck="parent",
+            distinct=True,
+        )
+        for user_id in management_users:
             email = frappe.db.get_value("User", user_id, "email")
             if email:
                 _send_escalation_email(email, gate, level)

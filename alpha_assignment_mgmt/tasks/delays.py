@@ -4,10 +4,11 @@ from frappe.utils import today, getdate
 
 def daily_delay_escalation_check():
 	"""Escalate Client Delay Logs based on duration thresholds.
-	
+
 	Level 1 - Staff: day 0-3
 	Level 2 - Engagement Manager: day 4-7
-	Level 3 - Partner/Director: day 8+
+	Level 3 - Branch Manager: day 8-11
+	Level 4 - Management: day 12+
 	"""
 	delays = frappe.get_all(
 		"Client Delay Log",
@@ -25,8 +26,10 @@ def daily_delay_escalation_check():
 		days_open = (getdate() - delay.date_requested).days
 
 		new_level = None
-		if days_open >= 8:
-			new_level = "Level 3 - Partner"
+		if days_open >= 12:
+			new_level = "Level 4 - Management"
+		elif days_open >= 8:
+			new_level = "Level 3 - Branch Manager"
 		elif days_open >= 4:
 			new_level = "Level 2 - Engagement Manager"
 
@@ -42,19 +45,17 @@ def _notify_escalation(delay, level):
 
 	project = frappe.get_cached_doc("Project", delay.project)
 	user_id = None
+	role = None
 
 	if "Engagement Manager" in level:
 		user_id = project.custom_engagement_manager
 		role = "Engagement Manager"
-	elif "Partner" in level:
-		partners = frappe.get_all(
-			"Has Role",
-			filters={"role": "Alpha Partner/Director", "parenttype": "User"},
-			fields=["parent"],
-			limit=1,
-		)
-		user_id = partners[0].parent if partners else None
-		role = "Partner/Director"
+	elif "Branch Manager" in level:
+		user_id = project.custom_branch_manager
+		role = "Branch Manager"
+	elif "Management" in level:
+		user_id = _get_role_user("Alpha Managing Director")
+		role = "Managing Director"
 	else:
 		return
 
@@ -84,3 +85,14 @@ def _notify_escalation(delay, level):
 				f"</div>"
 			),
 		)
+
+
+def _get_role_user(role):
+	"""Return the first active user with the given role."""
+	users = frappe.get_all(
+		"Has Role",
+		filters={"role": role, "parenttype": "User"},
+		fields=["parent"],
+		limit=1,
+	)
+	return users[0].parent if users else None

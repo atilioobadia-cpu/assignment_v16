@@ -185,52 +185,56 @@ def _auto_create_performance_feedback(doc):
 
 
 def _auto_create_performance_feedback_impl(doc):
-	team_members = frappe.get_all(
+	task_names = frappe.get_all(
 		"Task",
 		filters={"project": doc.name},
-		fields=["custom_assigned_to"],
-		distinct=True,
+		pluck="name",
 	)
 
 	users_processed = set()
-	for tm in team_members:
-		user_id = tm.custom_assigned_to
-		if not user_id or user_id in users_processed:
-			continue
-		users_processed.add(user_id)
+	if task_names:
+		assignees = frappe.get_all(
+			"ToDo",
+			filters={"reference_type": "Task", "reference_name": ["in", task_names]},
+			pluck="allocated_to",
+		)
+		for user_id in assignees:
+			if not user_id or user_id in users_processed:
+				continue
+			users_processed.add(user_id)
 
-		if frappe.db.exists("Performance Feedback", {"project": doc.name, "custom_user": user_id}):
-			continue
+			if frappe.db.exists("Performance Feedback", {"project": doc.name, "custom_user": user_id}):
+				continue
 
-		employee = frappe.db.get_value("Employee", {"user_id": user_id}, "name")
-		if not employee:
-			continue
+			employee = frappe.db.get_value("Employee", {"user_id": user_id}, "name")
+			if not employee:
+				continue
 
-		ao = frappe.db.get_value("Project", doc.name, "custom_assignment_origination")
+			ao = frappe.db.get_value("Project", doc.name, "custom_assignment_origination")
 
-		pf = frappe.get_doc({
-			"doctype": "Performance Feedback",
-			"project": doc.name,
-			"custom_user": user_id,
-			"employee": employee,
-			"assignment_origination": ao,
-			"feedback_date": frappe.utils.today(),
-			"status": "Draft",
-		})
-		pf.flags.ignore_permissions = True
-		pf.insert()
+			pf = frappe.get_doc({
+				"doctype": "Performance Feedback",
+				"project": doc.name,
+				"custom_user": user_id,
+				"employee": employee,
+				"assignment_origination": ao,
+				"feedback_date": frappe.utils.today(),
+				"status": "Draft",
+			})
+			pf.flags.ignore_permissions = True
+			pf.insert()
 
-		email = frappe.db.get_value("User", user_id, "email")
-		if email:
-			try:
-				frappe.sendmail(
-					recipients=[email],
-					subject=f"[AIMS] Performance Feedback Requested: {doc.name}",
-					message=(
-						f"<h3>Performance Feedback</h3>"
-						f"<p>Project <b>{doc.name}</b> has been completed.</p>"
-						f"<p>Please provide your feedback on the engagement.</p>"
-					),
-				)
-			except Exception:
-				pass
+			email = frappe.db.get_value("User", user_id, "email")
+			if email:
+				try:
+					frappe.sendmail(
+						recipients=[email],
+						subject=f"[AIMS] Performance Feedback Requested: {doc.name}",
+						message=(
+							f"<h3>Performance Feedback</h3>"
+							f"<p>Project <b>{doc.name}</b> has been completed.</p>"
+							f"<p>Please provide your feedback on the engagement.</p>"
+						),
+					)
+				except Exception:
+					pass

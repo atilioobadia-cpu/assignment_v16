@@ -35,6 +35,40 @@ def before_insert(doc, method):
 		doc.email = customer_fields.email_id
 
 
+def before_submit(doc, method):
+	"""Block submission when risk is High/Critical and conflict/independence checks are incomplete."""
+	_validate_risk_checks(doc)
+
+
+def _validate_risk_checks(doc):
+	"""Conflict of Interest + Independence checks must be completed for High/Critical risk."""
+	high_risk = (doc.risk_rating or "").strip() in ("High", "Critical")
+
+	if not high_risk:
+		return
+
+	conflict = (doc.custom_conflict_of_interest or "").strip()
+	independence = doc.custom_independence_confirmed
+
+	if conflict in ("", "Not Assessed"):
+		frappe.throw(
+			"Conflict of Interest assessment is required for High/Critical risk engagements. "
+			"Please complete the Conflict of Interest check before submitting."
+		)
+
+	if conflict == "Conflict Identified" and not (doc.custom_conflict_notes or "").strip():
+		frappe.throw(
+			"Conflict of Interest was identified. Please provide notes on the nature of the "
+			"conflict and how it will be managed before submitting."
+		)
+
+	if not independence:
+		frappe.throw(
+			"Independence confirmation is required for High/Critical risk engagements. "
+			"Please confirm engagement team independence before submitting."
+		)
+
+
 @frappe.whitelist()
 def create_project_from_origination(origination_name):
 	"""API endpoint to create Project from Origination (called from JS button)."""
@@ -264,18 +298,24 @@ def _notify_document_request(drr):
 	email = frappe.db.get_value("User", drr.responsible_person, "email")
 	if not email:
 		return
-	frappe.sendmail(
-		recipients=[email],
-		subject=f"[AIMS] Document Request: {drr.document_name}",
-		message=(
-			f"<div style='font-family: Arial, sans-serif; max-width: 600px;'>"
-			f"<h3>Document Request</h3>"
-			f"<p>A document request has been created for project <b>{drr.project}</b>.</p>"
-			f"<p><b>Document:</b> {drr.document_name}</p>"
-			f"<p>Please upload the requested document at your earliest convenience.</p>"
-			f"</div>"
-		),
-	)
+	try:
+		frappe.sendmail(
+			recipients=[email],
+			subject=f"[AIMS] Document Request: {drr.document_name}",
+			message=(
+				f"<div style='font-family: Arial, sans-serif; max-width: 600px;'>"
+				f"<h3>Document Request</h3>"
+				f"<p>A document request has been created for project <b>{drr.project}</b>.</p>"
+				f"<p><b>Document:</b> {drr.document_name}</p>"
+				f"<p>Please upload the requested document at your earliest convenience.</p>"
+				f"</div>"
+			),
+		)
+	except Exception:
+		frappe.log_error(
+			message=f"Failed to email document request {drr.name}",
+			title="AIMS Document Request Email",
+		)
 
 
 def _generate_tasks_from_template(doc, project_name):
@@ -314,34 +354,40 @@ def _generate_tasks_from_template(doc, project_name):
 			"subject": tmpl_task.task_subject,
 			"status": "Open",
 			"custom_task_sequence": tmpl_task.sequence,
-			"custom_expected_hours": tmpl_task.expected_hours,
+			"expected_time": tmpl_task.expected_hours,
 			"custom_requires_review": tmpl_task.requires_review or 0,
 		})
 
 		if tmpl_task.expected_output:
 			task_doc.description = tmpl_task.expected_output
 
-		if assigned_user:
-			task_doc._assign = frappe.as_json([assigned_user])
-			task_doc.custom_assigned_to = assigned_user
-
 		task_doc.flags.ignore_permissions = True
 		task_doc.insert()
 
+		if assigned_user:
+			from frappe.desk.form.assign_to import _add
+			_add({
+				"assign_to": [assigned_user],
+				"doctype": "Task",
+				"name": task_doc.name,
+				"description": tmpl_task.task_subject,
+			}, ignore_permissions=True)
+
 		seq_to_task[tmpl_task.sequence] = task_doc.name
 
-	# Now set dependency strings (task names instead of sequence numbers)
+	# Now set dependencies (native depends_on child table, task names instead of sequence numbers)
 	for tmpl_task in template.tasks:
 		if tmpl_task.depends_on and tmpl_task.sequence in seq_to_task:
 			dep_seqs = [s.strip() for s in str(tmpl_task.depends_on).split(",") if s.strip()]
 			dep_task_names = [seq_to_task[int(s)] for s in dep_seqs if int(s) in seq_to_task]
 			if dep_task_names:
-				frappe.db.set_value(
-					"Task",
-					seq_to_task[tmpl_task.sequence],
-					"custom_depends_on_tasks",
-					",".join(dep_task_names),
-				)
+				task_doc = frappe.get_doc("Task", seq_to_task[tmpl_task.sequence])
+				for dep_name in dep_task_names:
+					task_doc.append("depends_on", {
+						"task": dep_name,
+					})
+				task_doc.flags.ignore_permissions = True
+				task_doc.save()
 
 	# Update origination
 	frappe.db.set_value(doc.doctype, doc.name, "task_template_applied", template_name)

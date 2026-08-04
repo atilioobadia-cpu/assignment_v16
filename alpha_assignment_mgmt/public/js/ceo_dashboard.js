@@ -25,7 +25,7 @@
 		render_employee_lists(editorjs);
 	}
 
-	frappe.ready(function () {
+	$(document).ready(function () {
 		if (!is_ceo_workspace()) return;
 
 		try_render(0);

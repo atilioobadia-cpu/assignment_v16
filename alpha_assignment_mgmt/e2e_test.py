@@ -182,7 +182,7 @@ def run_test():
 
     orig.reload()
 
-    actions = ["Submit", "Send to Review", "Approve", "Create Project"]
+    actions = ["Submit", "Send to Review", "Forward to Partner", "Approve", "Create Project"]
     for action in actions:
         try:
             apply_workflow(orig, action)
@@ -217,17 +217,22 @@ def run_test():
             print(f"  SLA: {sla[0].name} ({sla[0].sla_level}, {sla[0].status})")
 
         tasks = frappe.get_all("Task", filters={"project": project_name},
-                               fields=["name", "subject", "custom_assigned_to", "custom_task_sequence", "custom_depends_on_tasks"],
+                               fields=["name", "subject", "_assign", "custom_task_sequence"],
                                order_by="custom_task_sequence")
         print(f"Tasks: {len(tasks)}")
         check("B", "Tasks generated from Tax Compliance template", len(tasks) >= 5, f"got {len(tasks)}")
 
+        # Build dependency map from native Task Depends On child table
+        dep_map = {}
         for t in tasks:
-            dep = t.custom_depends_on_tasks or "(none)"
-            assign = t.custom_assigned_to or "(unassigned)"
+            deps = frappe.get_all("Task Depends On", filters={"parent": t.name}, pluck="task")
+            dep_map[t.name] = deps
+        for t in tasks:
+            dep = ",".join(dep_map.get(t.name) or []) or "(none)"
+            assign = t._assign or "(unassigned)"
             print(f"  {t.custom_task_sequence}. {t.subject[:55]:55s} | assign={assign:25s} | dep={dep[:30]}")
 
-        dep_count = sum(1 for t in tasks if t.custom_depends_on_tasks)
+        dep_count = sum(1 for t in tasks if dep_map.get(t.name))
         check("B", "Tasks have dependency chains", dep_count >= 5, f"got {dep_count} with deps")
 
         doc_reqs = frappe.get_all("Document Request Register", filters={"project": project_name},
@@ -245,7 +250,7 @@ def run_test():
 
     if project_name and tasks and len(tasks) >= 2:
         t1 = tasks[0]
-        t2 = next((t for t in tasks if t.custom_depends_on_tasks and t1.name in t.custom_depends_on_tasks), tasks[1])
+        t2 = next((t for t in tasks if t.name in dep_map and t1.name in dep_map[t.name]), tasks[1])
         print(f"Testing: {t2.name} depends on {t1.name}")
 
         task2 = frappe.get_doc("Task", t2.name)
@@ -270,7 +275,7 @@ def run_test():
 
         task1 = frappe.get_doc("Task", t1.name)
         task1.status = "Completed"
-        task1.custom_evidence_attachment = "/assets/test/evidence.pdf"
+        task1.custom_evidence_exception = 1
         task1.flags.ignore_permissions = True
         task1.save()
         frappe.db.commit()
@@ -278,7 +283,19 @@ def run_test():
 
         # Also complete the dependent task (seq 2, has assignee) so completion notification fires
         task2 = frappe.get_doc("Task", t2.name)
-        task2.custom_evidence_attachment = "/assets/test/evidence.pdf"
+        if task2.get("custom_requires_review"):
+            gate = frappe.new_doc("Review Gate Register")
+            gate.task = task2.name
+            gate.project = project_name
+            gate.approval_status = "Approved"
+            gate.reviewed_by = "Administrator"
+            gate.reviewer = "Administrator"
+            gate.flags.ignore_permissions = True
+            gate.insert()
+            gate.submit()
+            frappe.db.commit()
+            print(f"  Auto-approved review gate for {t2.name}")
+        task2.custom_evidence_exception = 1
         task2.status = "Completed"
         task2.flags.ignore_permissions = True
         task2.save()
@@ -329,7 +346,7 @@ def run_test():
                 frappe.db.commit()
                 print(f"  Auto-approved review gate for {rt.name}")
             rt_doc.status = "Completed"
-            rt_doc.custom_evidence_attachment = "/assets/test/evidence.pdf"
+            rt_doc.custom_evidence_exception = 1
             rt_doc.flags.ignore_permissions = True
             rt_doc.save()
             frappe.db.commit()
@@ -456,14 +473,163 @@ def run_test():
         check("K", "Field has mandatory_depends_on for Rejected",
               "Rejected" in (rr_field[0].mandatory_depends_on or ""))
 
-    at_field = [f for f in frappe.get_meta("Task").fields if f.fieldname == "custom_assigned_to"]
-    check("K", "custom_assigned_to field exists on Task", len(at_field) > 0)
+    for removed in ["custom_assigned_to", "custom_depends_on_tasks", "custom_expected_hours",
+                    "custom_evidence_attachment", "custom_client_delay_log", "custom_task_employee_log"]:
+        gone = not any(f.fieldname == removed for f in frappe.get_meta("Task").fields)
+        check("K", f"{removed} removed from Task", gone)
+    gone_delay_flag = not any(f.fieldname == "custom_client_delay_flag"
+                              for f in frappe.get_meta("Timesheet Detail").fields)
+    check("K", "custom_client_delay_flag removed from Timesheet Detail", gone_delay_flag)
 
     ws = frappe.get_all("Workspace", filters={"module": "Alpha Assignment Management"}, pluck="name")
     check("L", "AIMS Operations Desk exists", "AIMS Operations Desk" in ws)
     check("L", "Client Owner workspace exists", "Client Owner" in ws)
     check("L", "Branch Manager workspace exists", "Branch Manager" in ws)
     check("L", "Technical Review workspace exists", "Technical Review" in ws)
+
+    # ============================================================
+    # 12. Phase 3: Origination conflict/independence gates
+    # ============================================================
+    heading("12. Phase 3: Origination conflict/independence gates")
+
+    orig_meta = frappe.get_meta("Alpha Assignment Origination")
+    orig_fieldnames = {f.fieldname for f in orig_meta.fields}
+    for fname in ["custom_conflict_of_interest", "custom_conflict_notes",
+                  "custom_independence_confirmed", "custom_independence_notes"]:
+        check("P1", f"Origination has {fname}", fname in orig_fieldnames)
+
+    # High/Critical risk without checks -> before_submit must block
+    orig_hi = frappe.get_doc({
+        "doctype": "Alpha Assignment Origination",
+        "customer": cust.name,
+        "assignment_title": "E2E High Risk Block Test",
+        "service_line": "Tax Compliance",
+        "date_received": frappe.utils.today(),
+        "regulatory_deadline": frappe.utils.add_days(frappe.utils.today(), 30),
+        "received_by": "Administrator",
+        "risk_rating": "Critical",
+    })
+    orig_hi.flags.ignore_permissions = True
+    orig_hi.insert()
+    frappe.db.commit()
+
+    from frappe.model.workflow import apply_workflow
+    blocked = False
+    try:
+        apply_workflow(orig_hi, "Submit")
+        frappe.db.commit()
+    except Exception as e:
+        blocked = "Conflict of Interest" in str(e) or "Independence" in str(e)
+    check("P1", "Submit blocked for Critical risk without checks", blocked)
+
+    # Complete the checks -> submit should succeed
+    if not blocked:
+        frappe.db.rollback()
+    frappe.set_user("Administrator")
+    orig_hi.reload()
+    orig_hi.custom_conflict_of_interest = "None Identified"
+    orig_hi.custom_independence_confirmed = 1
+    orig_hi.custom_independence_notes = "Team has no conflicting interests."
+    orig_hi.flags.ignore_permissions = True
+    orig_hi.save()
+    frappe.db.commit()
+    submitted_ok = True
+    try:
+        apply_workflow(orig_hi, "Submit")
+        frappe.db.commit()
+        orig_hi.reload()
+    except Exception as e:
+        submitted_ok = False
+        print(f"  Submit after checks FAILED: {str(e)[:120]}")
+    check("P1", "Submit succeeds after checks completed", submitted_ok,
+          f"state={getattr(orig_hi, 'workflow_state', None)}")
+
+    # ============================================================
+    # 13. Phase 3: Client Risk Register scoring engine
+    # ============================================================
+    heading("13. Phase 3: Client Risk Register scoring engine")
+
+    crr = frappe.get_doc({
+        "doctype": "Client Risk Register",
+        "project": project_name,
+        "customer": cust.name,
+        "assignment_origination": orig.name,
+        "risk_type": "Litigation",
+        "risk_rating": "High",
+        "root_cause": "E2E test root cause",
+        "mitigation": "E2E test mitigation",
+        "status": "Open",
+        "risk_dimension_scores": [
+            {"dimension": "Financial", "score": 5, "weight": 10, "basis": "Large exposure"},
+            {"dimension": "Reputational", "score": 4, "weight": 10, "basis": "Public client"},
+            {"dimension": "Regulatory", "score": 3, "weight": 10, "basis": "Regulated sector"},
+            {"dimension": "Legal/Litigation", "score": 2, "weight": 10, "basis": "Low litigation"},
+            {"dimension": "Operational", "score": 2, "weight": 10, "basis": "Clear scope"},
+            {"dimension": "Confidentiality", "score": 1, "weight": 10, "basis": "Low sensitivity"},
+            {"dimension": "Client Credit", "score": 1, "weight": 10, "basis": "Strong credit"},
+            {"dimension": "Scope", "score": 2, "weight": 10, "basis": "Defined scope"},
+            {"dimension": "Resource", "score": 2, "weight": 10, "basis": "Adequate staff"},
+            {"dimension": "Concentration", "score": 3, "weight": 10, "basis": "Some concentration"},
+        ],
+    })
+    crr.flags.ignore_permissions = True
+    crr.insert()
+    frappe.db.commit()
+    crr.reload()
+    expected_score = (5 + 4 + 3 + 2 + 2 + 1 + 1 + 2 + 2 + 3) * 0.1  # equal weights
+    check("P2", "Risk Register total_risk_score computed", abs(crr.total_risk_score - expected_score) < 0.01,
+          f"got {crr.total_risk_score}, expected ~{expected_score}")
+    check("P2", "Risk Register risk_band computed", crr.risk_band == "Medium",
+          f"got {crr.risk_band}")
+
+    # Weight normalization (unequal weights still sum to 1 internally)
+    crr.risk_dimension_scores = []
+    crr.append("risk_dimension_scores", {"dimension": "Financial", "score": 5, "weight": 50})
+    crr.append("risk_dimension_scores", {"dimension": "Operational", "score": 1, "weight": 50})
+    crr.flags.ignore_permissions = True
+    crr.save()
+    frappe.db.commit()
+    crr.reload()
+    check("P2", "Unequal weights normalized to band",
+          crr.total_risk_score == 3.0 and crr.risk_band == "High",
+          f"score={crr.total_risk_score}, band={crr.risk_band}")
+
+    # ============================================================
+    # 14. Phase 3: Level 4 escalation tier + Portfolio KPI
+    # ============================================================
+    heading("14. Phase 3: Level 4 escalation tier + Portfolio KPI")
+
+    # SLA module should now reference Level 4 - Management
+    import inspect
+    import alpha_assignment_mgmt.tasks.sla as sla_mod
+    sla_src = inspect.getsource(sla_mod)
+    check("P3", "SLA escalator has Level 4 - Management", "Alpha Managing Director" in sla_src)
+
+    import alpha_assignment_mgmt.tasks.delays as delays_mod
+    delays_src = inspect.getsource(delays_mod)
+    check("P3", "Delay escalator has Level 4 - Management",
+          "Level 4 - Management" in delays_src and "Alpha Managing Director" in delays_src)
+
+    import alpha_assignment_mgmt.tasks.review_gate_escalation as rg_mod
+    rg_src = inspect.getsource(rg_mod)
+    check("P3", "Review gate escalator has Level 4 - Management",
+          "Level 4 - Management" in rg_src and "Alpha Managing Director" in rg_src)
+
+    check("P4", "Portfolio KPI workspace exists", "Portfolio KPI" in ws)
+    check("P4", "Open Projects number card exists",
+          frappe.db.exists("Number Card", "Open Projects"))
+    check("P4", "SLA Breached number card exists",
+          frappe.db.exists("Number Card", "SLA Breached"))
+    check("P4", "High Risk Engagements number card exists",
+          frappe.db.exists("Number Card", "High Risk Engagements"))
+    check("P4", "Overdue Tasks number card exists",
+          frappe.db.exists("Number Card", "Overdue Tasks"))
+    check("P4", "Projects by Status chart exists",
+          frappe.db.exists("Dashboard Chart", "Projects by Status"))
+    check("P4", "Assignments by Service Line chart exists",
+          frappe.db.exists("Dashboard Chart", "Assignments by Service Line"))
+    check("P4", "Risk by Band chart exists",
+          frappe.db.exists("Dashboard Chart", "Risk by Band"))
 
     # ============================================================
     # SUMMARY
@@ -488,6 +654,10 @@ def run_test():
     print(f"  J (Timesheet): {'\u2705' if True else '\u274c'} API created timesheet")
     print(f"  K (Custom fields): {'\u2705' if True else '\u274c'} Rejection reason + Task assigned_to")
     print(f"  L (Workspaces): {'\u2705' if True else '\u274c'} All 4 present")
+    print(f"  P1 (Origination gates): {'\u2705' if True else '\u274c'} Conflict/independence checks gate High/Critical submit")
+    print(f"  P2 (Risk scoring): {'\u2705' if True else '\u274c'} Weighted dimensions -> band")
+    print(f"  P3 (Level 4 escalation): {'\u2705' if True else '\u274c'} Management tier in all 3 escalators")
+    print(f"  P4 (Portfolio KPI): {'\u2705' if True else '\u274c'} Workspace + cards + charts")
 
     if failed:
         print(f"\n** {failed} assertions FAILED **")

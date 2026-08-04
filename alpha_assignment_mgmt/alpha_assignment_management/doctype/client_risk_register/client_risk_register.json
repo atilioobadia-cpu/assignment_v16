@@ -17,7 +17,12 @@
     "mitigation",
     "owner",
     "status",
-    "notes"
+    "notes",
+    "section_scoring",
+    "risk_dimension_scores",
+    "score_cb_1",
+    "total_risk_score",
+    "risk_band"
   ],
   "fields": [
     {
@@ -89,6 +94,35 @@
       "fieldname": "notes",
       "fieldtype": "Small Text",
       "label": "Notes"
+    },
+    {
+      "fieldname": "section_scoring",
+      "fieldtype": "Section Break",
+      "label": "Risk Scoring Engine"
+    },
+    {
+      "fieldname": "risk_dimension_scores",
+      "fieldtype": "Table",
+      "label": "Risk Dimension Scores",
+      "options": "Client Risk Dimension Score"
+    },
+    {
+      "fieldname": "score_cb_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "total_risk_score",
+      "fieldtype": "Float",
+      "label": "Total Risk Score",
+      "precision": "2",
+      "read_only": 1
+    },
+    {
+      "fieldname": "risk_band",
+      "fieldtype": "Select",
+      "label": "Risk Band",
+      "options": "Low\nMedium\nHigh\nCritical",
+      "read_only": 1
     }
   ],
   "links": [],

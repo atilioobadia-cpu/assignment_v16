@@ -17,21 +17,19 @@ def after_install():
 	_create_additional_templates()
 	create_customer_fields()
 	create_rejection_reason_field()
+	create_origination_control_fields()
 	_create_performance_feedback_fields()
 	_create_assignment_number_cards()
 	_create_assignment_dashboard_charts()
 	_create_task_number_cards()
 	_create_task_dashboard_charts()
+	_create_portfolio_number_cards()
+	_create_portfolio_dashboard_charts()
 	_setup_ceo_workspace()
-	_setup_aims_operations_desk()
-	_setup_client_owner_workspace()
-	_setup_branch_manager_workspace()
-	_setup_client_portal_workspace()
-	_setup_client_portal_workspace()
+	_setup_aims_desk_workspace()
 	_create_default_items()
 	_add_billing_custom_fields()
-	_setup_accounts_billing_workspace()
-	_setup_technical_review_workspace()
+	_setup_portfolio_kpi_workspace()
 	_create_ceo_api_method()
 	_create_phase5_workflows()
 	_clear_number_card_currencies()
@@ -50,18 +48,16 @@ def after_migrate():
 	_create_additional_templates()
 	create_customer_fields()
 	create_rejection_reason_field()
+	create_origination_control_fields()
 	_create_task_number_cards()
 	_create_task_dashboard_charts()
+	_create_portfolio_number_cards()
+	_create_portfolio_dashboard_charts()
 	_setup_ceo_workspace()
-	_setup_aims_operations_desk()
-	_setup_client_owner_workspace()
-	_setup_branch_manager_workspace()
-	_setup_client_portal_workspace()
-	_setup_client_portal_workspace()
+	_setup_aims_desk_workspace()
 	_create_default_items()
 	_add_billing_custom_fields()
-	_setup_accounts_billing_workspace()
-	_setup_technical_review_workspace()
+	_setup_portfolio_kpi_workspace()
 	_create_phase5_workflows()
 	_clear_number_card_currencies()
 	_clear_dashboard_chart_currencies()
@@ -329,17 +325,51 @@ def create_rejection_reason_field():
 			"mandatory_depends_on": "eval:doc.workflow_state == 'Rejected'",
 		}).insert(ignore_permissions=True)
 
-	# Add custom_assigned_to on Task for tracking assigned user
-	if not frappe.db.exists("Custom Field", {"dt": "Task", "fieldname": "custom_assigned_to"}):
-		frappe.get_doc({
-			"doctype": "Custom Field",
-			"dt": "Task",
-			"fieldname": "custom_assigned_to",
-			"label": "Assigned To (User)",
-			"fieldtype": "Link",
-			"options": "User",
-			"insert_after": "custom_evidence_exception",
-		}).insert(ignore_permissions=True)
+
+def create_origination_control_fields():
+	"""Add Conflict of Interest + Independence checks to Alpha Assignment Origination.
+
+	Fields gate the engagement acceptance workflow: for High/Critical risk engagements,
+	the assignment cannot be submitted until both checks are completed (see
+	overrides/assignment_origination.py:validate_conflict_and_independence).
+	"""
+	fields = [
+		{
+			"fieldname": "custom_conflict_of_interest",
+			"label": "Conflict of Interest",
+			"fieldtype": "Select",
+			"options": "None Identified\nConflict Identified\nNot Assessed",
+			"default": "Not Assessed",
+			"insert_after": "confidentiality_sensitivity",
+		},
+		{
+			"fieldname": "custom_conflict_notes",
+			"label": "Conflict Notes",
+			"fieldtype": "Small Text",
+			"insert_after": "custom_conflict_of_interest",
+			"depends_on": "eval:doc.custom_conflict_of_interest == 'Conflict Identified'",
+		},
+		{
+			"fieldname": "custom_independence_confirmed",
+			"label": "Independence Confirmed",
+			"fieldtype": "Check",
+			"insert_after": "custom_conflict_notes",
+			"description": "Confirm that the engagement team has no financial, personal or other interest that could impair independence.",
+		},
+		{
+			"fieldname": "custom_independence_notes",
+			"label": "Independence Notes",
+			"fieldtype": "Small Text",
+			"insert_after": "custom_independence_confirmed",
+		},
+	]
+	for f in fields:
+		if not frappe.db.exists("Custom Field", {"dt": "Alpha Assignment Origination", "fieldname": f["fieldname"]}):
+			frappe.get_doc({
+				"doctype": "Custom Field",
+				"dt": "Alpha Assignment Origination",
+				**f,
+			}).insert(ignore_permissions=True)
 
 
 def _create_additional_templates():
@@ -681,7 +711,8 @@ def _clear_number_card_currencies():
 			'Tasks Completed', 'Tasks Pending',
 			'Active Staff', 'Active Clients',
 			'Active Assignments', 'Active Projects',
-			'Pending Reviews', 'Pending Projects'
+			'Pending Reviews', 'Pending Projects',
+			'Open Projects', 'SLA Breached', 'High Risk Engagements', 'Overdue Tasks'
 		)
 		AND currency != ''
 	""")
@@ -1058,8 +1089,8 @@ def _setup_ceo_workspace():
 	])
 
 
-def _setup_aims_operations_desk():
-	ws_name = "AIMS Operations Desk"
+def _setup_aims_desk_workspace():
+	ws_name = "AIMS Desk"
 	shortcuts = [
 		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "New Assignment", "icon": "add"},
 		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "All Assignments", "icon": "list", "doc_view": "list"},
@@ -1080,7 +1111,7 @@ def _setup_aims_operations_desk():
 	]
 
 	content = json.dumps([
-		{"id": "h1", "type": "header", "data": {"text": "<span class=\"h4\"><b>AIMS Operations Desk</b></span>", "col": 12}},
+		{"id": "h1", "type": "header", "data": {"text": "<span class=\"h4\"><b>AIMS Desk</b></span>", "col": 12}},
 		{"id": "p1", "type": "paragraph", "data": {"text": "Manage client assignments from origination to closure.", "col": 12}},
 		{"id": "nc1", "type": "number_card", "data": {"number_card_name": "Active Assignments", "col": 3}},
 		{"id": "nc2", "type": "number_card", "data": {"number_card_name": "Active Projects", "col": 3}},
@@ -1107,170 +1138,6 @@ def _setup_aims_operations_desk():
 	_insert_workspace_charts(ws_name, ["Employee Performance Trend"])
 	_insert_workspace_number_cards(ws_name, ["Active Assignments", "Active Projects", "Tasks Completed", "Tasks Pending"])
 	_insert_workspace_shortcuts(ws_name, shortcuts)
-
-	# Also update old "AIMS Desk" workspace if it exists (migration aid)
-	if frappe.db.exists("Workspace", "AIMS Desk"):
-		frappe.db.set_value("Workspace", "AIMS Desk", "content", content)
-		_insert_workspace_charts("AIMS Desk", ["Employee Performance Trend"])
-		_insert_workspace_number_cards("AIMS Desk", ["Active Assignments", "Active Projects", "Tasks Completed", "Tasks Pending"])
-		_insert_workspace_shortcuts("AIMS Desk", shortcuts)
-
-
-def _setup_client_owner_workspace():
-	ws_name = "Client Owner"
-	shortcuts = [
-		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "My Assignments", "icon": "list", "doc_view": "list"},
-		{"type": "DocType", "link_to": "Project", "label": "Active Projects", "icon": "list"},
-		{"type": "DocType", "link_to": "Document Request Register", "label": "Document Requests", "icon": "file"},
-		{"type": "DocType", "link_to": "Client Delay Log", "label": "Client Delays", "icon": "warn"},
-		{"type": "DocType", "link_to": "Client Risk Register", "label": "Risk Register", "icon": "list"},
-		{"type": "DocType", "link_to": "Assignment Closure Certificate", "label": "Closure Certificates", "icon": "file"},
-		{"type": "DocType", "link_to": "Task", "label": "Task Status", "icon": "task", "doc_view": "list"},
-		{"type": "Report", "link_to": "SLA Compliance Overview", "label": "SLA Compliance", "icon": "chart"},
-	]
-	content = json.dumps([
-		{"id": "h1", "type": "header", "data": {"text": "<span class=\"h4\"><b>Client Owner Workspace</b></span>", "col": 12}},
-		{"id": "p1", "type": "paragraph", "data": {"text": "Monitor your client assignments, documents, and risks.", "col": 12}},
-		{"id": "nc1", "type": "number_card", "data": {"number_card_name": "Active Assignments", "col": 3}},
-		{"id": "nc2", "type": "number_card", "data": {"number_card_name": "Active Projects", "col": 3}},
-		{"id": "nc3", "type": "number_card", "data": {"number_card_name": "Pending Reviews", "col": 3}},
-		{"id": "nc4", "type": "number_card", "data": {"number_card_name": "Tasks Pending", "col": 3}},
-		{"id": "sp1", "type": "spacer", "data": {"col": 12}},
-		{"id": "sh2", "type": "header", "data": {"text": "<span class=\"h5\"><b>Quick Actions</b></span>", "col": 12}},
-	] + [
-		{"id": f"s{i+1}", "type": "shortcut", "data": {"shortcut_name": sc["label"], "col": 3}}
-		for i, sc in enumerate(shortcuts)
-	])
-
-	if frappe.db.exists("Workspace", ws_name):
-		frappe.db.set_value("Workspace", ws_name, "content", content)
-		frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s AND parenttype = 'Workspace'", ws_name)
-	else:
-		frappe.db.sql("""
-			INSERT INTO `tabWorkspace`
-			(name, label, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by)
-			VALUES (%s, %s, 'Alpha Assignment Management', 0, 1, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')
-		""", (ws_name, ws_name, content))
-
-	_insert_workspace_number_cards(ws_name, ["Active Assignments", "Active Projects", "Pending Reviews", "Tasks Pending"])
-	_insert_workspace_shortcuts(ws_name, shortcuts)
-
-
-def _setup_branch_manager_workspace():
-	ws_name = "Branch Manager"
-	shortcuts = [
-		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "Pending Approvals", "icon": "review", "doc_view": "list"},
-		{"type": "DocType", "link_to": "Project", "label": "Branch Projects", "icon": "list"},
-		{"type": "DocType", "link_to": "Alpha Engagement SLA", "label": "SLA Overview", "icon": "file"},
-		{"type": "DocType", "link_to": "Task", "label": "Team Tasks", "icon": "task", "doc_view": "list"},
-		{"type": "DocType", "link_to": "Timesheet", "label": "Team Timesheets", "icon": "list"},
-		{"type": "DocType", "link_to": "Review Gate Register", "label": "Review Queue", "icon": "review"},
-		{"type": "DocType", "link_to": "Client Delay Log", "label": "Client Delays", "icon": "warn"},
-		{"type": "Report", "link_to": "Staff Productivity", "label": "Staff Productivity", "icon": "chart"},
-		{"type": "Report", "link_to": "SLA Compliance Overview", "label": "SLA Compliance", "icon": "chart"},
-	]
-	content = json.dumps([
-		{"id": "h1", "type": "header", "data": {"text": "<span class=\"h4\"><b>Branch Manager Dashboard</b></span>", "col": 12}},
-		{"id": "p1", "type": "paragraph", "data": {"text": "Oversee branch operations, approvals, and team performance.", "col": 12}},
-		{"id": "nc1", "type": "number_card", "data": {"number_card_name": "Active Assignments", "col": 3}},
-		{"id": "nc2", "type": "number_card", "data": {"number_card_name": "Active Projects", "col": 3}},
-		{"id": "nc3", "type": "number_card", "data": {"number_card_name": "Pending Reviews", "col": 3}},
-		{"id": "nc4", "type": "number_card", "data": {"number_card_name": "Tasks Pending", "col": 3}},
-		{"id": "c1", "type": "chart", "data": {"chart_name": "Employee Performance Trend", "col": 12}},
-		{"id": "sp1", "type": "spacer", "data": {"col": 12}},
-		{"id": "sh2", "type": "header", "data": {"text": "<span class=\"h5\"><b>Quick Actions</b></span>", "col": 12}},
-	] + [
-		{"id": f"s{i+1}", "type": "shortcut", "data": {"shortcut_name": sc["label"], "col": 3}}
-		for i, sc in enumerate(shortcuts)
-	])
-
-	if frappe.db.exists("Workspace", ws_name):
-		frappe.db.set_value("Workspace", ws_name, "content", content)
-		frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s AND parenttype = 'Workspace'", ws_name)
-	else:
-		frappe.db.sql("""
-			INSERT INTO `tabWorkspace`
-			(name, label, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by)
-			VALUES (%s, %s, 'Alpha Assignment Management', 0, 1, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')
-		""", (ws_name, ws_name, content))
-
-	_insert_workspace_charts(ws_name, ["Employee Performance Trend"])
-	_insert_workspace_number_cards(ws_name, ["Active Assignments", "Active Projects", "Pending Reviews", "Tasks Pending"])
-	_insert_workspace_shortcuts(ws_name, shortcuts)
-
-def _setup_client_portal_workspace():
-    ws_name = "Client Portal"
-    shortcuts = [
-        {"type": "DocType", "link_to": "Project", "label": "My Projects", "icon": "list", "doc_view": "list"},
-        {"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "My Assignments", "icon": "list", "doc_view": "list"},
-        {"type": "DocType", "link_to": "Document Request Register", "label": "Document Requests", "icon": "file"},
-        {"type": "DocType", "link_to": "Assignment Closure Certificate", "label": "Closure Certificates", "icon": "file"},
-        {"type": "DocType", "link_to": "Client Delay Log", "label": "Log Delay", "icon": "warn"},
-    ]
-    content = json.dumps([
-        {"id": "h1", "type": "header", "data": {"text": '<span class="h4"><b>Client Portal</b></span>', "col": 12}},
-        {"id": "p1", "type": "paragraph", "data": {"text": "View your assignments, projects, and documents.", "col": 12}},
-        {"id": "nc1", "type": "number_card", "data": {"number_card_name": "Active Projects", "col": 3}},
-        {"id": "nc2", "type": "number_card", "data": {"number_card_name": "Active Clients", "col": 3}},
-        {"id": "sp1", "type": "spacer", "data": {"col": 12}},
-        {"id": "sh2", "type": "header", "data": {"text": '<span class="h5"><b>Quick Actions</b></span>', "col": 12}},
-    ] + [
-        {"id": "s" + str(i + 1), "type": "shortcut", "data": {"shortcut_name": sc["label"], "col": 3}}
-        for i, sc in enumerate(shortcuts)
-    ])
-
-    if frappe.db.exists("Workspace", ws_name):
-        frappe.db.set_value("Workspace", ws_name, "content", content)
-        frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s AND parenttype = 'Workspace'", ws_name)
-    else:
-        frappe.db.sql(
-            "INSERT INTO `tabWorkspace` (name, label, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by) VALUES (%s, %s, 'Alpha Assignment Management', 0, 1, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')",
-            (ws_name, ws_name, content),
-        )
-
-    frappe.db.sql(
-        "DELETE FROM `tabWorkspace Role` WHERE parent = %s AND parenttype = 'Workspace'",
-        ws_name,
-    )
-    frappe.db.sql(
-        "INSERT INTO `tabWorkspace Role` (name, role, parent, parentfield, parenttype, idx, docstatus, creation, modified, owner, modified_by) VALUES (%s, %s, %s, 'roles', 'Workspace', 0, 0, NOW(), NOW(), 'Administrator', 'Administrator')",
-        (ws_name + "_role0", "Alpha Client", ws_name),
-    )
-
-    _insert_workspace_number_cards(ws_name, ["Active Projects", "Active Clients"])
-    _insert_workspace_shortcuts(ws_name, shortcuts)
-def _setup_client_portal_workspace():
-    ws_name = "Client Portal"
-    shortcuts = [
-        {"type": "DocType", "link_to": "Project", "label": "My Projects", "icon": "list", "doc_view": "list"},
-        {"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "My Assignments", "icon": "list", "doc_view": "list"},
-        {"type": "DocType", "link_to": "Document Request Register", "label": "Document Requests", "icon": "file"},
-        {"type": "DocType", "link_to": "Assignment Closure Certificate", "label": "Closure Certificates", "icon": "file"},
-        {"type": "DocType", "link_to": "Client Delay Log", "label": "Log Delay", "icon": "warn"},
-    ]
-    content = json.dumps([
-        {"id": "h1", "type": "header", "data": {"text": '<span class="h4"><b>Client Portal</b></span>', "col": 12}},
-        {"id": "p1", "type": "paragraph", "data": {"text": "View your assignments, projects, and documents.", "col": 12}},
-        {"id": "nc1", "type": "number_card", "data": {"number_card_name": "Active Projects", "col": 3}},
-        {"id": "nc2", "type": "number_card", "data": {"number_card_name": "Active Clients", "col": 3}},
-        {"id": "sp1", "type": "spacer", "data": {"col": 12}},
-        {"id": "sh2", "type": "header", "data": {"text": '<span class="h5"><b>Quick Actions</b></span>', "col": 12}},
-    ] + [
-        {"id": "s" + str(i + 1), "type": "shortcut", "data": {"shortcut_name": sc["label"], "col": 3}}
-        for i, sc in enumerate(shortcuts)
-    ])
-
-    if frappe.db.exists("Workspace", ws_name):
-        frappe.db.set_value("Workspace", ws_name, "content", content)
-        frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s AND parenttype = 'Workspace'", ws_name)
-    else:
-        frappe.db.sql(
-            "INSERT INTO `tabWorkspace` (name, label, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by) VALUES (%s, %s, 'Alpha Assignment Management', 0, 1, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')",
-            (ws_name, ws_name, content),
-        )
-
-    _insert_workspace_number_cards(ws_name, ["Active Projects", "Active Clients"])
-    _insert_workspace_shortcuts(ws_name, shortcuts)
 
 
 def _create_default_items():
@@ -1318,63 +1185,135 @@ def _add_billing_custom_fields():
 
 
 
-def _setup_accounts_billing_workspace():
-    ws_name = "Accounts & Billing"
-    shortcuts = [
-        {"type": "DocType", "link_to": "Sales Order", "label": "Sales Orders", "icon": "list", "doc_view": "list"},
-        {"type": "DocType", "link_to": "Sales Invoice", "label": "Sales Invoices", "icon": "list", "doc_view": "list"},
-        {"type": "DocType", "link_to": "Payment Entry", "label": "Payment Entries", "icon": "list", "doc_view": "list"},
-        {"type": "DocType", "link_to": "Project", "label": "Projects", "icon": "list", "doc_view": "list"},
-        {"type": "DocType", "link_to": "Alpha Service Contract", "label": "Service Contracts", "icon": "file"},
-        {"type": "Report", "link_to": "Project Profitability", "label": "Project Profitability", "icon": "chart"},
-        {"type": "Report", "link_to": "Accounts Receivable", "label": "Accounts Receivable", "icon": "chart"},
-        {"type": "Report", "link_to": "Accounts Payable", "label": "Accounts Payable", "icon": "chart"},
-    ]
-    content = json.dumps([
-        {"id": "h1", "type": "header", "data": {"text": '<span class="h4"><b>Accounts & Billing</b></span>', "col": 12}},
-        {"id": "p1", "type": "paragraph", "data": {"text": "Manage billing, invoicing, and payments.", "col": 12}},
-        {"id": "nc1", "type": "number_card", "data": {"number_card_name": "Active Projects", "col": 3}},
-        {"id": "nc2", "type": "number_card", "data": {"number_card_name": "Active Clients", "col": 3}},
-        {"id": "sp1", "type": "spacer", "data": {"col": 12}},
-        {"id": "sh2", "type": "header", "data": {"text": '<span class="h5"><b>Quick Actions</b></span>', "col": 12}},
-    ] + [
-        {"id": "s" + str(i + 1), "type": "shortcut", "data": {"shortcut_name": sc["label"], "col": 3}}
-        for i, sc in enumerate(shortcuts)
-    ])
+# ===== Phase 3: Portfolio KPI dashboard =====
 
-    if frappe.db.exists("Workspace", ws_name):
-        frappe.db.set_value("Workspace", ws_name, "content", content)
-        frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s AND parenttype = 'Workspace'", ws_name)
-    else:
-        frappe.db.sql(
-            "INSERT INTO `tabWorkspace` (name, label, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by) VALUES (%s, %s, 'Alpha Assignment Management', 0, 1, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')",
-            (ws_name, ws_name, content),
-        )
+def _create_portfolio_number_cards():
+	cards = [
+		{
+			"label": "Open Projects",
+			"type": "Document Type",
+			"document_type": "Project",
+			"function": "Count",
+			"filters_json": '[["Project","status","not in",["Completed","Cancelled"]]]',
+			"currency": "",
+			"color": "#2490ef",
+		},
+		{
+			"label": "Pipeline Fee Value",
+			"type": "Document Type",
+			"document_type": "Alpha Assignment Origination",
+			"function": "Sum",
+			"aggregate_function_based_on": "proposed_fee",
+			"filters_json": '[["Alpha Assignment Origination","docstatus","!=",2],["Alpha Assignment Origination","project_created","=",0]]',
+			"currency": "",
+			"color": "#29a154",
+		},
+		{
+			"label": "SLA Breached",
+			"type": "Document Type",
+			"document_type": "Alpha Engagement SLA",
+			"function": "Count",
+			"filters_json": '[["Alpha Engagement SLA","status","=","Breached"]]',
+			"currency": "",
+			"color": "#e63c3c",
+		},
+		{
+			"label": "High Risk Engagements",
+			"type": "Document Type",
+			"document_type": "Client Risk Register",
+			"function": "Count",
+			"filters_json": '[["Client Risk Register","risk_band","in",["High","Critical"]]]',
+			"currency": "",
+			"color": "#ff8116",
+		},
+		{
+			"label": "Overdue Tasks",
+			"type": "Document Type",
+			"document_type": "Task",
+			"function": "Count",
+			"filters_json": '[["Task","status","=","Overdue"]]',
+			"currency": "",
+			"color": "#e63c3c",
+		},
+	]
+	for card in cards:
+		if frappe.db.exists("Number Card", card["label"]):
+			frappe.db.set_value("Number Card", card["label"], {
+				"is_public": 1,
+				"currency": card["currency"] or "",
+				"color": card.get("color") or "",
+			})
+		else:
+			frappe.get_doc({
+				"doctype": "Number Card",
+				"is_public": 1,
+				"module": "Alpha Assignment Management",
+				**card,
+			}).insert(ignore_permissions=True)
 
-    _insert_workspace_number_cards(ws_name, ["Active Projects", "Active Clients"])
-    _insert_workspace_shortcuts(ws_name, shortcuts)
+
+def _create_portfolio_dashboard_charts():
+	charts = [
+		{
+			"chart_name": "Projects by Status",
+			"chart_type": "Group By",
+			"document_type": "Project",
+			"group_by_type": "Count",
+			"group_by_based_on": "status",
+			"type": "Donut",
+			"filters_json": "[]",
+		},
+		{
+			"chart_name": "Assignments by Service Line",
+			"chart_type": "Group By",
+			"document_type": "Alpha Assignment Origination",
+			"group_by_type": "Count",
+			"group_by_based_on": "service_line",
+			"type": "Bar",
+			"filters_json": "[]",
+		},
+		{
+			"chart_name": "Risk by Band",
+			"chart_type": "Group By",
+			"document_type": "Client Risk Register",
+			"group_by_type": "Count",
+			"group_by_based_on": "risk_band",
+			"type": "Donut",
+			"filters_json": "[]",
+		},
+	]
+	for chart in charts:
+		if not frappe.db.exists("Dashboard Chart", chart["chart_name"]):
+			frappe.get_doc({
+				"doctype": "Dashboard Chart",
+				"module": "Alpha Assignment Management",
+				"is_public": 1,
+				**chart,
+			}).insert(ignore_permissions=True)
 
 
-
-
-
-
-def _setup_technical_review_workspace():
-	ws_name = "Technical Review"
+def _setup_portfolio_kpi_workspace():
+	ws_name = "Portfolio KPI"
 	shortcuts = [
-		{"type": "DocType", "link_to": "Review Gate Register", "label": "Pending Reviews", "icon": "review", "doc_view": "list"},
-		{"type": "DocType", "link_to": "Task", "label": "Tasks for Review", "icon": "task", "doc_view": "list"},
-		{"type": "DocType", "link_to": "Performance Feedback", "label": "Feedback", "icon": "list"},
-		{"type": "DocType", "link_to": "Document Request Register", "label": "Document Checks", "icon": "file"},
+		{"type": "DocType", "link_to": "Project", "label": "All Projects", "icon": "list", "doc_view": "list"},
+		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "Pipeline", "icon": "file", "doc_view": "list"},
+		{"type": "DocType", "link_to": "Client Risk Register", "label": "Risk Register", "icon": "list", "doc_view": "list"},
+		{"type": "DocType", "link_to": "Alpha Engagement SLA", "label": "Engagement SLA", "icon": "file", "doc_view": "list"},
+		{"type": "Report", "link_to": "Project Profitability", "label": "Profitability", "icon": "chart"},
 		{"type": "Report", "link_to": "Staff Productivity", "label": "Productivity", "icon": "chart"},
 	]
 	content = json.dumps([
-		{"id": "h1", "type": "header", "data": {"text": "<span class=\"h4\"><b>Technical Review Desk</b></span>", "col": 12}},
-		{"id": "p1", "type": "paragraph", "data": {"text": "Manage technical reviews, quality control, and reviewer workload.", "col": 12}},
-		{"id": "nc1", "type": "number_card", "data": {"number_card_name": "Pending Reviews", "col": 4}},
-		{"id": "nc2", "type": "number_card", "data": {"number_card_name": "Tasks Completed", "col": 4}},
-		{"id": "nc3", "type": "number_card", "data": {"number_card_name": "Tasks Pending", "col": 4}},
-		{"id": "c1", "type": "chart", "data": {"chart_name": "Tasks by Status", "col": 12}},
+		{"id": "h1", "type": "header", "data": {"text": "<span class=\"h4\"><b>Portfolio KPI Dashboard</b></span>", "col": 12}},
+		{"id": "p1", "type": "paragraph", "data": {"text": "Firm-wide performance: pipeline, project health, risk and SLA compliance.", "col": 12}},
+		{"id": "nc1", "type": "number_card", "data": {"number_card_name": "Open Projects", "col": 2}},
+		{"id": "nc2", "type": "number_card", "data": {"number_card_name": "Pipeline Fee Value", "col": 2}},
+		{"id": "nc3", "type": "number_card", "data": {"number_card_name": "SLA Breached", "col": 2}},
+		{"id": "nc4", "type": "number_card", "data": {"number_card_name": "High Risk Engagements", "col": 2}},
+		{"id": "nc5", "type": "number_card", "data": {"number_card_name": "Overdue Tasks", "col": 2}},
+		{"id": "c1", "type": "chart", "data": {"chart_name": "Projects by Status", "col": 6}},
+		{"id": "c2", "type": "chart", "data": {"chart_name": "Assignments by Service Line", "col": 6}},
+		{"id": "c3", "type": "chart", "data": {"chart_name": "Risk by Band", "col": 6}},
+		{"id": "c4", "type": "chart", "data": {"chart_name": "Assignments Trend (Last 12 Months)", "col": 6}},
 		{"id": "sp1", "type": "spacer", "data": {"col": 12}},
 		{"id": "sh2", "type": "header", "data": {"text": "<span class=\"h5\"><b>Quick Actions</b></span>", "col": 12}},
 	] + [
@@ -1382,19 +1321,82 @@ def _setup_technical_review_workspace():
 		for i, sc in enumerate(shortcuts)
 	])
 
-	if frappe.db.exists("Workspace", ws_name):
-		frappe.db.set_value("Workspace", ws_name, "content", content)
-		frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s AND parenttype = 'Workspace'", ws_name)
-	else:
+	if not frappe.db.exists("Workspace", ws_name):
 		frappe.db.sql("""
 			INSERT INTO `tabWorkspace`
-			(name, label, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by)
-			VALUES (%s, %s, 'Alpha Assignment Management', 0, 1, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')
-		""", (ws_name, ws_name, content))
+			(name, label, title, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by)
+			VALUES (%s, %s, %s, 'Alpha Assignment Management', 0, 1, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')
+		""", (ws_name, ws_name, ws_name, content))
 
-	_insert_workspace_charts(ws_name, ["Tasks by Status"])
-	_insert_workspace_number_cards(ws_name, ["Pending Reviews", "Tasks Completed", "Tasks Pending"])
+	ws_doc = frappe.get_doc("Workspace", ws_name)
+	ws_doc.content = content
+	ws_doc.title = ws_name
+	ws_doc.roles = []
+	for role in ["Alpha Managing Director", "Alpha Partner/Director", "System Manager"]:
+		ws_doc.append("roles", {"role": role})
+	ws_doc.flags.ignore_permissions = True
+	ws_doc.save(ignore_permissions=True)
+	frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s AND parenttype = 'Workspace'", ws_name)
+
+	_insert_workspace_charts(ws_name, [
+		"Projects by Status", "Assignments by Service Line", "Risk by Band", "Assignments Trend (Last 12 Months)",
+	])
+	_insert_workspace_number_cards(ws_name, [
+		"Open Projects", "Pipeline Fee Value", "SLA Breached", "High Risk Engagements", "Overdue Tasks",
+	])
 	_insert_workspace_shortcuts(ws_name, shortcuts)
+
+	_create_portfolio_kpi_desktop_icon(ws_name)
+	_add_portfolio_kpi_to_aims_sidebar(ws_name)
+
+
+def _create_portfolio_kpi_desktop_icon(ws_name):
+	"""Desktop Icon record so the workspace shows up in the workspace switcher
+	(grid icon / sidebar header dropdown). Standard workspaces get these via
+	create_desktop_icons_from_workspace; ours was inserted via raw SQL, so it
+	never received one.
+
+	The sidebar header workspace switcher resolves sibling workspaces from
+	frappe.boot.desktop_icons AND get_desktop_icons only permits a "Workspace
+	Sidebar" icon when a matching entry exists in boot.workspace_sidebar_item.
+	That requires a Workspace Sidebar doc titled after the workspace, which
+	must be created before the icon because Desktop Icon.link_to is a Dynamic
+	Link to "Workspace Sidebar"."""
+	if not frappe.db.exists("Workspace Sidebar", ws_name):
+		from frappe.desk.doctype.workspace_sidebar.workspace_sidebar import (
+			create_workspace_sidebar_for_workspaces,
+		)
+		create_workspace_sidebar_for_workspaces()
+		frappe.db.commit()
+
+	if not frappe.db.exists("Desktop Icon", {"label": ws_name, "icon_type": "Link"}):
+		icon = frappe.new_doc("Desktop Icon")
+		icon.label = ws_name
+		icon.icon_type = "Link"
+		icon.link_type = "Workspace Sidebar"
+		icon.link_to = ws_name
+		icon.icon = "chart"
+		icon.insert(ignore_permissions=True)
+
+
+def _add_portfolio_kpi_to_aims_sidebar(ws_name):
+	"""Add Portfolio KPI as a shortcut in the AIMS Desk sidebar so it is
+	visible from the home workspace without using the switcher."""
+	sidebar_title = "AIMS Desk"
+	if not frappe.db.exists("Workspace Sidebar", sidebar_title):
+		return
+	sidebar = frappe.get_doc("Workspace Sidebar", sidebar_title)
+	existing = {i.link_to for i in sidebar.items if i.link_type == "Workspace"}
+	if ws_name not in existing:
+		sidebar.append("items", {
+			"idx": len(sidebar.items) + 1,
+			"label": ws_name,
+			"link_type": "Workspace",
+			"link_to": ws_name,
+			"type": "Link",
+		})
+		sidebar.flags.ignore_permissions = True
+		sidebar.save(ignore_permissions=True)
 
 
 # ===== Phases 6-12: Complete gap closure for AIMS =====
@@ -1555,17 +1557,6 @@ NOTIFICATION_RECORDS = [
         ],
     },
     {
-        "name": "Task Overdue",
-        "subject": "[AIMS] Task Overdue: {{ doc.subject }}",
-        "document_type": "Task",
-        "event": "Days After",
-        "days_after": 0,
-        "condition": "doc.status == 'Overdue'",
-        "recipients": [
-            {"receiver_by_document_field": "custom_assigned_to"},
-        ],
-    },
-    {
         "name": "Review Gate Pending",
         "subject": "[AIMS] Review Gate Pending: {{ doc.name }}",
         "document_type": "Review Gate Register",
@@ -1626,7 +1617,7 @@ MAKER_CHECKER_FIELDS = [
         "fieldtype": "Link",
         "options": "User",
         "read_only": 1,
-        "insert_after": "custom_assigned_to",
+        "insert_after": "custom_review_gate",
     },
     {
         "dt": "Task",
@@ -1685,26 +1676,6 @@ HR_METRICS_FIELDS = [
     {"dt": "Employee", "fieldname": "custom_monthly_close_rate", "label": "Monthly Close Rate (%)", "fieldtype": "Percent", "read_only": 1, "insert_after": "custom_delay_followup_rate"},
     {"dt": "Employee", "fieldname": "custom_profitability_contribution", "label": "Profitability Contribution", "fieldtype": "Currency", "read_only": 1, "insert_after": "custom_monthly_close_rate"},
 ]
-
-
-def _setup_hr_analytics_workspace():
-    ws_name = "HR Analytics"
-    if frappe.db.exists("Workspace", ws_name):
-        return
-    content = json.dumps([
-        {"id": "h1", "type": "header", "data": {"text": "<span class=\"h4\"><b>HR Analytics</b></span>", "col": 12}},
-        {"id": "p1", "type": "paragraph", "data": {"text": "Staff performance, utilisation, and skills overview.", "col": 12}},
-        {"id": "nc1", "type": "number_card", "data": {"number_card_name": "Active Staff", "col": 4}},
-        {"id": "nc2", "type": "number_card", "data": {"number_card_name": "Total Assignments", "col": 4}},
-        {"id": "nc3", "type": "number_card", "data": {"number_card_name": "Overdue Tasks", "col": 4}},
-        {"id": "c1", "type": "chart", "data": {"chart_name": "Staff Utilisation Rate", "col": 12}},
-    ])
-    frappe.db.sql(
-        "INSERT INTO `tabWorkspace` (name, label, module, is_hidden, public, content, docstatus, creation, modified, owner, modified_by) VALUES (%s, %s, 'Alpha Assignment Management', 0, 0, %s, 0, NOW(), NOW(), 'Administrator', 'Administrator')",
-        (ws_name, ws_name, content),
-    )
-    _insert_workspace_number_cards(ws_name, ["Active Staff", "Total Assignments", "Overdue Tasks"])
-    _insert_workspace_charts(ws_name, ["Staff Utilisation Rate"])
 
 
 def _expand_ceo_dashboard():
@@ -1788,8 +1759,6 @@ def after_migrate_all():
 
     # Phase 12: Workspace hardening
     _log_phase("Phase 12: Hardening workspaces...")
-    _setup_hr_analytics_workspace()
-    _log_phase("  Created HR Analytics workspace")
     _expand_ceo_dashboard()
     _log_phase("  Expanded CEO dashboard")
 

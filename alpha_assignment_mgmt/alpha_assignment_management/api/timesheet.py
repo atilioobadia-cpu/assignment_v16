@@ -31,7 +31,7 @@ def create_timesheet_from_tasks(employee=None, project=None):
 	tasks = frappe.get_all(
 		"Task",
 		filters=filters,
-		fields=["name", "subject", "project", "custom_expected_hours", "expected_time"],
+		fields=["name", "subject", "project", "expected_time"],
 		limit=20,
 	)
 
@@ -44,7 +44,7 @@ def create_timesheet_from_tasks(employee=None, project=None):
 	ts.company = frappe.defaults.get_user_default("company")
 
 	for task in tasks:
-		hours = task.custom_expected_hours or 1.0
+		hours = task.expected_time or 1.0
 		ts.append("time_logs", {
 			"activity_type": "Client Communication",
 			"task": task.name,

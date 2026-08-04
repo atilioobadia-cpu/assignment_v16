@@ -8,13 +8,7 @@ def validate(doc, method):
 	check_review_gate(doc)
 	check_client_delay(doc)
 	check_task_dependencies(doc)
-	sync_assign_from_custom_assigned_to(doc)
-
-
-def sync_assign_from_custom_assigned_to(doc):
-	"""Sync _assign from custom_assigned_to for notification delivery."""
-	if doc.custom_assigned_to and not doc.get("_assign"):
-		doc._assign = frappe.as_json([doc.custom_assigned_to])
+	doc.flags.assigned_users_at_validate = get_assigned_users(doc)
 
 
 def on_update(doc, method):
@@ -107,7 +101,7 @@ def has_permission(doc, ptype, user):
 				assigned = json.loads(doc._assign)
 			except (json.JSONDecodeError, TypeError):
 				pass
-		if user in assigned or user == doc.custom_assigned_to:
+		if user in assigned:
 			return True
 
 	if "Alpha Client Owner" in roles:
@@ -129,11 +123,20 @@ def has_permission(doc, ptype, user):
 
 def check_evidence_attachment(doc):
 	if doc.status == "Completed":
-		if not doc.custom_evidence_attachment and not doc.custom_evidence_exception:
-			frappe.throw(
-				f"Cannot mark Task {doc.name} as Completed. "
-				"Evidence attachment or approved exception is required."
+		if not doc.custom_evidence_exception:
+			received = frappe.db.exists(
+				"Document Request Register",
+				{
+					"project": doc.project,
+					"status": "Received",
+				},
 			)
+			if not received:
+				frappe.throw(
+					f"Cannot mark Task {doc.name} as Completed. "
+					"A received document in the Document Request Register or "
+					"an approved exception is required."
+				)
 
 
 def check_review_gate(doc):
@@ -152,7 +155,7 @@ def check_review_gate(doc):
 
 def check_client_delay(doc):
 	if doc.status == "Waiting for Client":
-		if not doc.custom_client_delay_log:
+		if not frappe.db.exists("Client Delay Log", {"task": doc.name}):
 			delay = frappe.new_doc("Client Delay Log")
 			delay.task = doc.name
 			delay.project = doc.project
@@ -169,7 +172,6 @@ def check_client_delay(doc):
 				)
 
 			delay.insert(ignore_permissions=True)
-			doc.custom_client_delay_log = delay.name
 
 
 def check_task_dependencies(doc):
@@ -177,18 +179,14 @@ def check_task_dependencies(doc):
 	if doc.status not in ("In Progress", "Completed"):
 		return
 
-	if not doc.custom_depends_on_tasks:
-		return
-
-	dep_names = [d.strip() for d in doc.custom_depends_on_tasks.split(",") if d.strip()]
-	if not dep_names:
+	if not doc.depends_on:
 		return
 
 	incomplete = []
-	for dep_name in dep_names:
-		dep_status = frappe.db.get_value("Task", dep_name, "status")
+	for dep in doc.depends_on:
+		dep_status = frappe.db.get_value("Task", dep.task, "status")
 		if dep_status not in ("Completed", "Cancelled"):
-			incomplete.append(f"{dep_name} ({dep_status or 'not found'})")
+			incomplete.append(f"{dep.task} ({dep_status or 'not found'})")
 
 	if incomplete:
 		frappe.throw(
@@ -265,7 +263,7 @@ def send_overdue_notification(doc):
 			)
 			if email:
 				recipients.append(email)
-		users = get_assigned_users(doc) or ([doc.custom_assigned_to] if doc.custom_assigned_to else [])
+		users = get_assigned_users(doc)
 		for user_id in users:
 			email = frappe.db.get_value("User", user_id, "email")
 			if email:
@@ -289,13 +287,18 @@ def notify_blocked_tasks(doc):
 		return
 
 	blocked_tasks = frappe.get_all(
-		"Task",
-		filters={"custom_depends_on_tasks": ["like", f"%{doc.name}%"], "status": ["!=", "Completed"]},
-		fields=["name", "subject", "_assign", "custom_assigned_to"],
+		"Task Depends On",
+		filters={"task": doc.name},
+		fields=["parent"],
 	)
 
 	for bt in blocked_tasks:
-		users = get_assigned_users_of_task(bt.get("_assign")) or ([bt.custom_assigned_to] if bt.custom_assigned_to else [])
+		bt_doc = frappe.db.get_value("Task", bt.parent, ["name", "subject", "_assign"], as_dict=True)
+		if not bt_doc:
+			continue
+		if frappe.db.get_value("Task", bt.parent, "status") == "Completed":
+			continue
+		users = get_assigned_users_of_task(bt_doc.get("_assign"))
 		for user_id in users:
 			email = frappe.db.get_value("User", user_id, "email")
 			if not email:
@@ -303,16 +306,16 @@ def notify_blocked_tasks(doc):
 			try:
 				frappe.sendmail(
 					recipients=[email],
-					subject=f"[AIMS] Dependency Completed: {bt.subject}",
+					subject=f"[AIMS] Dependency Completed: {bt_doc.subject}",
 					message=(
 						f"<h3>Task Dependency Resolved</h3>"
 						f"<p>Task <b>{doc.subject}</b> that you were waiting on has been completed.</p>"
-						f"<p>You can now start working on <b>{bt.subject}</b>.</p>"
+						f"<p>You can now start working on <b>{bt_doc.subject}</b>.</p>"
 					),
 				)
 			except Exception:
 				pass
-			_add_notification_log(user_id, f"Dependency completed: {doc.subject}. You can now start {bt.subject}.", bt.name)
+			_add_notification_log(user_id, f"Dependency completed: {doc.subject}. You can now start {bt_doc.subject}.", bt.parent)
 
 
 def get_assigned_users_of_task(assign_value):
@@ -328,7 +331,9 @@ def get_assigned_users_of_task(assign_value):
 def create_notification_log(doc):
 	"""Create in-app notification for task assignment/status changes."""
 	subject = None
-	users = get_assigned_users_of_task(doc.get("_assign")) or ([doc.custom_assigned_to] if doc.custom_assigned_to else [])
+	users = get_assigned_users_of_task(doc.get("_assign"))
+	if not users and doc.flags.get("assigned_users_at_validate"):
+		users = doc.flags.assigned_users_at_validate
 	if doc.status == "Completed":
 		subject = f"Task completed: {doc.subject}"
 	elif doc.status == "Overdue":
