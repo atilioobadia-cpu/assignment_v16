@@ -51,7 +51,13 @@ def _get_service_item():
 
 
 def _get_service_rate(project):
-    """Try to get rate from Service Contract, default to 0."""
+    """Get rate from Origination's proposed_fee, then Service Contract, default to 0."""
+    orig_name = frappe.db.get_value("Project", project.name, "custom_assignment_origination")
+    if orig_name:
+        proposed_fee = frappe.db.get_value("Alpha Assignment Origination", orig_name, "proposed_fee")
+        if proposed_fee:
+            return proposed_fee
+
     contract = frappe.db.get_value(
         "Alpha Service Contract",
         {"customer": project.customer, "docstatus": 1, "status": "Active"},
