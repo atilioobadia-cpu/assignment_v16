@@ -128,4 +128,28 @@ frappe.ui.form.on("Alpha Assignment Origination", {
 			},
 		});
 	},
+
+	deposit_required(frm) {
+		_validate_deposit(frm);
+	},
+
+	proposed_fee(frm) {
+		_validate_deposit(frm);
+	},
 });
+
+function _validate_deposit(frm) {
+	if (frm.doc.deposit_required && frm.doc.proposed_fee) {
+		if (frm.doc.deposit_required > frm.doc.proposed_fee) {
+			frappe.msgprint({
+				title: __("Validation Error"),
+				indicator: "red",
+				message: __("Deposit Required ({0}) cannot be greater than Proposed Fee ({1})", [
+					frappe.format(frm.doc.deposit_required, "Currency"),
+					frappe.format(frm.doc.proposed_fee, "Currency"),
+				]),
+			});
+			frm.set_value("deposit_required", frm.doc.proposed_fee);
+		}
+	}
+}

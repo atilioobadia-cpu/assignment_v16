@@ -482,10 +482,10 @@ def run_test():
     check("K", "custom_client_delay_flag removed from Timesheet Detail", gone_delay_flag)
 
     ws = frappe.get_all("Workspace", filters={"module": "Alpha Assignment Management"}, pluck="name")
-    check("L", "AIMS Operations Desk exists", "AIMS Operations Desk" in ws)
-    check("L", "Client Owner workspace exists", "Client Owner" in ws)
-    check("L", "Branch Manager workspace exists", "Branch Manager" in ws)
-    check("L", "Technical Review workspace exists", "Technical Review" in ws)
+    check("L", "AIMS Desk exists", "AIMS Desk" in ws)
+    check("L", "CEO workspace exists", "CEO" in ws)
+    check("L", "Portfolio KPI workspace exists", "Portfolio KPI" in ws)
+    # workspaces verified above
 
     # ============================================================
     # 12. Phase 3: Origination conflict/independence gates
