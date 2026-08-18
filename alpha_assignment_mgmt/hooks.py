@@ -141,4 +141,10 @@ fixtures = [
 			]]
 		]
 	},
+	{
+		"doctype": "Print Format",
+		"filters": [
+			["name", "in", ["Salary Slip", "Sales Invoices", "Payments Receipts", "Quotation"]]
+		]
+	},
 ]
