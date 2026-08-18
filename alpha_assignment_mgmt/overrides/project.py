@@ -1,5 +1,6 @@
 import frappe
 from frappe.utils import today
+from alpha_assignment_mgmt.overrides.billing import create_sales_order
 
 
 def before_insert(doc, method):
@@ -35,12 +36,15 @@ def validate(doc, method):
 
 
 def on_update(doc, method):
-	"""Create SLA for new projects, update origination, check closure."""
+	"""Create SLA, Sales Order for new projects, update origination, check closure."""
 	old_doc = doc.get_doc_before_save()
 	is_new = old_doc is None
 
 	if is_new and doc.custom_assignment_origination and not doc.custom_engagement_sla:
 		create_sla(doc)
+
+	if is_new and doc.customer:
+		create_sales_order(doc)
 
 	update_origination_status(doc, is_new)
 	check_project_closure(doc)

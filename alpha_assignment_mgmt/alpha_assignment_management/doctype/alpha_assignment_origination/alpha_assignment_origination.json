@@ -116,7 +116,7 @@
       "fieldtype": "Link",
       "label": "Service Line",
       "options": "Project Type",
-      "fetch_from": "customer.custom_service_line"
+      "fetch_from": null
     },
     {
       "fieldname": "identity_cb_2",
