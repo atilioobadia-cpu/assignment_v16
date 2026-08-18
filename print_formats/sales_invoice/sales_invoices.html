@@ -1,0 +1,470 @@
+<!--
+\nAATL - Sales Invoice Custom Print Format (Jinja2)
+\nv4: Rate column now shows plain number (no TZS prefix). VAT column now
+\nproperly detects whether the invoice has a VAT tax row at all, and shows
+\nthe VAT rate as a percentage (e.g. 18%) instead of a computed amount.
+\nShows "-" when the invoice has no VAT tax row.
+\n
+\nInstall: Setup > Printing > Print Format > New
+\n  Doc Type: Sales Invoice
+\n  Print Format Type: Jinja
+\n  Paste this whole file into the "Print Format Builder" (HTML) field
+\n-->
+\n
+\n{%- macro add_header(page_num, max_pages, doc, letter_head, no_letterhead, footer, print_settings=None, print_heading_template=None) -%}
+\n    {% if letter_head and not no_letterhead %}
+\n        <div class="letter-head-container" style="margin-bottom: 8px;">{{ letter_head }}</div>
+\n    {% endif %}
+\n{%- endmacro -%}
+\n
+\n<style>
+\n  /* ===== Base ===== */
+\n  .aatl-invoice, .aatl-invoice * {
+\n    font-family: 'Courier New', Courier, monospace;
+\n    color: #000 !important;
+\n    font-size: 11.5px;
+\n    line-height: 1.4;
+\n    box-sizing: border-box;
+\n  }
+\n  .aatl-invoice {
+\n    max-width: 760px;
+\n    margin: 0 auto;
+\n  }
+\n
+\n  /* ===== Header ===== */
+\n  .aatl-invoice .header {
+\n    text-align: center;
+\n    margin-bottom: 6px;
+\n    border-bottom: 1px dotted #000;
+\n    padding-bottom: 5px;
+\n  }
+\n  .aatl-invoice .header .company-name {
+\n    font-size: 16px;
+\n    font-weight: bold;
+\n    letter-spacing: 1px;
+\n    text-transform: uppercase;
+\n  }
+\n  .aatl-invoice .header .company-sub {
+\n    font-size: 11.5px;
+\n    margin-top: 1px;
+\n  }
+\n  .aatl-invoice .header .doc-title {
+\n    font-size: 13px;
+\n    font-weight: bold;
+\n    letter-spacing: 2px;
+\n    margin-top: 5px;
+\n    text-transform: uppercase;
+\n  }
+\n
+\n  .aatl-invoice .status-badge {
+\n    text-align: center;
+\n    font-weight: bold;
+\n    letter-spacing: 2px;
+\n    margin: 5px 0;
+\n    border: 1px dotted #000;
+\n    padding: 4px;
+\n  }
+\n
+\n  /* ===== Meta grid (Bill To / Invoice info) ===== */
+\n  .aatl-invoice .meta-grid {
+\n    display: table;
+\n    width: 100%;
+\n    table-layout: fixed;
+\n    margin-bottom: 6px;
+\n    border-top: 1px dotted #000;
+\n    border-bottom: 1px dotted #000;
+\n  }
+\n  .aatl-invoice .meta-col {
+\n    display: table-cell;
+\n    width: 50%;
+\n    vertical-align: top;
+\n    padding: 4px 8px;
+\n  }
+\n  .aatl-invoice .meta-col + .meta-col {
+\n    border-left: 1px dotted #000;
+\n  }
+\n  .aatl-invoice .meta-col-heading {
+\n    font-weight: bold;
+\n    text-transform: uppercase;
+\n    letter-spacing: 0.5px;
+\n    border-bottom: 1px dotted #000;
+\n    padding-bottom: 3px;
+\n    margin-bottom: 3px;
+\n  }
+\n  .aatl-invoice .customer-body {
+\n    padding-bottom: 2px;
+\n  }
+\n  .aatl-invoice .meta-row {
+\n    display: table;
+\n    width: 100%;
+\n    border-bottom: 1px dotted #000;
+\n    padding: 2px 0;
+\n  }
+\n  .aatl-invoice .meta-row:last-child {
+\n    border-bottom: none;
+\n  }
+\n  .aatl-invoice .meta-label {
+\n    display: table-cell;
+\n    font-weight: bold;
+\n    width: 46%;
+\n  }
+\n  .aatl-invoice .meta-sep {
+\n    display: table-cell;
+\n    width: 6%;
+\n  }
+\n  .aatl-invoice .meta-value {
+\n    display: table-cell;
+\n    width: 48%;
+\n  }
+\n
+\n  /* ===== Items table: real columns with vertical dotted dividers ===== */
+\n  .aatl-invoice .items-box {
+\n    border: 1px dotted #000;
+\n    margin-top: 6px;
+\n  }
+\n  .aatl-invoice .items-box table {
+\n    width: 100%;
+\n    border-collapse: collapse;
+\n    table-layout: fixed;
+\n  }
+\n  .aatl-invoice .items-box th,
+\n  .aatl-invoice .items-box td {
+\n    border-right: 1px dotted #000;
+\n    border-bottom: 1px dotted #000;
+\n  }
+\n  .aatl-invoice .items-box th:last-child,
+\n  .aatl-invoice .items-box td:last-child {
+\n    border-right: none;
+\n  }
+\n  .aatl-invoice .items-box th {
+\n    text-align: left;
+\n    padding: 5px 6px;
+\n    font-weight: bold;
+\n    letter-spacing: 0.5px;
+\n    text-transform: uppercase;
+\n  }
+\n  .aatl-invoice .items-box th.text-right,
+\n  .aatl-invoice .items-box td.text-right {
+\n    text-align: right;
+\n  }
+\n  .aatl-invoice .items-box th.text-center,
+\n  .aatl-invoice .items-box td.text-center {
+\n    text-align: center;
+\n  }
+\n  .aatl-invoice .items-box td {
+\n    padding: 4px 6px;
+\n    vertical-align: top;
+\n  }
+\n  .aatl-invoice .items-box tbody tr:last-child td {
+\n    border-bottom: none;
+\n  }
+\n  .aatl-invoice .item-description {
+\n    font-size: 10px;
+\n    margin-top: 1px;
+\n  }
+\n
+\n  /* ===== Words + totals row, same height, aligned ===== */
+\n  .aatl-invoice .summary-grid {
+\n    display: table;
+\n    width: 100%;
+\n    table-layout: fixed;
+\n    margin-top: 6px;
+\n    border: 1px dotted #000;
+\n    border-collapse: collapse;
+\n  }
+\n  .aatl-invoice .words-col {
+\n    display: table-cell;
+\n    width: 55%;
+\n    vertical-align: top;
+\n    padding: 6px 8px;
+\n    border-right: 1px dotted #000;
+\n  }
+\n  .aatl-invoice .words-caption {
+\n    font-weight: bold;
+\n    text-transform: uppercase;
+\n    letter-spacing: 0.5px;
+\n  }
+\n  .aatl-invoice .words-value {
+\n    margin-top: 3px;
+\n  }
+\n  .aatl-invoice .totals-col {
+\n    display: table-cell;
+\n    width: 45%;
+\n    vertical-align: top;
+\n    padding: 0;
+\n  }
+\n  .aatl-invoice .totals-col table {
+\n    width: 100%;
+\n    border-collapse: collapse;
+\n    table-layout: fixed;
+\n  }
+\n  .aatl-invoice .totals-col td {
+\n    padding: 4px 8px;
+\n    border-bottom: 1px dotted #000;
+\n  }
+\n  .aatl-invoice .totals-col td.text-right {
+\n    text-align: right;
+\n  }
+\n  .aatl-invoice .totals-col tr:last-child td {
+\n    border-bottom: none;
+\n  }
+\n
+\n  /* ===== Grand Total ===== */
+\n  .aatl-invoice .net-row {
+\n    display: table;
+\n    width: 100%;
+\n    table-layout: fixed;
+\n    border-top: 1px dotted #000;
+\n    border-bottom: 1px dotted #000;
+\n    font-weight: bold;
+\n    font-size: 13px;
+\n    padding: 6px 8px;
+\n    margin-top: 6px;
+\n  }
+\n  .aatl-invoice .net-row .net-label {
+\n    display: table-cell;
+\n    width: 60%;
+\n  }
+\n  .aatl-invoice .net-row .net-value {
+\n    display: table-cell;
+\n    width: 40%;
+\n    text-align: right;
+\n  }
+\n
+\n  /* ===== Terms ===== */
+\n  .aatl-invoice .terms-container {
+\n    margin-top: 6px;
+\n    padding: 6px 8px;
+\n    border: 1px dotted #000;
+\n  }
+\n  .aatl-invoice .terms-heading {
+\n    font-weight: bold;
+\n    text-transform: uppercase;
+\n    letter-spacing: 0.5px;
+\n    border-bottom: 1px dotted #000;
+\n    padding-bottom: 3px;
+\n    margin-bottom: 3px;
+\n  }
+\n
+\n  /* ===== Bank details block ===== */
+\n  .aatl-invoice .bank-details {
+\n    margin-top: 10px;
+\n    padding-top: 6px;
+\n    border-top: 1px dotted #000;
+\n    font-weight: bold;
+\n    text-align: center;
+\n  }
+\n
+\n  /* ===== Footer signatures ===== */
+\n  .aatl-invoice .footer {
+\n    margin-top: 55px;
+\n    display: table;
+\n    width: 100%;
+\n    table-layout: fixed;
+\n  }
+\n  .aatl-invoice .footer .cell {
+\n    display: table-cell;
+\n    width: 50%;
+\n    text-align: center;
+\n  }
+\n  .aatl-invoice .footer .sig-line {
+\n    margin: 10px 20px 3px 20px;
+\n    border-bottom: 1px dotted #000;
+\n  }
+\n  .aatl-invoice .note {
+\n    margin-top: 6px;
+\n    font-size: 10px;
+\n    text-align: center;
+\n    font-style: italic;
+\n  }
+\n
+\n  @media print {
+\n    .aatl-invoice * {
+\n      -webkit-print-color-adjust: exact !important;
+\n      print-color-adjust: exact !important;
+\n      color-adjust: exact !important;
+\n    }
+\n  }
+\n</style>
+\n
+\n{% for page in layout %}
+\n<div class="aatl-invoice">
+\n  {{ add_header(loop.index, layout|len, doc, letter_head, no_letterhead, footer, print_settings) }}
+\n
+\n  <div class="header">
+\n    <div class="company-name">{{ doc.company }}</div>
+\n    <div class="company-sub">
+\n      {% if frappe.db.get_value("Company", doc.company, "tax_id") %}
+\n        TIN: {{ frappe.db.get_value("Company", doc.company, "tax_id") }}
+\n      {% endif %}
+\n    </div>
+\n    <div class="doc-title">Tax Invoice</div>
+\n  </div>
+\n
+\n  {%- if doc.meta.is_submittable and doc.docstatus==2 -%}
+\n    <div class="status-badge">{{ _("CANCELLED") }}</div>
+\n  {%- endif -%}
+\n  {%- if doc.meta.is_submittable and doc.docstatus==0 and (print_settings==None or print_settings.add_draft_heading) -%}
+\n    <div class="status-badge">{{ _("DRAFT") }}</div>
+\n  {%- endif -%}
+\n
+\n  <div class="meta-grid">
+\n    <div class="meta-col">
+\n      <div class="meta-col-heading">{{ _("Bill To") }}</div>
+\n      <div class="customer-body">
+\n        <strong>{{ doc.customer_name }}</strong><br>
+\n        {% if doc.customer_address %}
+\n          {% set addr = frappe.db.get_value("Address", doc.customer_address, ["address_line1", "address_line2", "city", "state", "pincode", "country"], as_dict=True) %}
+\n          {{ addr.address_line1 or "" }}<br>
+\n          {% if addr.address_line2 %}{{ addr.address_line2 }}<br>{% endif %}
+\n          {{ addr.city or "" }}{% if addr.state %}, {{ addr.state }}{% endif %} {{ addr.pincode or "" }}<br>
+\n          {{ addr.country or "" }}
+\n        {% endif %}
+\n      </div>
+\n    </div>
+\n    <div class="meta-col">
+\n      <div class="meta-row">
+\n        <div class="meta-label">INVOICE NO</div>
+\n        <div class="meta-sep">|</div>
+\n        <div class="meta-value">{{ doc.name }}</div>
+\n      </div>
+\n      <div class="meta-row">
+\n        <div class="meta-label">DATE</div>
+\n        <div class="meta-sep">|</div>
+\n        <div class="meta-value">{{ frappe.utils.format_date(doc.posting_date) }}</div>
+\n      </div>
+\n      <div class="meta-row">
+\n        <div class="meta-label">DUE DATE</div>
+\n        <div class="meta-sep">|</div>
+\n        <div class="meta-value">{{ frappe.utils.format_date(doc.due_date) }}</div>
+\n      </div>
+\n      <div class="meta-row">
+\n        <div class="meta-label">CURRENCY</div>
+\n        <div class="meta-sep">|</div>
+\n        <div class="meta-value">{{ doc.currency }}</div>
+\n      </div>
+\n    </div>
+\n  </div>
+\n
+\n  {#- ===== VAT detection =====
+\n      1. Look through doc.taxes for a row whose description mentions "VAT".
+\n      2. If found, that's ns.vat_tax and ns.has_vat = true.
+\n      3. Build a per-item VAT map from that row's item_wise_tax_detail
+\n         (ERPNext JSON: {item_code: [rate, amount]}).
+\n      4. If an item is missing from that map (can happen with older data),
+\n         fall back to computing net_amount x tax_rate / 100.
+\n      5. If the invoice has NO vat tax row at all, every item shows "-"
+\n         instead of a fabricated 0.00, so it's clear no VAT was charged. -#}
+\n  {% set ns = namespace(vat_tax=None) %}
+\n  {% for tax in doc.taxes %}
+\n    {% if not ns.vat_tax and "vat" in (tax.description or "").lower() %}
+\n      {% set ns.vat_tax = tax %}
+\n    {% endif %}
+\n  {% endfor %}
+\n  {% set has_vat = ns.vat_tax is not none %}
+\n  {% set vat_map = frappe.parse_json(ns.vat_tax.item_wise_tax_detail) if (has_vat and ns.vat_tax.item_wise_tax_detail) else {} %}
+\n
+\n  <div class="items-box">
+\n    <table>
+\n      <thead>
+\n        <tr>
+\n          <th class="text-center" style="width:5%">#</th>
+\n          <th style="width:44%">Item</th>
+\n          <th class="text-right" style="width:8%">Qty</th>
+\n          <th class="text-right" style="width:15%">Rate</th>
+\n          <th class="text-right" style="width:9%">VAT</th>
+\n          <th class="text-right" style="width:19%">Total</th>
+\n        </tr>
+\n      </thead>
+\n      <tbody>
+\n        {% for item in doc.items %}
+\n        {% set vat_row = vat_map.get(item.item_code) %}
+\n        <tr>
+\n          <td class="text-center">{{ loop.index }}</td>
+\n          <td>
+\n            <strong>{{ item.item_name }}</strong>
+\n            {% if item.description and item.description != item.item_name %}
+\n              <div class="item-description">{{ item.description }}</div>
+\n            {% endif %}
+\n          </td>
+\n          <td class="text-right">{{ item.qty }}</td>
+\n          <td class="text-right">{{ "{:,.2f}".format(item.net_rate) }}</td>
+\n          <td class="text-right">
+\n            {% if not has_vat %}
+\n              -
+\n            {% elif vat_row %}
+\n              {{ "{:g}".format(vat_row[0]) }}%
+\n            {% else %}
+\n              {{ "{:g}".format(ns.vat_tax.rate) }}%
+\n            {% endif %}
+\n          </td>
+\n          <td class="text-right">{{ "{:,.2f}".format(item.net_amount) }}</td>
+\n        </tr>
+\n        {% endfor %}
+\n      </tbody>
+\n    </table>
+\n  </div>
+\n
+\n  <div class="summary-grid">
+\n    <div class="words-col">
+\n      <div class="words-caption">{{ _("Total In Words") }}</div>
+\n      <div class="words-value">{{ doc.in_words }}</div>
+\n    </div>
+\n    <div class="totals-col">
+\n      <table>
+\n        <tr>
+\n          <td>NET TOTAL</td>
+\n          <td class="text-right">{{ doc.get_formatted("total", doc) }}</td>
+\n        </tr>
+\n        {%- if doc.discount_amount -%}
+\n        <tr>
+\n          <td>DISCOUNT</td>
+\n          <td class="text-right">{{ doc.get_formatted("discount_amount", doc) }}</td>
+\n        </tr>
+\n        {%- endif -%}
+\n        {%- for tax in doc.taxes -%}
+\n          {%- if tax.tax_amount_after_discount_amount -%}
+\n          <tr>
+\n            <td>{{ tax.description | upper }}</td>
+\n            <td class="text-right">{{ tax.get_formatted("tax_amount_after_discount_amount", doc) }}</td>
+\n          </tr>
+\n          {%- endif -%}
+\n        {%- endfor -%}
+\n      </table>
+\n    </div>
+\n  </div>
+\n
+\n  <div class="net-row">
+\n    <div class="net-label">GRAND TOTAL ({{ doc.currency }})</div>
+\n    <div class="net-value">{{ doc.get_formatted("grand_total", doc) }}</div>
+\n  </div>
+\n
+\n  {% if doc.terms %}
+\n  <div class="terms-container">
+\n    <div class="terms-heading">{{ _("Terms and Conditions") }}</div>
+\n    <div>{{ doc.terms }}</div>
+\n  </div>
+\n  {% endif %}
+\n
+\n  <div class="bank-details">
+\n    ACCOUNT NAME: ALPHA ASSOCIATES TANZANIA LIMITED &nbsp;***&nbsp; AZANIA BANK: 002000020252 &nbsp;***&nbsp; NMB BANK: 42810012287 &nbsp;***&nbsp; CRDB BANK PLC: 015C000UF7Y00
+\n  </div>
+\n
+\n  <div class="footer">
+\n    <div class="cell">
+\n      <div class="sig-line"></div>
+\n      Prepared By
+\n    </div>
+\n    <div class="cell">
+\n      <div class="sig-line"></div>
+\n      Authorized Signature
+\n    </div>
+\n  </div>
+\n
+\n  {% if not no_letterhead and footer %}
+\n    <div class="print-footer" style="margin-top: 12px;">
+\n      {{ footer }}
+\n    </div>
+\n  {% endif %}
+\n</div>
+\n{% endfor %}

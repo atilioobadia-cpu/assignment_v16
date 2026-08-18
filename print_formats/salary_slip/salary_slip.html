@@ -1,0 +1,337 @@
+<!--
+\nAATL - Salary Slip Custom Print Format (Jinja2)
+\nInstall: Setup > Printing > Print Format > New
+\n  Doc Type: Salary Slip
+\n  Print Format Type: Jinja
+\n  Paste this whole file into the "Print Format Builder" (HTML) field
+\n-->
+\n
+\n<style>
+\n  .aatl-payslip {
+\n    font-family: 'Courier New', Courier, monospace;
+\n    color: #000;
+\n    font-size: 12.5px;
+\n    max-width: 760px;
+\n    margin: 0 auto;
+\n  }
+\n  .aatl-payslip .header {
+\n    text-align: center;
+\n    margin-bottom: 8px;
+\n    border-bottom: 1.5px solid #000;
+\n    padding-bottom: 5px;
+\n  }
+\n  .aatl-payslip .header .company-name {
+\n    font-size: 19px;
+\n    font-weight: bold;
+\n    letter-spacing: 1px;
+\n    text-transform: uppercase;
+\n  }
+\n  .aatl-payslip .header .company-sub {
+\n    font-size: 10.5px;
+\n    letter-spacing: 0.5px;
+\n    margin-top: 1px;
+\n  }
+\n  .aatl-payslip .header .doc-title {
+\n    font-size: 14.5px;
+\n    font-weight: bold;
+\n    letter-spacing: 2.5px;
+\n    margin-top: 6px;
+\n    text-transform: uppercase;
+\n  }
+\n
+\n  /* Meta info: 4 left / 4 right grid */
+\n  .aatl-payslip .meta-grid {
+\n    display: table;
+\n    width: 100%;
+\n    table-layout: fixed;
+\n    margin-bottom: 6px;
+\n    border-top: 1px dotted #000;
+\n    border-bottom: 1px dotted #000;
+\n    padding: 2px 0;
+\n  }
+\n  .aatl-payslip .meta-col {
+\n    display: table-cell;
+\n    width: 50%;
+\n    vertical-align: top;
+\n    padding: 1px 8px;
+\n  }
+\n  .aatl-payslip .meta-row {
+\n    display: table;
+\n    width: 100%;
+\n    padding: 2px 0;
+\n    border-bottom: 1px dotted #000;
+\n  }
+\n  .aatl-payslip .meta-row:last-child {
+\n    border-bottom: none;
+\n  }
+\n  .aatl-payslip .meta-label {
+\n    display: table-cell;
+\n    font-weight: bold;
+\n    width: 46%;
+\n    font-size: 11.5px;
+\n  }
+\n  .aatl-payslip .meta-sep {
+\n    display: table-cell;
+\n    width: 6%;
+\n  }
+\n  .aatl-payslip .meta-value {
+\n    display: table-cell;
+\n    width: 48%;
+\n    font-size: 11.5px;
+\n  }
+\n  .aatl-payslip .meta-extra {
+\n    display: table;
+\n    width: 100%;
+\n    margin-top: 2px;
+\n    padding: 2px 8px;
+\n    border-bottom: 1px dotted #000;
+\n    font-size: 11.5px;
+\n  }
+\n
+\n  /* Earnings (left) / Deductions (right) - separate tables, not touching */
+\n  .aatl-payslip .amount-columns {
+\n    display: table;
+\n    width: 100%;
+\n    table-layout: fixed;
+\n    border-spacing: 10px 0;
+\n    margin-top: 8px;
+\n  }
+\n  .aatl-payslip .amount-col {
+\n    display: table-cell;
+\n    width: 50%;
+\n    vertical-align: top;
+\n    border: 1px solid #000;
+\n  }
+\n  .aatl-payslip .amount-col table {
+\n    width: 100%;
+\n    border-collapse: collapse;
+\n  }
+\n  /* No background fill - relies on border only, so it always prints */
+\n  .aatl-payslip .amount-col th {
+\n    text-align: left;
+\n    padding: 5px 6px;
+\n    font-size: 11px;
+\n    font-weight: bold;
+\n    letter-spacing: 0.5px;
+\n    text-transform: uppercase;
+\n    border-bottom: 2px solid #000;
+\n    color: #000;
+\n  }
+\n  .aatl-payslip .amount-col th.text-right,
+\n  .aatl-payslip .amount-col td.text-right {
+\n    text-align: right;
+\n  }
+\n  .aatl-payslip .amount-col td {
+\n    padding: 3px 6px;
+\n    border-bottom: 1px dotted #000;
+\n    font-size: 11.5px;
+\n    line-height: 1.4;
+\n    color: #000;
+\n  }
+\n  .aatl-payslip .amount-col tr.total-row td {
+\n    font-weight: bold;
+\n    border-top: 1px solid #000;
+\n    border-bottom: none;
+\n    color: #000;
+\n  }
+\n
+\n  /* Net Pay - no background reliance, bold border + large bold black text */
+\n  .aatl-payslip .net-row {
+\n    display: table;
+\n    width: 100%;
+\n    border-top: 3px double #000;
+\n    border-bottom: 3px double #000;
+\n    color: #000;
+\n    font-weight: bold;
+\n    font-size: 14.5px;
+\n    padding: 7px 8px;
+\n    margin-top: 8px;
+\n    box-sizing: border-box;
+\n  }
+\n  .aatl-payslip .net-row .net-label {
+\n    display: table-cell;
+\n  }
+\n  .aatl-payslip .net-row .net-value {
+\n    display: table-cell;
+\n    text-align: right;
+\n  }
+\n
+\n  .aatl-payslip .bank-strip {
+\n    width: 100%;
+\n    margin-top: 6px;
+\n    padding-top: 4px;
+\n    border-top: 1px dotted #000;
+\n    font-size: 11.5px;
+\n    display: table;
+\n    color: #000;
+\n  }
+\n  .aatl-payslip .bank-strip .cell {
+\n    display: table-cell;
+\n    width: 50%;
+\n  }
+\n
+\n  .aatl-payslip .footer {
+\n    margin-top: 22px;
+\n    display: table;
+\n    width: 100%;
+\n    font-size: 11px;
+\n  }
+\n  .aatl-payslip .footer .cell {
+\n    display: table-cell;
+\n    width: 50%;
+\n    text-align: center;
+\n  }
+\n  .aatl-payslip .footer .sig-line {
+\n    margin: 18px 20px 3px 20px;
+\n    border-bottom: 1px dotted #000;
+\n  }
+\n  .aatl-payslip .note {
+\n    margin-top: 10px;
+\n    font-size: 9.5px;
+\n    text-align: center;
+\n    font-style: italic;
+\n    color: #000;
+\n  }
+\n
+\n  /* Force any background/color that IS used to actually print */
+\n  @media print {
+\n    .aatl-payslip * {
+\n      -webkit-print-color-adjust: exact !important;
+\n      print-color-adjust: exact !important;
+\n      color-adjust: exact !important;
+\n    }
+\n  }
+\n</style>
+\n
+\n<div class="aatl-payslip">
+\n
+\n  <div class="header">
+\n    <div class="company-name">{{ doc.company }}</div>
+\n    <div class="company-sub">
+\n      {% if frappe.db.get_value("Company", doc.company, "tax_id") %}
+\n        TIN: {{ frappe.db.get_value("Company", doc.company, "tax_id") }}
+\n      {% endif %}
+\n    </div>
+\n    <div class="doc-title">Salary Slip</div>
+\n  </div>
+\n
+\n  <div class="meta-grid">
+\n    <div class="meta-col">
+\n      <div class="meta-row">
+\n        <div class="meta-label">PAYROLL FOR</div>
+\n        <div class="meta-sep">|</div>
+\n        <div class="meta-value">{{ frappe.utils.formatdate(doc.start_date, "MMMM - yyyy") }}</div>
+\n      </div>
+\n      <div class="meta-row">
+\n        <div class="meta-label">SLIP NO</div>
+\n        <div class="meta-sep">|</div>
+\n        <div class="meta-value">{{ doc.name }}</div>
+\n      </div>
+\n      <div class="meta-row">
+\n        <div class="meta-label">NAME</div>
+\n        <div class="meta-sep">|</div>
+\n        <div class="meta-value">{{ doc.employee_name }}</div>
+\n      </div>
+\n      <div class="meta-row">
+\n        <div class="meta-label">EMPLOYEE ID</div>
+\n        <div class="meta-sep">|</div>
+\n        <div class="meta-value">{{ doc.employee }}</div>
+\n      </div>
+\n    </div>
+\n    <div class="meta-col">
+\n      <div class="meta-row">
+\n        <div class="meta-label">DEPARTMENT</div>
+\n        <div class="meta-sep">|</div>
+\n        <div class="meta-value">{{ doc.department or "" }}</div>
+\n      </div>
+\n      <div class="meta-row">
+\n        <div class="meta-label">BRANCH</div>
+\n        <div class="meta-sep">|</div>
+\n        <div class="meta-value">{{ doc.branch or doc.get("cost_center") or "" }}</div>
+\n      </div>
+\n      <div class="meta-row">
+\n        <div class="meta-label">DESIGNATION</div>
+\n        <div class="meta-sep">|</div>
+\n        <div class="meta-value">{{ doc.designation or "" }}</div>
+\n      </div>
+\n      <div class="meta-row">
+\n        <div class="meta-label">PAYMENT DAYS</div>
+\n        <div class="meta-sep">|</div>
+\n        <div class="meta-value">{{ doc.payment_days }} / {{ doc.total_working_days }}</div>
+\n      </div>
+\n    </div>
+\n  </div>
+\n
+\n  {% if doc.get("nssf_no") %}
+\n  <div class="meta-extra">
+\n    <strong>NSSF NO</strong> &nbsp;|&nbsp; {{ doc.nssf_no }}
+\n  </div>
+\n  {% endif %}
+\n
+\n  <div class="amount-columns">
+\n    <div class="amount-col earnings-col">
+\n      <table>
+\n        <tr>
+\n          <th style="width:60%">Earnings</th>
+\n          <th class="text-right" style="width:40%">Amount</th>
+\n        </tr>
+\n        {% for row in doc.earnings %}
+\n        <tr>
+\n          <td>{{ row.salary_component }}</td>
+\n          <td class="text-right">{{ "{:,.2f}".format(row.amount) }}</td>
+\n        </tr>
+\n        {% endfor %}
+\n        <tr class="total-row">
+\n          <td>GROSS PAY</td>
+\n          <td class="text-right">{{ "{:,.2f}".format(doc.gross_pay) }}</td>
+\n        </tr>
+\n      </table>
+\n    </div>
+\n    <div class="amount-col deductions-col">
+\n      <table>
+\n        <tr>
+\n          <th style="width:60%">Deductions</th>
+\n          <th class="text-right" style="width:40%">Amount</th>
+\n        </tr>
+\n        {% for row in doc.deductions %}
+\n        <tr>
+\n          <td>{{ row.salary_component }}</td>
+\n          <td class="text-right">{{ "{:,.2f}".format(row.amount) }}</td>
+\n        </tr>
+\n        {% endfor %}
+\n        <tr class="total-row">
+\n          <td>TOTAL DEDUCT.</td>
+\n          <td class="text-right">{{ "{:,.2f}".format(doc.total_deduction) }}</td>
+\n        </tr>
+\n      </table>
+\n    </div>
+\n  </div>
+\n
+\n  <div class="net-row">
+\n    <div class="net-label">NET PAY ({{ doc.currency }})</div>
+\n    <div class="net-value">{{ "{:,.2f}".format(doc.net_pay) }}</div>
+\n  </div>
+\n
+\n  {% if doc.bank_name or doc.bank_account_no %}
+\n  <div class="bank-strip">
+\n    <div class="cell"><strong>BANK</strong> | {{ doc.bank_name or "" }}</div>
+\n    <div class="cell"><strong>ACC NO</strong> | {{ doc.bank_account_no or "" }}</div>
+\n  </div>
+\n  {% endif %}
+\n
+\n  <div class="footer">
+\n    <div class="cell">
+\n      <div class="sig-line"></div>
+\n      Employee Signature
+\n    </div>
+\n    <div class="cell">
+\n      <div class="sig-line"></div>
+\n      Authorized Signature
+\n    </div>
+\n  </div>
+\n
+\n  <div class="note">
+\n    This is a computer-generated salary slip and does not require a physical stamp.
+\n  </div>
+\n
+\n</div>
