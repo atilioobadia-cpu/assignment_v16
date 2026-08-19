@@ -61,6 +61,7 @@ def after_migrate():
 	_create_phase5_workflows()
 	_clear_number_card_currencies()
 	_clear_dashboard_chart_currencies()
+	_fix_desktop_icon_app_fields()
 	after_migrate_all()
 	frappe.db.commit()
 
@@ -1699,6 +1700,23 @@ def _expand_ceo_dashboard():
 
 def _log_phase(msg):
     print(f"[Phases 6-12] {msg}")
+
+
+def _fix_desktop_icon_app_fields():
+	"""Ensure Desktop Icon records for our workspaces have the correct app field.
+
+	Frappe's create_desktop_icons_from_workspace() sets icon.app_name instead
+	of icon.app, so the app field stays null. The sidebar JS checks icon_data.app
+	before resolving the SVG icon URL, so without this fix custom icons won't render.
+	"""
+	workspace_names = ["AIMS Desk", "CEO", "Portfolio KPI"]
+	for ws_name in workspace_names:
+		if frappe.db.exists("Desktop Icon", {"label": ws_name, "icon_type": "Link"}):
+			icon = frappe.get_doc("Desktop Icon", ws_name)
+			if icon.app != "alpha_assignment_mgmt":
+				icon.app = "alpha_assignment_mgmt"
+				icon.flags.ignore_permissions = True
+				icon.save(ignore_permissions=True)
 
 
 def after_migrate_all():
