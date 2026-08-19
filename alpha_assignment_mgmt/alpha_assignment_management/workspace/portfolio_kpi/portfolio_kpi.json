@@ -1,0 +1,22 @@
+{
+ "doctype": "Workspace",
+ "name": "Portfolio KPI",
+ "label": "Portfolio KPI",
+ "module": "Alpha Assignment Management",
+ "icon": "chart",
+ "is_standard": 1,
+ "public": 1,
+ "title": "Portfolio KPI",
+ "type": "Workspace",
+ "sequence_id": 3.0,
+ "charts": [],
+ "number_cards": [],
+ "roles": [],
+ "for_user": "",
+ "hide_custom": 0,
+ "is_hidden": 0,
+ "parent_page": "",
+ "links": [],
+ "shortcuts": [],
+ "content": "[{\"id\":\"h1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Portfolio KPI Dashboard</b></span>\",\"col\":12}},{\"id\":\"p1\",\"type\":\"paragraph\",\"data\":{\"text\":\"Key performance indicators across all active assignments and projects.\",\"col\":12}}]"
+}
