@@ -391,8 +391,60 @@ def _create_project_template(tmpl_def):
 	return doc.name
 
 
-def _create_additional_templates():
-    templates = [
+def _repair_template_custom_fields(tmpl_defs):
+	"""Backfill missing custom values on built-in Project Template task rows.
+
+	On a fresh install, after_install runs before the custom-field fixtures are
+	synced, so the built-in templates are created without the custom_* values on
+	their task rows. Match each existing task row to its definition (by subject)
+	and fill the custom fields that are still empty.
+	"""
+	repaired = 0
+	for tmpl_def in tmpl_defs:
+		tmpl_name = tmpl_def.get("template_name")
+		if not tmpl_name or not frappe.db.exists("Project Template", tmpl_name):
+			continue
+		doc = frappe.get_doc("Project Template", tmpl_name)
+		def_by_subject = {t["task_subject"]: t for t in tmpl_def.get("tasks", [])}
+		dirty = False
+		for row in doc.tasks:
+			defn = def_by_subject.get(row.subject or "") or def_by_subject.get(row.custom_subject or "")
+			if not defn:
+				continue
+			if not row.custom_task_sequence:
+				row.custom_task_sequence = defn.get("sequence")
+				dirty = True
+			if row.custom_expected_hours is None or row.custom_expected_hours == 0:
+				if defn.get("expected_hours"):
+					row.custom_expected_hours = defn.get("expected_hours")
+					dirty = True
+			if not row.custom_default_owner_role:
+				row.custom_default_owner_role = defn.get("default_owner_role", "")
+				dirty = True
+			if not row.custom_depends_on:
+				row.custom_depends_on = defn.get("depends_on", "")
+				dirty = True
+			if not row.custom_expected_output:
+				row.custom_expected_output = defn.get("expected_output", "")
+				dirty = True
+			if not row.custom_subject:
+				row.custom_subject = defn["task_subject"]
+				dirty = True
+			if not row.custom_requires_review:
+				if defn.get("requires_review"):
+					row.custom_requires_review = defn.get("requires_review")
+					dirty = True
+		if dirty:
+			doc.flags.ignore_permissions = True
+			doc.save(ignore_permissions=True)
+			repaired += 1
+			_log_phase(f"  Repaired template: {tmpl_name}")
+	if repaired:
+		_log_phase(f"  Repaired custom fields on {repaired} project template(s)")
+	return repaired
+
+
+_ADDITIONAL_TEMPLATES = [
         {
             "template_name": "Advisory Engagement",
             "project_type": "Advisory",
@@ -427,7 +479,10 @@ def _create_additional_templates():
             ],
         },
     ]
-    for tmpl_def in templates:
+
+
+def _create_additional_templates():
+    for tmpl_def in _ADDITIONAL_TEMPLATES:
         _create_project_template(tmpl_def)
 
 
@@ -1707,6 +1762,11 @@ def after_migrate_all():
         tmpl_name = _create_project_template(tmpl_def)
         if tmpl_name:
             _log_phase(f"  Created template: {tmpl_name}")
+
+    # On a fresh install the built-in templates are created during after_install,
+    # before the custom field fixtures are synced, so custom values on their task
+    # rows end up empty. Backfill them now that the fields exist.
+    _repair_template_custom_fields([*MISSING_TEMPLATES, *_ADDITIONAL_TEMPLATES, *_get_template_definitions()])
 
     # Phase 7: Email Templates
     _log_phase("Phase 7: Creating email templates...")
