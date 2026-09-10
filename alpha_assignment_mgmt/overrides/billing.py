@@ -60,7 +60,7 @@ def _get_service_rate(project):
 
     contract = frappe.db.get_value(
         "Alpha Service Contract",
-        {"customer": project.customer, "docstatus": 1, "status": "Active"},
+        {"customer": project.customer, "docstatus": 1, "contract_status": "Active"},
         "name",
     )
     if contract:
