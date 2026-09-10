@@ -1088,7 +1088,7 @@ def _setup_aims_desk_workspace():
 	ws_name = "AIMS Desk"
 	shortcuts = [
 		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "New Assignment", "icon": "add"},
-		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "All Assignments", "icon": "list", "doc_view": "list"},
+		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "All Assignments", "icon": "list", "doc_view": "List"},
 		{"type": "DocType", "link_to": "Project Template", "label": "Project Templates", "icon": "file"},
 		{"type": "DocType", "link_to": "Project", "label": "Active Projects", "icon": "list"},
 		{"type": "DocType", "link_to": "Project", "label": "Pending Projects", "icon": "list"},
@@ -1290,10 +1290,10 @@ def _create_portfolio_dashboard_charts():
 def _setup_portfolio_kpi_workspace():
 	ws_name = "Portfolio KPI"
 	shortcuts = [
-		{"type": "DocType", "link_to": "Project", "label": "All Projects", "icon": "list", "doc_view": "list"},
-		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "Pipeline", "icon": "file", "doc_view": "list"},
-		{"type": "DocType", "link_to": "Client Risk Register", "label": "Risk Register", "icon": "list", "doc_view": "list"},
-		{"type": "DocType", "link_to": "Alpha Engagement SLA", "label": "Engagement SLA", "icon": "file", "doc_view": "list"},
+		{"type": "DocType", "link_to": "Project", "label": "All Projects", "icon": "list", "doc_view": "List"},
+		{"type": "DocType", "link_to": "Alpha Assignment Origination", "label": "Pipeline", "icon": "file", "doc_view": "List"},
+		{"type": "DocType", "link_to": "Client Risk Register", "label": "Risk Register", "icon": "list", "doc_view": "List"},
+		{"type": "DocType", "link_to": "Alpha Engagement SLA", "label": "Engagement SLA", "icon": "file", "doc_view": "List"},
 		{"type": "Report", "link_to": "Project Profitability", "label": "Profitability", "icon": "chart"},
 		{"type": "Report", "link_to": "Staff Productivity", "label": "Productivity", "icon": "chart"},
 	]
