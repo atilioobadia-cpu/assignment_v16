@@ -436,6 +436,9 @@ def _repair_template_custom_fields(tmpl_defs):
 					dirty = True
 		if dirty:
 			doc.flags.ignore_permissions = True
+			doc.flags.ignore_mandatory = True
+			doc.flags.ignore_validate = True
+			doc.flags.ignore_links = True
 			doc.save(ignore_permissions=True)
 			repaired += 1
 			_log_phase(f"  Repaired template: {tmpl_name}")
