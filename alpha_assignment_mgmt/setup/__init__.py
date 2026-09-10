@@ -1509,7 +1509,7 @@ EMAIL_TEMPLATES = [
     {
         "name": "Review Query",
         "subject": "[AIMS] Review Query: {{ doc.name }}",
-        "response": "The following item has been returned for correction:\n\n{{ doc.name }}\nReviewer Comments: {{ doc.custom_reviewer_remarks }}\n\nPlease correct and resubmit.",
+        "response": "The following item has been returned for correction:\n\n{{ doc.name }}\nReviewer Comments: {{ doc.review_comments }}\n\nPlease correct and resubmit.",
     },
     {
         "name": "Invoice Transmission",
@@ -1559,7 +1559,7 @@ NOTIFICATION_RECORDS = [
         "days_after": 1,
         "condition": "doc.status == 'Pending Review'",
         "recipients": [
-            {"receiver_by_document_field": "custom_reviewer"},
+            {"receiver_by_document_field": "reviewer"},
         ],
     },
     {
