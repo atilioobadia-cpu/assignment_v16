@@ -12,227 +12,43 @@
         "states": [
             {
                 "allow_edit": "Alpha Tax Officer",
-                "avoid_status_override": 0,
                 "doc_status": "0",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Draft",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
-            },
-            {
-                "allow_edit": "Alpha Tax Officer",
-                "avoid_status_override": 0,
-                "doc_status": "0",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Draft",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
-            },
-            {
-                "allow_edit": "Alpha Engagement Manager",
-                "avoid_status_override": 0,
-                "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Submitted",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
-            },
-            {
-                "allow_edit": "Alpha Engagement Manager",
-                "avoid_status_override": 0,
-                "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Submitted",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
+                "state": "Draft"
             },
             {
                 "allow_edit": "Alpha Branch Manager",
-                "avoid_status_override": 0,
                 "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Under Review",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
+                "state": "Submitted"
             },
             {
                 "allow_edit": "Alpha Branch Manager",
-                "avoid_status_override": 0,
                 "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Under Review",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
+                "state": "Under Review"
             },
             {
                 "allow_edit": "Alpha Partner/Director",
-                "avoid_status_override": 0,
                 "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Partner Review",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
+                "state": "Partner Review"
             },
             {
                 "allow_edit": "Alpha Partner/Director",
-                "avoid_status_override": 0,
                 "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Partner Review",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
-            },
-            {
-                "allow_edit": "Alpha Managing Director",
-                "avoid_status_override": 0,
-                "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Approved",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
-            },
-            {
-                "allow_edit": "Alpha Managing Director",
-                "avoid_status_override": 0,
-                "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Approved",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
+                "state": "Approved"
             },
             {
                 "allow_edit": "System Manager",
-                "avoid_status_override": 0,
                 "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Rejected",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
+                "state": "Rejected"
+            },
+            {
+                "allow_edit": "Alpha Branch Manager",
+                "doc_status": "1",
+                "state": "Project Created"
             },
             {
                 "allow_edit": "System Manager",
-                "avoid_status_override": 0,
                 "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Rejected",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
-            },
-            {
-                "allow_edit": "Alpha Engagement Manager",
-                "avoid_status_override": 0,
-                "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Project Created",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
-            },
-            {
-                "allow_edit": "Alpha Engagement Manager",
-                "avoid_status_override": 0,
-                "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Project Created",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
-            },
-            {
-                "allow_edit": "System Manager",
-                "avoid_status_override": 0,
-                "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Closed",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
-            },
-            {
-                "allow_edit": "System Manager",
-                "avoid_status_override": 0,
-                "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "Closed",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
+                "state": "Closed"
             }
         ],
         "transitions": [
@@ -240,202 +56,66 @@
                 "action": "Submit",
                 "allow_self_approval": 0,
                 "allowed": "Alpha Tax Officer",
-                "condition": null,
                 "next_state": "Submitted",
-                "send_email_to_creator": 0,
-                "state": "Draft",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Submit",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Tax Officer",
-                "condition": null,
-                "next_state": "Submitted",
-                "send_email_to_creator": 0,
-                "state": "Draft",
-                "transition_tasks": null,
-                "workflow_builder_id": null
+                "state": "Draft"
             },
             {
                 "action": "Send to Review",
                 "allow_self_approval": 0,
-                "allowed": "Alpha Engagement Manager",
-                "condition": null,
+                "allowed": "Alpha Branch Manager",
                 "next_state": "Under Review",
-                "send_email_to_creator": 0,
-                "state": "Submitted",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Send to Review",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Engagement Manager",
-                "condition": null,
-                "next_state": "Under Review",
-                "send_email_to_creator": 0,
-                "state": "Submitted",
-                "transition_tasks": null,
-                "workflow_builder_id": null
+                "state": "Submitted"
             },
             {
                 "action": "Forward to Partner",
                 "allow_self_approval": 0,
                 "allowed": "Alpha Branch Manager",
-                "condition": null,
                 "next_state": "Partner Review",
-                "send_email_to_creator": 0,
-                "state": "Under Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Forward to Partner",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Branch Manager",
-                "condition": null,
-                "next_state": "Partner Review",
-                "send_email_to_creator": 0,
-                "state": "Under Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
+                "state": "Under Review"
             },
             {
                 "action": "Approve",
                 "allow_self_approval": 0,
                 "allowed": "Alpha Partner/Director",
-                "condition": null,
                 "next_state": "Approved",
-                "send_email_to_creator": 0,
-                "state": "Partner Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Approve",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Partner/Director",
-                "condition": null,
-                "next_state": "Approved",
-                "send_email_to_creator": 0,
-                "state": "Partner Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
+                "state": "Partner Review"
             },
             {
                 "action": "Reject",
                 "allow_self_approval": 0,
                 "allowed": "Alpha Partner/Director",
-                "condition": null,
                 "next_state": "Rejected",
-                "send_email_to_creator": 0,
-                "state": "Partner Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Reject",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Partner/Director",
-                "condition": null,
-                "next_state": "Rejected",
-                "send_email_to_creator": 0,
-                "state": "Partner Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
+                "state": "Partner Review"
             },
             {
                 "action": "Reject",
                 "allow_self_approval": 0,
                 "allowed": "Alpha Branch Manager",
-                "condition": null,
                 "next_state": "Rejected",
-                "send_email_to_creator": 0,
-                "state": "Under Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
+                "state": "Under Review"
             },
             {
-                "action": "Reject",
+                "action": "Create Project",
                 "allow_self_approval": 0,
                 "allowed": "Alpha Branch Manager",
-                "condition": null,
-                "next_state": "Rejected",
-                "send_email_to_creator": 0,
-                "state": "Under Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Create Project",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Engagement Manager",
-                "condition": null,
                 "next_state": "Project Created",
-                "send_email_to_creator": 0,
-                "state": "Approved",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Create Project",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Engagement Manager",
-                "condition": null,
-                "next_state": "Project Created",
-                "send_email_to_creator": 0,
-                "state": "Approved",
-                "transition_tasks": null,
-                "workflow_builder_id": null
+                "state": "Approved"
             },
             {
                 "action": "Re-submit",
                 "allow_self_approval": 0,
                 "allowed": "Alpha Tax Officer",
-                "condition": null,
                 "next_state": "Submitted",
-                "send_email_to_creator": 0,
-                "state": "Rejected",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Re-submit",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Tax Officer",
-                "condition": null,
-                "next_state": "Submitted",
-                "send_email_to_creator": 0,
-                "state": "Rejected",
-                "transition_tasks": null,
-                "workflow_builder_id": null
+                "state": "Rejected"
             },
             {
                 "action": "Close Assignment",
                 "allow_self_approval": 0,
-                "allowed": "Alpha Managing Director",
-                "condition": null,
+                "allowed": "Alpha Partner/Director",
                 "next_state": "Closed",
-                "send_email_to_creator": 0,
-                "state": "Project Created",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Close Assignment",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Managing Director",
-                "condition": null,
-                "next_state": "Closed",
-                "send_email_to_creator": 0,
-                "state": "Project Created",
-                "transition_tasks": null,
-                "workflow_builder_id": null
+                "state": "Project Created"
             }
         ],
-        "workflow_data": null,
         "workflow_name": "Alpha Assignment Origination Workflow",
         "workflow_state_field": "workflow_state"
     },
@@ -451,303 +131,68 @@
         "send_email_alert": 0,
         "states": [
             {
-                "allow_edit": "Alpha Engagement Manager",
-                "avoid_status_override": 0,
-                "doc_status": "0",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "CC - Draft",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
-            },
-            {
-                "allow_edit": "Alpha Engagement Manager",
-                "avoid_status_override": 0,
-                "doc_status": "0",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "CC - Draft",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
-            },
-            {
                 "allow_edit": "Alpha Branch Manager",
-                "avoid_status_override": 0,
-                "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "CC - Review",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
-            },
-            {
-                "allow_edit": "Alpha Branch Manager",
-                "avoid_status_override": 0,
-                "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "CC - Review",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
+                "doc_status": "0",
+                "state": "CC - Draft"
             },
             {
                 "allow_edit": "Alpha Partner/Director",
-                "avoid_status_override": 0,
                 "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "CC - Approved",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
+                "state": "CC - Review"
             },
             {
                 "allow_edit": "Alpha Partner/Director",
-                "avoid_status_override": 0,
                 "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "CC - Approved",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
+                "state": "CC - Approved"
             },
             {
                 "allow_edit": "Alpha Partner/Director",
-                "avoid_status_override": 0,
                 "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "CC - Rejected",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
-            },
-            {
-                "allow_edit": "Alpha Partner/Director",
-                "avoid_status_override": 0,
-                "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "CC - Rejected",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
+                "state": "CC - Rejected"
             },
             {
                 "allow_edit": "System Manager",
-                "avoid_status_override": 0,
                 "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "CC - Closed",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
-            },
-            {
-                "allow_edit": "System Manager",
-                "avoid_status_override": 0,
-                "doc_status": "1",
-                "evaluate_as_expression": 0,
-                "is_optional_state": 0,
-                "message": null,
-                "next_action_email_template": null,
-                "send_email": 0,
-                "state": "CC - Closed",
-                "update_field": null,
-                "update_value": null,
-                "workflow_builder_id": null
+                "state": "CC - Closed"
             }
         ],
         "transitions": [
             {
                 "action": "Submit for Review",
                 "allow_self_approval": 0,
-                "allowed": "Alpha Engagement Manager",
-                "condition": null,
+                "allowed": "Alpha Branch Manager",
                 "next_state": "CC - Review",
-                "send_email_to_creator": 0,
-                "state": "CC - Draft",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Submit for Review",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Engagement Manager",
-                "condition": null,
-                "next_state": "CC - Review",
-                "send_email_to_creator": 0,
-                "state": "CC - Draft",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Approve",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Branch Manager",
-                "condition": null,
-                "next_state": "CC - Approved",
-                "send_email_to_creator": 0,
-                "state": "CC - Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Approve",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Branch Manager",
-                "condition": null,
-                "next_state": "CC - Approved",
-                "send_email_to_creator": 0,
-                "state": "CC - Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
+                "state": "CC - Draft"
             },
             {
                 "action": "Approve",
                 "allow_self_approval": 0,
                 "allowed": "Alpha Partner/Director",
-                "condition": null,
                 "next_state": "CC - Approved",
-                "send_email_to_creator": 0,
-                "state": "CC - Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Approve",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Partner/Director",
-                "condition": null,
-                "next_state": "CC - Approved",
-                "send_email_to_creator": 0,
-                "state": "CC - Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Reject",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Branch Manager",
-                "condition": null,
-                "next_state": "CC - Rejected",
-                "send_email_to_creator": 0,
-                "state": "CC - Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Reject",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Branch Manager",
-                "condition": null,
-                "next_state": "CC - Rejected",
-                "send_email_to_creator": 0,
-                "state": "CC - Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
+                "state": "CC - Review"
             },
             {
                 "action": "Reject",
                 "allow_self_approval": 0,
                 "allowed": "Alpha Partner/Director",
-                "condition": null,
                 "next_state": "CC - Rejected",
-                "send_email_to_creator": 0,
-                "state": "CC - Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Reject",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Partner/Director",
-                "condition": null,
-                "next_state": "CC - Rejected",
-                "send_email_to_creator": 0,
-                "state": "CC - Review",
-                "transition_tasks": null,
-                "workflow_builder_id": null
+                "state": "CC - Review"
             },
             {
                 "action": "Close",
                 "allow_self_approval": 0,
                 "allowed": "Alpha Partner/Director",
-                "condition": null,
                 "next_state": "CC - Closed",
-                "send_email_to_creator": 0,
-                "state": "CC - Approved",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Close",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Partner/Director",
-                "condition": null,
-                "next_state": "CC - Closed",
-                "send_email_to_creator": 0,
-                "state": "CC - Approved",
-                "transition_tasks": null,
-                "workflow_builder_id": null
+                "state": "CC - Approved"
             },
             {
                 "action": "Resubmit",
                 "allow_self_approval": 0,
-                "allowed": "Alpha Engagement Manager",
-                "condition": null,
+                "allowed": "Alpha Branch Manager",
                 "next_state": "CC - Review",
-                "send_email_to_creator": 0,
-                "state": "CC - Rejected",
-                "transition_tasks": null,
-                "workflow_builder_id": null
-            },
-            {
-                "action": "Resubmit",
-                "allow_self_approval": 0,
-                "allowed": "Alpha Engagement Manager",
-                "condition": null,
-                "next_state": "CC - Review",
-                "send_email_to_creator": 0,
-                "state": "CC - Rejected",
-                "transition_tasks": null,
-                "workflow_builder_id": null
+                "state": "CC - Rejected"
             }
         ],
-        "workflow_data": null,
         "workflow_name": "Closure Certificate Workflow",
         "workflow_state_field": "workflow_state"
     },
@@ -762,7 +207,7 @@
             {
                 "state": "RG - Pending Review",
                 "doc_status": 0,
-                "allow_edit": "Alpha Reviewer"
+                "allow_edit": "Alpha Branch Manager"
             },
             {
                 "state": "RG - Approved",
@@ -772,7 +217,7 @@
             {
                 "state": "RG - Returned",
                 "doc_status": 1,
-                "allow_edit": "Alpha Reviewer"
+                "allow_edit": "Alpha Branch Manager"
             },
             {
                 "state": "RG - Escalated",
@@ -785,29 +230,29 @@
                 "state": "RG - Pending Review",
                 "action": "Approve",
                 "next_state": "RG - Approved",
-                "allowed": "Alpha Reviewer",
-                "allow_self_approval": 1
+                "allowed": "Alpha Branch Manager",
+                "allow_self_approval": 0
             },
             {
                 "state": "RG - Pending Review",
                 "action": "Return for Correction",
                 "next_state": "RG - Returned",
-                "allowed": "Alpha Reviewer",
-                "allow_self_approval": 1
+                "allowed": "Alpha Branch Manager",
+                "allow_self_approval": 0
             },
             {
                 "state": "RG - Pending Review",
                 "action": "Escalate",
                 "next_state": "RG - Escalated",
-                "allowed": "Alpha Reviewer",
-                "allow_self_approval": 1
+                "allowed": "Alpha Branch Manager",
+                "allow_self_approval": 0
             },
             {
                 "state": "RG - Returned",
                 "action": "Resubmit",
                 "next_state": "RG - Pending Review",
-                "allowed": "Alpha Staff",
-                "allow_self_approval": 1
+                "allowed": "Alpha Tax Officer",
+                "allow_self_approval": 0
             }
         ],
         "workflow_state_field": "workflow_state"
@@ -823,17 +268,17 @@
             {
                 "state": "PF - Draft",
                 "doc_status": 0,
-                "allow_edit": "Alpha Staff"
+                "allow_edit": "Alpha Tax Officer"
             },
             {
                 "state": "PF - Submitted",
                 "doc_status": 1,
-                "allow_edit": "Alpha Reviewer"
+                "allow_edit": "Alpha Branch Manager"
             },
             {
                 "state": "PF - Acknowledged",
                 "doc_status": 1,
-                "allow_edit": "Alpha Engagement Manager"
+                "allow_edit": "Alpha Branch Manager"
             }
         ],
         "transitions": [
@@ -841,22 +286,22 @@
                 "state": "PF - Draft",
                 "action": "Submit",
                 "next_state": "PF - Submitted",
-                "allowed": "Alpha Staff",
-                "allow_self_approval": 1
+                "allowed": "Alpha Tax Officer",
+                "allow_self_approval": 0
             },
             {
                 "state": "PF - Submitted",
                 "action": "Acknowledge",
                 "next_state": "PF - Acknowledged",
-                "allowed": "Alpha Engagement Manager",
-                "allow_self_approval": 1
+                "allowed": "Alpha Branch Manager",
+                "allow_self_approval": 0
             },
             {
                 "state": "PF - Submitted",
                 "action": "Return to Draft",
                 "next_state": "PF - Draft",
-                "allowed": "Alpha Reviewer",
-                "allow_self_approval": 1
+                "allowed": "Alpha Branch Manager",
+                "allow_self_approval": 0
             }
         ],
         "workflow_state_field": "workflow_state"

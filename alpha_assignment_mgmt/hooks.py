@@ -99,7 +99,7 @@ fixtures = [
 	{
 		"doctype": "Workflow",
 		"filters": [
-			["name", "in", ["Alpha Assignment Origination Workflow", "Closure Certificate Workflow"]]
+			["name", "in", ["Alpha Assignment Origination Workflow", "Closure Certificate Workflow", "Review Gate Workflow", "Performance Feedback Workflow"]]
 		]
 	},
 	{
@@ -113,7 +113,9 @@ fixtures = [
 				"Employee",
 				"Timesheet Detail",
 				"Customer",
-				"Alpha Assignment Origination"
+				"Alpha Assignment Origination",
+				"Project Template",
+				"Project Template Task"
 			]]
 		]
 	},

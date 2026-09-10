@@ -72,12 +72,12 @@ frappe.ui.form.on("Review Gate Register", {
 			args: {
 				doctype: "Project",
 				filters: { name: frm.doc.project },
-				fieldname: ["customer", "custom_engagement_manager"],
+				fieldname: ["customer", "custom_branch_manager"],
 			},
 			callback(r) {
 				if (r.message) {
-					if (r.message.custom_engagement_manager) {
-						frm.set_value("reviewer", r.message.custom_engagement_manager);
+					if (r.message.custom_branch_manager) {
+						frm.set_value("reviewer", r.message.custom_branch_manager);
 					}
 				}
 			},

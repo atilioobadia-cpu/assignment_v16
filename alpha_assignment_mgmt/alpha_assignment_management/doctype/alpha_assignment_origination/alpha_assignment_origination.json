@@ -182,8 +182,7 @@
     {
       "fieldname": "sector",
       "fieldtype": "Data",
-      "label": "Sector",
-      "fetch_from": "customer.custom_sector"
+      "label": "Sector"
     },
     {
       "fieldname": "tin_reference",
@@ -241,8 +240,7 @@
       "fieldname": "risk_rating",
       "fieldtype": "Select",
       "label": "Risk Rating",
-      "options": "Low\nMedium\nHigh\nCritical",
-      "fetch_from": "customer.custom_risk_rating"
+      "options": "Low\nMedium\nHigh\nCritical"
     },
     {
       "fieldname": "tax_exposure",
@@ -296,7 +294,7 @@
       "fieldtype": "Link",
       "label": "Engagement Manager",
       "options": "User",
-      "fetch_from": "customer.custom_engagement_manager"
+      "fetch_from": "customer.custom_branch_manager"
     },
     {
       "fieldname": "client_owner",
@@ -393,7 +391,7 @@
       "fieldname": "custom_project_template",
       "fieldtype": "Link",
       "label": "Project Template",
-      "options": "Alpha Project Template",
+      "options": "Project Template",
       "description": "Select a template to auto-generate tasks when project is created"
     },
     {
@@ -452,7 +450,7 @@
       "share": 1
     },
     {
-      "role": "Alpha Engagement Manager",
+      "role": "Alpha Branch Manager",
       "create": 1,
       "read": 1,
       "write": 1,
@@ -482,7 +480,7 @@
       "share": 0
     },
     {
-      "role": "Alpha Client Owner",
+      "role": "Alpha Branch Manager",
       "create": 0,
       "read": 1,
       "write": 0,
@@ -497,7 +495,7 @@
       "share": 0
     },
     {
-      "role": "Alpha Reviewer",
+      "role": "Alpha Branch Manager",
       "create": 0,
       "read": 1,
       "write": 0,
@@ -512,7 +510,7 @@
       "share": 0
     },
     {
-      "role": "Alpha HR Admin",
+      "role": "Alpha Tax Officer",
       "create": 0,
       "read": 1,
       "write": 0,

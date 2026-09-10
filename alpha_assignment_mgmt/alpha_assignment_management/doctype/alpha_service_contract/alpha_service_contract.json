@@ -179,7 +179,7 @@
    "share": 1
   },
   {
-   "role": "Alpha Engagement Manager",
+   "role": "Alpha Branch Manager",
    "create": 1,
    "read": 1,
    "write": 1,
@@ -209,7 +209,7 @@
    "share": 0
   },
   {
-   "role": "Alpha Client Owner",
+   "role": "Alpha Branch Manager",
    "create": 0,
    "read": 1,
    "write": 0,

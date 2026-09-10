@@ -3,7 +3,12 @@ from frappe.utils import now_datetime, add_days
 
 
 def daily_review_gate_escalation_check():
-    """Escalate Review Gates that have been pending too long."""
+    """Escalate Review Gates that have been pending too long.
+
+    Level 1 - Branch Manager: 3+ days
+    Level 2 - Partner/Director: 5+ days
+    Level 3 - Director/CFO: 8+ days
+    """
     pending_gates = frappe.get_all(
         "Review Gate Register",
         filters={
@@ -20,27 +25,26 @@ def daily_review_gate_escalation_check():
             continue
 
         if days_pending >= 8:
-            _escalate_gate(gate, "Level 4 - Management")
+            _escalate_gate(gate, "Level 3 - Director/CFO")
         elif days_pending >= 5:
-            _escalate_gate(gate, "Level 3 - Partner/Director")
-        elif days_pending >= 3:
-            _escalate_gate(gate, "Level 2 - Branch Manager")
+            _escalate_gate(gate, "Level 2 - Partner/Director")
         else:
-            _escalate_gate(gate, "Level 1 - Engagement Manager")
+            _escalate_gate(gate, "Level 1 - Branch Manager")
 
 
 def _escalate_gate(gate, level):
     """Escalate a review gate to the next level."""
     frappe.db.set_value("Review Gate Register", gate.name, "approval_status", "Escalated")
 
-    recipient = None
     project = frappe.get_cached_doc("Project", gate.project) if gate.project else None
 
-    if level == "Level 1 - Engagement Manager" and project:
-        recipient = project.custom_engagement_manager
-    elif level == "Level 2 - Branch Manager" and project:
+    if level == "Level 1 - Branch Manager" and project:
         recipient = project.custom_branch_manager
-    elif level == "Level 3 - Partner/Director":
+        if recipient:
+            email = frappe.db.get_value("User", recipient, "email")
+            if email:
+                _send_escalation_email(email, gate, level)
+    elif level == "Level 2 - Partner/Director":
         partner_users = frappe.get_all(
             "Has Role",
             filters={"role": "Alpha Partner/Director", "parenttype": "User"},
@@ -51,24 +55,17 @@ def _escalate_gate(gate, level):
             email = frappe.db.get_value("User", user_id, "email")
             if email:
                 _send_escalation_email(email, gate, level)
-        return
-    elif level == "Level 4 - Management":
-        management_users = frappe.get_all(
+    elif level == "Level 3 - Director/CFO":
+        director_users = frappe.get_all(
             "Has Role",
-            filters={"role": "Alpha Managing Director", "parenttype": "User"},
+            filters={"role": "Director/CFO", "parenttype": "User"},
             pluck="parent",
             distinct=True,
         )
-        for user_id in management_users:
+        for user_id in director_users:
             email = frappe.db.get_value("User", user_id, "email")
             if email:
                 _send_escalation_email(email, gate, level)
-        return
-
-    if recipient:
-        email = frappe.db.get_value("User", recipient, "email")
-        if email:
-            _send_escalation_email(email, gate, level)
 
 
 def _send_escalation_email(email, gate, level):

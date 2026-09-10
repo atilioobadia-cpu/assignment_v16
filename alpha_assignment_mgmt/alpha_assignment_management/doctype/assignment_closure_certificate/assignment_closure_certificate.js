@@ -59,7 +59,6 @@ frappe.ui.form.on("Assignment Closure Certificate", {
 			fieldname: [
 				"customer",
 				"custom_assignment_origination",
-				"custom_engagement_manager",
 				"custom_branch_manager",
 				"custom_client_owner",
 			],
@@ -69,7 +68,7 @@ frappe.ui.form.on("Assignment Closure Certificate", {
 					const d = r.message;
 					if (d.customer) frm.set_value("customer", d.customer);
 					if (d.custom_assignment_origination) frm.set_value("assignment_origination", d.custom_assignment_origination);
-					if (d.custom_engagement_manager) frm.set_value("prepared_by", d.custom_engagement_manager);
+					if (d.custom_branch_manager) frm.set_value("prepared_by", d.custom_branch_manager);
 
 					frappe.call({
 						method: "frappe.client.get_list",
@@ -88,7 +87,7 @@ frappe.ui.form.on("Assignment Closure Certificate", {
 						args: {
 							doctype: "Timesheet",
 							filters: {
-								employee: d.custom_engagement_manager,
+								employee: d.custom_branch_manager,
 								docstatus: 0,
 							},
 							limit_page_length: 1,

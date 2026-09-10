@@ -28,7 +28,7 @@ frappe.ui.form.on("Client Risk Register", {
 				"customer",
 				"custom_assignment_origination",
 				"custom_risk_rating",
-				"custom_engagement_manager",
+				"custom_branch_manager",
 			],
 			},
 			callback(r) {
@@ -36,7 +36,7 @@ frappe.ui.form.on("Client Risk Register", {
 					const d = r.message;
 					if (d.customer) frm.set_value("customer", d.customer);
 					if (d.custom_assignment_origination) frm.set_value("assignment_origination", d.custom_assignment_origination);
-					if (d.custom_engagement_manager) frm.set_value("owner", d.custom_engagement_manager);
+					if (d.custom_branch_manager) frm.set_value("owner", d.custom_branch_manager);
 				}
 			},
 		});

@@ -46,13 +46,6 @@ def get_permission_query_conditions(user):
 	if "System Manager" in roles or "Alpha Partner/Director" in roles:
 		return ""
 
-	if "Alpha Engagement Manager" in roles:
-		return f"""(`tabTask`.`project` IN (
-			SELECT `tabProject`.`name` FROM `tabProject`
-			WHERE `tabProject`.`custom_engagement_manager` = %(user)s
-		) OR `tabTask`.`_assign` LIKE {user_like}
-		  OR `tabTask`.`owner` = %(user)s)"""
-
 	if "Alpha Branch Manager" in roles:
 		return f"""(`tabTask`.`project` IN (
 			SELECT `tabProject`.`name` FROM `tabProject`
@@ -60,18 +53,11 @@ def get_permission_query_conditions(user):
 		) OR `tabTask`.`_assign` LIKE {user_like}
 		  OR `tabTask`.`owner` = %(user)s)"""
 
-	if "Alpha Staff" in roles or "Alpha Reviewer" in roles:
+	if "Alpha Tax Officer" in roles:
 		return f"""(`tabTask`.`_assign` LIKE {user_like}
 			OR `tabTask`.`owner` = %(user)s)"""
 
-	if "Alpha Client Owner" in roles:
-		return f"""(`tabTask`.`project` IN (
-			SELECT `tabProject`.`name` FROM `tabProject`
-			WHERE `tabProject`.`custom_client_owner` = %(user)s
-		) OR `tabTask`.`_assign` LIKE {user_like}
-		  OR `tabTask`.`owner` = %(user)s)"""
-
-	if "Alpha Client" in roles:
+	if "Website User" in roles:
 		return f"""(`tabTask`.`project` IN (
 			SELECT `tabProject`.`name` FROM `tabProject`
 			WHERE `tabProject`.`customer` IN (
@@ -89,10 +75,10 @@ def has_permission(doc, ptype, user):
 	if "System Manager" in roles or "Alpha Partner/Director" in roles:
 		return True
 
-	if "Alpha Engagement Manager" in roles or "Alpha Branch Manager" in roles:
+	if "Alpha Branch Manager" in roles:
 		return True
 
-	if "Alpha Staff" in roles or "Alpha Reviewer" in roles:
+	if "Alpha Tax Officer" in roles:
 		if doc.owner == user:
 			return True
 		assigned = []
@@ -104,13 +90,7 @@ def has_permission(doc, ptype, user):
 		if user in assigned:
 			return True
 
-	if "Alpha Client Owner" in roles:
-		if doc.project:
-			owner = frappe.db.get_value("Project", doc.project, "custom_client_owner")
-			if owner == user:
-				return True
-
-	if "Alpha Client" in roles:
+	if "Website User" in roles:
 		if doc.project:
 			customer = frappe.db.get_value("Project", doc.project, "customer")
 			if customer:
@@ -257,9 +237,9 @@ def send_overdue_notification(doc):
 	if doc.project:
 		project = frappe.get_cached_doc("Project", doc.project)
 		recipients = []
-		if project.custom_engagement_manager:
+		if project.custom_branch_manager:
 			email = frappe.db.get_value(
-				"User", project.custom_engagement_manager, "email"
+				"User", project.custom_branch_manager, "email"
 			)
 			if email:
 				recipients.append(email)

@@ -37,16 +37,15 @@ def mark_breached(sla):
 
 
 def escalate_sla(sla, current_level):
-	"""Escalate SLA breach through levels: 1=EM, 2=BM, 3=Partner/Director, 4=Management."""
+	"""Escalate SLA breach: 1=Branch Manager, 2=Partner/Director, 3=Director/CFO."""
 	project = frappe.get_cached_doc("Project", sla.project) if sla.project else None
 	if not project:
 		return
 
 	level_map = {
-		1: {"role": "Alpha Engagement Manager", "user_field": "custom_engagement_manager", "label": "Level 1"},
-		2: {"role": "Alpha Branch Manager", "user_field": "custom_branch_manager", "label": "Level 2"},
-		3: {"role": "Alpha Partner/Director", "user_field": None, "label": "Level 3"},
-		4: {"role": "Alpha Managing Director", "user_field": None, "label": "Level 4"},
+		1: {"role": "Alpha Branch Manager", "user_field": "custom_branch_manager", "label": "Level 1 - Branch Manager"},
+		2: {"role": "Alpha Partner/Director", "user_field": None, "label": "Level 2 - Partner/Director"},
+		3: {"role": "Director/CFO", "user_field": None, "label": "Level 3 - Director/CFO"},
 	}
 
 	level = level_map.get(current_level)
@@ -56,22 +55,14 @@ def escalate_sla(sla, current_level):
 	user_id = None
 	if level["user_field"]:
 		user_id = project.get(level["user_field"])
-	elif level["role"] == "Alpha Managing Director":
-		management = frappe.get_all(
-			"Has Role",
-			filters={"role": "Alpha Managing Director", "parenttype": "User"},
-			fields=["parent"],
-			limit=1,
-		)
-		user_id = management[0].parent if management else None
 	else:
-		partners = frappe.get_all(
+		role_users = frappe.get_all(
 			"Has Role",
-			filters={"role": "Alpha Partner/Director", "parenttype": "User"},
+			filters={"role": level["role"], "parenttype": "User"},
 			fields=["parent"],
 			limit=1,
 		)
-		user_id = partners[0].parent if partners else None
+		user_id = role_users[0].parent if role_users else None
 
 	if not user_id:
 		return
@@ -92,8 +83,7 @@ def escalate_sla(sla, current_level):
 			),
 		)
 
-	# Check if we need to escalate further (every 3 days)
-	if current_level < 4 and days_overdue.days >= current_level * 3:
+	if current_level < 3 and days_overdue.days >= current_level * 3:
 		escalate_sla(sla, current_level + 1)
 
 
@@ -160,10 +150,6 @@ def collect_recipients(sla):
 	recipients = []
 	if sla.project:
 		project = frappe.get_cached_doc("Project", sla.project)
-		if project.custom_engagement_manager:
-			email = frappe.db.get_value("User", project.custom_engagement_manager, "email")
-			if email:
-				recipients.append(email)
 		if project.custom_branch_manager:
 			email = frappe.db.get_value("User", project.custom_branch_manager, "email")
 			if email:

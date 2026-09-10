@@ -34,7 +34,7 @@
   {
    "label": "Project Templates",
    "type": "DocType",
-   "link_to": "Alpha Project Template",
+    "link_to": "Project Template",
    "icon": "file"
   },
   {

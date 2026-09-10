@@ -23,7 +23,7 @@ def calculate_assignments_completed(doc):
 		completed = frappe.db.count(
 			"Project",
 			filters={
-				"custom_engagement_manager": doc.employee,
+				"custom_branch_manager": doc.employee,
 				"status": "Completed",
 				"modified": ["between", [doc.start_date, doc.end_date]],
 			},
@@ -32,7 +32,7 @@ def calculate_assignments_completed(doc):
 		completed = frappe.db.count(
 			"Project",
 			filters={
-				"custom_engagement_manager": doc.employee,
+				"custom_branch_manager": doc.employee,
 				"status": "Completed",
 			},
 		)
@@ -43,7 +43,7 @@ def calculate_sla_compliance(doc):
 	"""Calculate SLA compliance rate for the appraisal period."""
 	employee_projects = frappe.get_all(
 		"Project",
-		filters={"custom_engagement_manager": doc.employee},
+		filters={"custom_branch_manager": doc.employee},
 		pluck="name",
 	)
 
@@ -121,23 +121,7 @@ def create_goals_from_template(doc):
 			{"goal_name": "Document all outputs with proper evidence references", "weight": 15},
 			{"goal_name": "Proactively flag client delays within 2 business days", "weight": 10},
 			{"goal_name": "Complete at least 2 CPE hours per month", "weight": 10},
-			{"goal_name": "Achieve positive feedback from Engagement Manager on 90%+ tasks", "weight": 10},
-		],
-		"Alpha Reviewer": [
-			{"goal_name": "Review all assigned tasks within SLA deadlines", "weight": 25},
-			{"goal_name": "Maintain review quality: < 2% rejection rate by Partner", "weight": 25},
-			{"goal_name": "Provide constructive feedback on all reviewed tasks", "weight": 15},
-			{"goal_name": "Mentor at least 2 Tax Officers during the period", "weight": 15},
-			{"goal_name": "Complete all assigned engagements on time", "weight": 10},
-			{"goal_name": "Achieve positive client feedback", "weight": 10},
-		],
-		"Alpha Engagement Manager": [
-			{"goal_name": "Deliver all assigned projects within budget and timeline", "weight": 25},
-			{"goal_name": "Maintain 95%+ SLA compliance across all engagements", "weight": 20},
-			{"goal_name": "Achieve 90%+ client satisfaction ratings", "weight": 15},
-			{"goal_name": "Properly document all origination, SLA, and closure requirements", "weight": 15},
-			{"goal_name": "Resolve at least 80% of client delays before SLA breach", "weight": 10},
-			{"goal_name": "Ensure all staff tasks have owner, deadline, deliverable, and review gate", "weight": 15},
+			{"goal_name": "Achieve positive feedback from Branch Manager on 90%+ tasks", "weight": 10},
 		],
 		"Alpha Branch Manager": [
 			{"goal_name": "Achieve branch-level utilization rate above 80%", "weight": 20},

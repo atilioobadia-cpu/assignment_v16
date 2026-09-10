@@ -48,13 +48,9 @@ def debug_pf():
         "customer_group": "Commercial",
         "customer_type": "Company",
         "territory": "All Territories",
-        "custom_engagement_manager": "Administrator",
         "custom_client_owner": "Administrator",
         "custom_branch_manager": "Administrator",
-        "custom_service_line": "Tax Compliance",
-        "custom_risk_rating": "Medium",
-        "custom_sector": "Financial Services",
-        "custom_tin": "TIN-DEBUG-001",
+        "tax_id": "TIN-DEBUG-001",
     })
     cust.flags.ignore_permissions = True
     cust.insert()

@@ -19,7 +19,6 @@ def before_insert(doc, method):
 		doc.custom_service_line = origination.service_line
 		doc.project_type = origination.service_line
 		doc.custom_branch_manager = origination.lead_branch_manager
-		doc.custom_engagement_manager = origination.engagement_manager
 		doc.custom_client_owner = doc.custom_client_owner or origination.client_owner
 		doc.custom_risk_rating = origination.risk_rating
 
@@ -88,7 +87,7 @@ def create_sla(doc):
 	sla.customer = doc.customer
 	sla.assignment_origination = doc.custom_assignment_origination
 	sla.sla_level = sla_level_map.get(doc.project_type, "SLA C - Monthly Bookkeeping")
-	sla.engagement_manager = doc.custom_engagement_manager
+	sla.engagement_manager = doc.custom_branch_manager
 	sla.branch_manager = doc.custom_branch_manager
 	sla.alpha_processing_deadline = deadline
 	sla.client_due_date = deadline
@@ -159,9 +158,9 @@ def _auto_create_closure_certificate(doc):
 
 	doc.db_set("custom_closure_certificate", cert.name)
 
-	# Notify Engagement Manager
-	if doc.custom_engagement_manager:
-		email = frappe.db.get_value("User", doc.custom_engagement_manager, "email")
+	# Notify Branch Manager
+	if doc.custom_branch_manager:
+		email = frappe.db.get_value("User", doc.custom_branch_manager, "email")
 		if email:
 			try:
 				frappe.sendmail(

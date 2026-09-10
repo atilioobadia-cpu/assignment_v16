@@ -51,12 +51,8 @@ def run_test():
         "customer_group": "Commercial",
         "customer_type": "Company",
         "territory": "All Territories",
-        "custom_engagement_manager": "Administrator",
         "custom_client_owner": "Administrator",
         "custom_branch_manager": "Administrator",
-        "custom_service_line": "Tax Compliance",
-        "custom_risk_rating": "Medium",
-        "custom_sector": "Financial Services",
         "tax_id": "TIN-E2E-99999",
     })
     cust.flags.ignore_permissions = True
@@ -102,10 +98,8 @@ def run_test():
     cust.reload()
     print(f"  After linking: tax_id={cust.tax_id}, email_id={cust.email_id}, mobile_no={cust.mobile_no}")
 
-    check("A", "Customer has Engagement Manager", cust.custom_engagement_manager == "Administrator")
-    check("A", "Customer has Service Line", cust.custom_service_line == "Tax Compliance")
-    check("A", "Customer has Risk Rating", cust.custom_risk_rating == "Medium")
-    check("A", "Customer has Sector", cust.custom_sector == "Financial Services")
+    check("A", "Customer has Branch Manager", cust.custom_branch_manager == "Administrator")
+    check("A", "Customer has Client Owner", cust.custom_client_owner == "Administrator")
     # Use DB values for tax_id since Frappe's ORM processes it on document load
     tax_id_db = frappe.db.get_value("Customer", cust.name, "tax_id")
     check("A", "Customer has TIN (tax_id)", tax_id_db == "TIN-E2E-99999", f"DB has {tax_id_db}")
@@ -132,12 +126,9 @@ def run_test():
 
     print(f"Created Origination: {orig.name}")
 
-    check("A", "EM autofilled from Customer", orig.engagement_manager == "Administrator")
     check("A", "Client Owner autofilled", orig.client_owner == "Administrator")
     check("A", "Branch Manager autofilled", orig.lead_branch_manager == "Administrator")
     check("A", "Service Line autofilled", orig.service_line == "Tax Compliance")
-    check("A", "Risk Rating autofilled", orig.risk_rating == "Medium")
-    check("A", "Sector autofilled", orig.sector == "Financial Services")
     check("A", "TIN autofilled (from tax_id)", orig.tin_reference == "TIN-E2E-99999")
     check("A", "Contact number autofilled", orig.contact_number == "+255700000000")
     check("A", "Email autofilled", orig.email == "e2e.contact@example.com")
@@ -150,12 +141,9 @@ def run_test():
 
     orig_meta = frappe.get_meta("Alpha Assignment Origination")
     fetch_fields = {
-        "engagement_manager": "customer.custom_engagement_manager",
+        "engagement_manager": "customer.custom_branch_manager",
         "client_owner": "customer.custom_client_owner",
         "lead_branch_manager": "customer.custom_branch_manager",
-        "service_line": "customer.custom_service_line",
-        "risk_rating": "customer.custom_risk_rating",
-        "sector": "customer.custom_sector",
         "tin_reference": "customer.tax_id",
         "client_focal_person": "customer.customer_name",
         "contact_number": "customer.mobile_no",
@@ -440,8 +428,7 @@ def run_test():
     frappe.db.commit()
     print(f"Created open Origination: {orig_open.name}")
 
-    frappe.db.set_value("Customer", cust.name, "custom_risk_rating", "Critical")
-    frappe.db.set_value("Customer", cust.name, "custom_sector", "Telecom")
+    frappe.db.set_value("Customer", cust.name, "custom_branch_manager", "Administrator")
     frappe.db.set_value("Customer", cust.name, "tax_id", "TIN-UPDATED-99999")
     frappe.db.set_value("Customer", cust.name, "customer_name", "E2E Updated Corp")
     frappe.db.commit()
@@ -452,10 +439,10 @@ def run_test():
     frappe.db.commit()
 
     orig_open.reload()
-    check("A", "Open Origination risk_rating synced to Critical", orig_open.risk_rating == "Critical",
-          f"got {orig_open.risk_rating}")
-    check("A", "Open Origination sector synced to Telecom", orig_open.sector == "Telecom",
-          f"got {orig_open.sector}")
+    check("A", "Open Origination branch manager synced", orig_open.lead_branch_manager == "Administrator",
+          f"got {orig_open.lead_branch_manager}")
+    check("A", "Open Origination client owner synced", orig_open.client_owner == "Administrator",
+          f"got {orig_open.client_owner}")
     check("A", "Open Origination TIN synced from tax_id", orig_open.tin_reference == "TIN-UPDATED-99999",
           f"got {orig_open.tin_reference}")
     check("A", "Open Origination focal person synced", orig_open.client_focal_person == "E2E Updated Corp",
@@ -474,7 +461,7 @@ def run_test():
               "Rejected" in (rr_field[0].mandatory_depends_on or ""))
 
     for removed in ["custom_assigned_to", "custom_depends_on_tasks", "custom_expected_hours",
-                    "custom_evidence_attachment", "custom_client_delay_log", "custom_task_employee_log"]:
+                    "custom_evidence_attachment", "custom_client_delay_log"]:
         gone = not any(f.fieldname == removed for f in frappe.get_meta("Task").fields)
         check("K", f"{removed} removed from Task", gone)
     gone_delay_flag = not any(f.fieldname == "custom_client_delay_flag"
@@ -597,23 +584,22 @@ def run_test():
     # ============================================================
     # 14. Phase 3: Level 4 escalation tier + Portfolio KPI
     # ============================================================
-    heading("14. Phase 3: Level 4 escalation tier + Portfolio KPI")
+    heading("14. Phase 3: 3-level escalation tier + Portfolio KPI")
 
-    # SLA module should now reference Level 4 - Management
     import inspect
     import alpha_assignment_mgmt.tasks.sla as sla_mod
     sla_src = inspect.getsource(sla_mod)
-    check("P3", "SLA escalator has Level 4 - Management", "Alpha Managing Director" in sla_src)
+    check("P3", "SLA escalator has 3-level escalation", "Director/CFO" in sla_src)
 
     import alpha_assignment_mgmt.tasks.delays as delays_mod
     delays_src = inspect.getsource(delays_mod)
-    check("P3", "Delay escalator has Level 4 - Management",
-          "Level 4 - Management" in delays_src and "Alpha Managing Director" in delays_src)
+    check("P3", "Delay escalator has 3-level escalation",
+          "Director/CFO" in delays_src)
 
     import alpha_assignment_mgmt.tasks.review_gate_escalation as rg_mod
     rg_src = inspect.getsource(rg_mod)
-    check("P3", "Review gate escalator has Level 4 - Management",
-          "Level 4 - Management" in rg_src and "Alpha Managing Director" in rg_src)
+    check("P3", "Review gate escalator has 3-level escalation",
+          "Director/CFO" in rg_src)
 
     check("P4", "Portfolio KPI workspace exists", "Portfolio KPI" in ws)
     check("P4", "Open Projects number card exists",

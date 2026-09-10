@@ -5,10 +5,9 @@ from frappe.utils import today, getdate
 def daily_delay_escalation_check():
 	"""Escalate Client Delay Logs based on duration thresholds.
 
-	Level 1 - Staff: day 0-3
-	Level 2 - Engagement Manager: day 4-7
-	Level 3 - Branch Manager: day 8-11
-	Level 4 - Management: day 12+
+	Level 1 - Branch Manager: day 0-7
+	Level 2 - Partner/Director: day 8-15
+	Level 3 - Director/CFO: day 16+
 	"""
 	delays = frappe.get_all(
 		"Client Delay Log",
@@ -26,12 +25,12 @@ def daily_delay_escalation_check():
 		days_open = (getdate() - delay.date_requested).days
 
 		new_level = None
-		if days_open >= 12:
-			new_level = "Level 4 - Management"
+		if days_open >= 16:
+			new_level = "Level 3 - Director/CFO"
 		elif days_open >= 8:
-			new_level = "Level 3 - Branch Manager"
+			new_level = "Level 2 - Partner/Director"
 		elif days_open >= 4:
-			new_level = "Level 2 - Engagement Manager"
+			new_level = "Level 1 - Branch Manager"
 
 		if new_level and new_level != delay.escalation_level:
 			frappe.db.set_value("Client Delay Log", delay.name, "escalation_level", new_level)
@@ -47,15 +46,27 @@ def _notify_escalation(delay, level):
 	user_id = None
 	role = None
 
-	if "Engagement Manager" in level:
-		user_id = project.custom_engagement_manager
-		role = "Engagement Manager"
-	elif "Branch Manager" in level:
+	if "Branch Manager" in level:
 		user_id = project.custom_branch_manager
 		role = "Branch Manager"
-	elif "Management" in level:
-		user_id = _get_role_user("Alpha Managing Director")
-		role = "Managing Director"
+	elif "Partner/Director" in level:
+		role_users = frappe.get_all(
+			"Has Role",
+			filters={"role": "Alpha Partner/Director", "parenttype": "User"},
+			fields=["parent"],
+			limit=1,
+		)
+		user_id = role_users[0].parent if role_users else None
+		role = "Partner/Director"
+	elif "Director/CFO" in level:
+		role_users = frappe.get_all(
+			"Has Role",
+			filters={"role": "Director/CFO", "parenttype": "User"},
+			fields=["parent"],
+			limit=1,
+		)
+		user_id = role_users[0].parent if role_users else None
+		role = "Director/CFO"
 	else:
 		return
 
@@ -85,14 +96,3 @@ def _notify_escalation(delay, level):
 				f"</div>"
 			),
 		)
-
-
-def _get_role_user(role):
-	"""Return the first active user with the given role."""
-	users = frappe.get_all(
-		"Has Role",
-		filters={"role": role, "parenttype": "User"},
-		fields=["parent"],
-		limit=1,
-	)
-	return users[0].parent if users else None

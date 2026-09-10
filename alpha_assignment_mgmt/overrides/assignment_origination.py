@@ -5,26 +5,17 @@ from frappe.utils import today
 def before_insert(doc, method):
 	"""Auto-fill Origination fields from Customer record (central hub)."""
 	customer_fields = frappe.db.get_value("Customer", doc.customer, [
-		"custom_engagement_manager", "custom_client_owner", "custom_branch_manager",
-		"custom_service_line", "custom_risk_rating", "custom_sector",
+		"custom_client_owner", "custom_branch_manager",
 		"tax_id", "customer_name", "mobile_no", "email_id",
 	], as_dict=True)
 
 	if not customer_fields:
 		return
 
-	if customer_fields.custom_engagement_manager and not doc.engagement_manager:
-		doc.engagement_manager = customer_fields.custom_engagement_manager
 	if customer_fields.custom_client_owner and not doc.client_owner:
 		doc.client_owner = customer_fields.custom_client_owner
 	if customer_fields.custom_branch_manager and not doc.lead_branch_manager:
 		doc.lead_branch_manager = customer_fields.custom_branch_manager
-	if customer_fields.custom_service_line and not doc.service_line:
-		doc.service_line = customer_fields.custom_service_line
-	if customer_fields.custom_risk_rating and not doc.risk_rating:
-		doc.risk_rating = customer_fields.custom_risk_rating
-	if customer_fields.custom_sector and not doc.sector:
-		doc.sector = customer_fields.custom_sector
 	if customer_fields.tax_id and not doc.tin_reference:
 		doc.tin_reference = customer_fields.tax_id
 	if customer_fields.customer_name and not doc.client_focal_person:
@@ -135,7 +126,6 @@ def _create_project(doc):
 		"custom_service_line": doc.service_line,
 		"project_type": doc.service_line,
 		"custom_risk_rating": doc.risk_rating,
-		"custom_engagement_manager": doc.engagement_manager,
 		"custom_branch_manager": doc.lead_branch_manager,
 		"custom_client_owner": doc.client_owner,
 	})
@@ -319,22 +309,21 @@ def _notify_document_request(drr):
 
 
 def _generate_tasks_from_template(doc, project_name):
-	"""Generate Project Tasks from Alpha Project Template."""
-	# Use template from form field, otherwise auto-detect by service line
+	"""Generate Project Tasks from built-in Project Template (with custom fields)."""
 	template_name = None
 	if hasattr(doc, "custom_project_template") and doc.custom_project_template:
 		template_name = doc.custom_project_template
 	elif doc.service_line:
 		template_name = frappe.db.get_value(
-			"Alpha Project Template",
-			{"project_type": doc.service_line, "is_active": 1},
+			"Project Template",
+			{"project_type": doc.service_line, "custom_is_active": 1},
 			"name",
 		)
 
 	if not template_name:
 		return
 
-	template = frappe.get_doc("Alpha Project Template", template_name)
+	template = frappe.get_doc("Project Template", template_name)
 
 	if not template.tasks:
 		return
@@ -345,21 +334,23 @@ def _generate_tasks_from_template(doc, project_name):
 
 	for tmpl_task in template.tasks:
 		assigned_user = None
-		if tmpl_task.default_owner_role:
-			assigned_user = role_to_user_map.get(tmpl_task.default_owner_role)
+		if tmpl_task.custom_default_owner_role:
+			assigned_user = role_to_user_map.get(tmpl_task.custom_default_owner_role)
+
+		task_subject = tmpl_task.custom_subject or tmpl_task.subject or "Untitled Task"
 
 		task_doc = frappe.get_doc({
 			"doctype": "Task",
 			"project": project_name,
-			"subject": tmpl_task.task_subject,
+			"subject": task_subject,
 			"status": "Open",
-			"custom_task_sequence": tmpl_task.sequence,
-			"expected_time": tmpl_task.expected_hours,
-			"custom_requires_review": tmpl_task.requires_review or 0,
+			"custom_task_sequence": tmpl_task.custom_task_sequence,
+			"expected_time": tmpl_task.custom_expected_hours,
+			"custom_requires_review": tmpl_task.custom_requires_review or 0,
 		})
 
-		if tmpl_task.expected_output:
-			task_doc.description = tmpl_task.expected_output
+		if tmpl_task.custom_expected_output:
+			task_doc.description = tmpl_task.custom_expected_output
 
 		task_doc.flags.ignore_permissions = True
 		task_doc.insert()
@@ -370,18 +361,17 @@ def _generate_tasks_from_template(doc, project_name):
 				"assign_to": [assigned_user],
 				"doctype": "Task",
 				"name": task_doc.name,
-				"description": tmpl_task.task_subject,
+				"description": task_subject,
 			}, ignore_permissions=True)
 
-		seq_to_task[tmpl_task.sequence] = task_doc.name
+		seq_to_task[tmpl_task.custom_task_sequence] = task_doc.name
 
-	# Now set dependencies (native depends_on child table, task names instead of sequence numbers)
 	for tmpl_task in template.tasks:
-		if tmpl_task.depends_on and tmpl_task.sequence in seq_to_task:
-			dep_seqs = [s.strip() for s in str(tmpl_task.depends_on).split(",") if s.strip()]
+		if tmpl_task.custom_depends_on and tmpl_task.custom_task_sequence in seq_to_task:
+			dep_seqs = [s.strip() for s in str(tmpl_task.custom_depends_on).split(",") if s.strip()]
 			dep_task_names = [seq_to_task[int(s)] for s in dep_seqs if int(s) in seq_to_task]
 			if dep_task_names:
-				task_doc = frappe.get_doc("Task", seq_to_task[tmpl_task.sequence])
+				task_doc = frappe.get_doc("Task", seq_to_task[tmpl_task.custom_task_sequence])
 				for dep_name in dep_task_names:
 					task_doc.append("depends_on", {
 						"task": dep_name,
@@ -389,7 +379,6 @@ def _generate_tasks_from_template(doc, project_name):
 				task_doc.flags.ignore_permissions = True
 				task_doc.save()
 
-	# Update origination
 	frappe.db.set_value(doc.doctype, doc.name, "task_template_applied", template_name)
 
 	frappe.msgprint(
@@ -401,14 +390,9 @@ def _generate_tasks_from_template(doc, project_name):
 def _get_role_user_map():
 	"""Build a map of role -> first active user with that role."""
 	roles = [
-		"Alpha Engagement Manager",
 		"Alpha Branch Manager",
-		"Alpha Client Owner",
-		"Alpha Reviewer",
-		"Alpha Staff",
 		"Alpha Tax Officer",
 		"Alpha Partner/Director",
-		"Alpha Managing Director",
 	]
 	role_user_map = {}
 	for role in roles:

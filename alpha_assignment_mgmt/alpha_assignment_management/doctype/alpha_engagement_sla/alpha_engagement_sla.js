@@ -27,7 +27,6 @@ frappe.ui.form.on("Alpha Engagement SLA", {
 			fieldname: [
 				"customer",
 				"custom_assignment_origination",
-				"custom_engagement_manager",
 				"custom_branch_manager",
 				"custom_client_owner",
 				"custom_service_line",
@@ -41,7 +40,7 @@ frappe.ui.form.on("Alpha Engagement SLA", {
 					const d = r.message;
 					if (d.customer) frm.set_value("customer", d.customer);
 					if (d.custom_assignment_origination) frm.set_value("assignment_origination", d.custom_assignment_origination);
-					if (d.custom_engagement_manager) frm.set_value("engagement_manager", d.custom_engagement_manager);
+					if (d.custom_branch_manager) frm.set_value("engagement_manager", d.custom_branch_manager);
 					if (d.custom_branch_manager) frm.set_value("branch_manager", d.custom_branch_manager);
 					if (d.expected_end_date && !frm.doc.client_due_date) {
 						frm.set_value("client_due_date", d.expected_end_date);

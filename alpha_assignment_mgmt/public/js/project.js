@@ -61,7 +61,6 @@ frappe.ui.form.on("Project", {
 						frm.set_value("project_type", d.service_line);
 					}
 					if (d.risk_rating) frm.set_value("custom_risk_rating", d.risk_rating);
-					if (d.engagement_manager) frm.set_value("custom_engagement_manager", d.engagement_manager);
 					if (d.lead_branch_manager) frm.set_value("custom_branch_manager", d.lead_branch_manager);
 					if (d.client_owner) frm.set_value("custom_client_owner", d.client_owner);
 					if (d.branch) frm.set_value("branch", d.branch);

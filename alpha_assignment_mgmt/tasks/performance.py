@@ -86,7 +86,7 @@ def get_active_assignments(emp):
 	return frappe.db.count(
 		"Project",
 		filters={
-			"custom_engagement_manager": emp.user_id,
+			"custom_branch_manager": emp.user_id,
 			"status": ["!=", "Completed"],
 		},
 	)
@@ -96,7 +96,7 @@ def get_sla_compliance_rate(emp):
 	"""Percentage of non-breached SLAs for the employee's projects."""
 	projects = frappe.get_all(
 		"Project",
-		filters={"custom_engagement_manager": emp.user_id},
+		filters={"custom_branch_manager": emp.user_id},
 		pluck="name",
 	)
 	if not projects:

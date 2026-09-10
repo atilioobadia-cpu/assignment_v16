@@ -18,9 +18,9 @@ def daily_overdue_task_notification():
 		if task.project:
 			project = frappe.get_cached_doc("Project", task.project)
 			recipients = set()
-			if project.custom_engagement_manager:
+			if project.custom_branch_manager:
 				email = frappe.db.get_value(
-					"User", project.custom_engagement_manager, "email"
+					"User", project.custom_branch_manager, "email"
 				)
 				if email:
 					recipients.add(email)
@@ -113,7 +113,7 @@ def weekly_productivity_report():
 	managers = frappe.get_all(
 		"User",
 		filters=[
-			["Has Role", "role", "=", "Alpha Engagement Manager"],
+			["Has Role", "role", "=", "Alpha Branch Manager"],
 			["enabled", "=", 1],
 		],
 		pluck="name",
@@ -122,7 +122,7 @@ def weekly_productivity_report():
 	for manager in managers:
 		projects = frappe.get_all(
 			"Project",
-			filters={"custom_engagement_manager": manager, "status": "Active"},
+			filters={"custom_branch_manager": manager, "status": "Active"},
 			pluck="name",
 		)
 

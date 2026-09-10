@@ -55,12 +55,12 @@ frappe.ui.form.on("Alpha Assignment Origination", {
 		frappe.call({
 			method: "frappe.client.get_value",
 			args: {
-				doctype: "Alpha Project Template",
+				doctype: "Project Template",
 				filters: {
 					project_type: frm.doc.service_line,
-					is_active: 1,
+					custom_is_active: 1,
 				},
-				fieldname: ["name", "template_name", "total_tasks"],
+				fieldname: ["name", "custom_template_name", "custom_total_tasks"],
 			},
 			callback(r) {
 				if (r.message) {

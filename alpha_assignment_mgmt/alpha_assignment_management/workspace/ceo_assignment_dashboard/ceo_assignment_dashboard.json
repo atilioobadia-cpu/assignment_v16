@@ -11,7 +11,7 @@
  "sequence_id": 2.0,
  "charts": [],
  "number_cards": [],
- "roles": [{"role": "Alpha Managing Director"}, {"role": "Alpha Partner/Director"}, {"role": "System Manager"}],
+ "roles": [{"role": "Alpha Partner/Director"}, {"role": "Alpha Partner/Director"}, {"role": "System Manager"}],
  "for_user": "",
  "hide_custom": 0,
  "is_hidden": 0,
