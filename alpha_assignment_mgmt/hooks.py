@@ -97,6 +97,12 @@ fixtures = [
 		]
 	},
 	{
+		"doctype": "Print Format",
+		"filters": [
+			["name", "in", ["Closure Certificate"]]
+		]
+	},
+	{
 		"doctype": "Workflow",
 		"filters": [
 			["name", "in", ["Alpha Assignment Origination Workflow", "Closure Certificate Workflow", "Review Gate Workflow", "Performance Feedback Workflow"]]
