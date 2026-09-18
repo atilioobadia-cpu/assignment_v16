@@ -13,6 +13,7 @@ def after_install():
 	create_naming_series()
 	create_project_types()
 	create_activity_types()
+	_create_template_task_fields()
 	create_project_templates()
 	_create_additional_templates()
 	create_customer_fields()
@@ -44,6 +45,7 @@ def after_migrate():
 	"""Re-sync components after migration."""
 	create_workflow_states()
 	_add_phase5_workflow_states()
+	_create_template_task_fields()
 	create_project_templates()
 	_create_additional_templates()
 	create_customer_fields()
@@ -411,26 +413,28 @@ def _repair_template_custom_fields(tmpl_defs):
 			defn = def_by_subject.get(row.subject or "") or def_by_subject.get(row.custom_subject or "")
 			if not defn:
 				continue
-			if not row.custom_task_sequence:
+			seq = getattr(row, "custom_task_sequence", None)
+			if not seq:
 				row.custom_task_sequence = defn.get("sequence")
 				dirty = True
-			if row.custom_expected_hours is None or row.custom_expected_hours == 0:
+			hours = getattr(row, "custom_expected_hours", None)
+			if hours is None or hours == 0:
 				if defn.get("expected_hours"):
 					row.custom_expected_hours = defn.get("expected_hours")
 					dirty = True
-			if not row.custom_default_owner_role:
+			if not getattr(row, "custom_default_owner_role", None):
 				row.custom_default_owner_role = defn.get("default_owner_role", "")
 				dirty = True
-			if not row.custom_depends_on:
+			if not getattr(row, "custom_depends_on", None):
 				row.custom_depends_on = defn.get("depends_on", "")
 				dirty = True
-			if not row.custom_expected_output:
+			if not getattr(row, "custom_expected_output", None):
 				row.custom_expected_output = defn.get("expected_output", "")
 				dirty = True
-			if not row.custom_subject:
+			if not getattr(row, "custom_subject", None):
 				row.custom_subject = defn["task_subject"]
 				dirty = True
-			if not row.custom_requires_review:
+			if not getattr(row, "custom_requires_review", None):
 				if defn.get("requires_review"):
 					row.custom_requires_review = defn.get("requires_review")
 					dirty = True
@@ -502,6 +506,33 @@ def _create_performance_feedback_fields():
 			"options": "User",
 			"insert_after": "employee",
 		}).insert(ignore_permissions=True)
+
+
+def _create_template_task_fields():
+	"""Ensure Project Template Task child-table custom fields exist.
+
+	During `bench install-app`, the after_install hook runs before the app's
+	custom-field fixtures are synced, so a fresh site has no custom_* fields on
+	the built-in Project Template Task child table. They must be created here
+	before templates are built and repaired, or the repair step raises
+	AttributeError ('ProjectTemplateTask' object has no attribute ...).
+	"""
+	fields = [
+		{"fieldname": "custom_task_sequence", "label": "Sequence", "fieldtype": "Int"},
+		{"fieldname": "custom_expected_hours", "label": "Expected Hours", "fieldtype": "Float"},
+		{"fieldname": "custom_requires_review", "label": "Requires Review", "fieldtype": "Check"},
+		{"fieldname": "custom_depends_on", "label": "Depends On", "fieldtype": "Data", "description": "Comma-separated sequence numbers of prerequisite tasks"},
+		{"fieldname": "custom_expected_output", "label": "Expected Output", "fieldtype": "Small Text"},
+		{"fieldname": "custom_default_owner_role", "label": "Default Owner Role", "fieldtype": "Link", "options": "Role"},
+		{"fieldname": "custom_subject", "label": "Task Subject", "fieldtype": "Data", "reqd": 1},
+	]
+	for f in fields:
+		if not frappe.db.exists("Custom Field", {"dt": "Project Template Task", "fieldname": f["fieldname"]}):
+			frappe.get_doc({
+				"doctype": "Custom Field",
+				"dt": "Project Template Task",
+				**f,
+			}).insert(ignore_permissions=True)
 
 
 def create_project_templates():
