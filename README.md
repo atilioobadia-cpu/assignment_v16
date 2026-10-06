@@ -1,6 +1,6 @@
 <!-- Copyright (c) 2026, Alpha Integrated Management System -->
 
-# AIMS — Alpha Assignment Management System
+# AIMS — Alpha Integrated Management System
 
 <p align="center">
   <strong>End-to-end assignment lifecycle management for professional service firms</strong>

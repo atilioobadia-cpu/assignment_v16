@@ -49,7 +49,7 @@ def daily_overdue_task_notification():
 						f"<td style='padding: 8px; border-bottom: 1px solid #ddd; color: #dc3545;'><b>{task.exp_end_date}</b></td></tr>"
 						f"</table>"
 						f"<p>Please take immediate action to resolve this overdue task.</p>"
-						f"<p style='color: #666; font-size: 12px;'>Alpha Assignment Management System</p>"
+						f"<p style='color: #666; font-size: 12px;'>Alpha Integrated Management System</p>"
 						f"</div>"
 					),
 				)
@@ -190,7 +190,7 @@ def weekly_productivity_report():
 				f"<div style='margin-top: 16px; padding: 12px; background-color: #f8f9fa; border-radius: 4px;'>"
 				f"<b>Weekly Totals:</b> {total_hours_week:.1f} hours | {total_tasks_week} tasks completed"
 				f"</div>"
-				f"<p style='color: #666; font-size: 12px;'>Alpha Assignment Management System</p>"
+				f"<p style='color: #666; font-size: 12px;'>Alpha Integrated Management System</p>"
 				f"</div>"
 			)
 			frappe.sendmail(

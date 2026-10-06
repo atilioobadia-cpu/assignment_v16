@@ -113,7 +113,7 @@ def notify_breach(sla):
 				f"<td style='padding: 8px; border-bottom: 1px solid #ddd; color: #dc3545;'><b>{sla.alpha_processing_deadline}</b></td></tr>"
 				f"</table>"
 				f"<p style='color: #dc3545;'><b>This SLA has been breached. Immediate action required.</b></p>"
-				f"<p style='color: #666; font-size: 12px;'>Alpha Assignment Management System</p>"
+				f"<p style='color: #666; font-size: 12px;'>Alpha Integrated Management System</p>"
 				f"</div>"
 			),
 		)
@@ -141,7 +141,7 @@ def notify_breach_warning(sla, hours_remaining):
 				f"<td style='padding: 8px; border-bottom: 1px solid #ddd; color: #ffc107;'><b>{int(hours_remaining)} hours</b></td></tr>"
 				f"</table>"
 				f"<p>Please take action to avoid SLA breach.</p>"
-				f"<p style='color: #666; font-size: 12px;'>Alpha Assignment Management System</p>"
+				f"<p style='color: #666; font-size: 12px;'>Alpha Integrated Management System</p>"
 				f"</div>"
 			),
 		)

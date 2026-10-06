@@ -45,7 +45,7 @@ def _get_service_item():
         doc.item_name = "AIMS Professional Services"
         doc.item_type = "Service"
         doc.is_stock_item = 0
-        doc.description = "Professional services provided by Alpha Associates"
+        doc.description = "Professional services provided by Alpha Integrated Management System"
         doc.stock_uom = "Nos"
         doc.flags.ignore_permissions = True
         doc.insert()

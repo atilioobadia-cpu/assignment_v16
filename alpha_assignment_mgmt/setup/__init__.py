@@ -1234,7 +1234,7 @@ def _create_default_items():
         doc.item_name = "AIMS Professional Services"
         doc.item_group = "Services"
         doc.is_stock_item = 0
-        doc.description = "Professional services provided by Alpha Associates (T) Limited"
+        doc.description = "Professional services provided by Alpha Integrated Management System"
         doc.stock_uom = "Nos"
         doc.flags.ignore_permissions = True
         doc.insert()

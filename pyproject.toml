@@ -1,9 +1,9 @@
 [project]
 name = "alpha_assignment_mgmt"
 authors = [
-    { name = "Alpha Associates (T) Limited", email = "info@alphaassociates.co.tz" }
+    { name = "Alpha Integrated Management System" }
 ]
-description = "Professional service assignment management framework for Alpha Associates"
+description = "Professional service assignment management framework for Alpha Integrated Management System"
 requires-python = ">=3.10"
 readme = "README.md"
 license = { text = "Proprietary"}

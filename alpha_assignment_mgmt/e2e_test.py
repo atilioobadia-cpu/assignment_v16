@@ -387,7 +387,7 @@ def run_test():
             "user_id": "Administrator",
             "date_of_joining": frappe.utils.today(),
             "status": "Active",
-            "company": frappe.defaults.get_user_default("company") or "Alpha Associates (T) Limited",
+            "company": frappe.defaults.get_user_default("company") or "Alpha Integrated Management System",
         })
         emp_doc.flags.ignore_permissions = True
         emp_doc.insert()

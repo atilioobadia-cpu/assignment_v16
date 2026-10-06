@@ -94,7 +94,7 @@ def _notify_escalation(delay, level):
 				f"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{level}</td></tr>"
 				f"</table>"
 				f"<p>Immediate intervention is required.</p>"
-				f"<p style='color: #666; font-size: 12px;'>Alpha Assignment Management System</p>"
+				f"<p style='color: #666; font-size: 12px;'>Alpha Integrated Management System</p>"
 				f"</div>"
 			),
 		)
