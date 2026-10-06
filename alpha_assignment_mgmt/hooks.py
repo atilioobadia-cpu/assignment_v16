@@ -1,3 +1,5 @@
+# Copyright (c) 2026, Alpha Integrated Management System
+
 app_name = "alpha_assignment_mgmt"
 app_title = "Alpha Assignment Management"
 app_publisher = "Alpha Associates (T) Limited"

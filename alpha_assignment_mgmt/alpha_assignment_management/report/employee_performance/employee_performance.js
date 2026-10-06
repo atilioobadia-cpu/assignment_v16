@@ -1,4 +1,4 @@
-// Copyright (c) 2026, Alpha Associates (T) Limited and contributors
+// Copyright (c) 2026, Alpha Integrated Management System
 
 frappe.query_reports["Employee Performance"] = {
 	"filters": [

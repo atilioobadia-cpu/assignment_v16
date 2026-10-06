@@ -1,4 +1,4 @@
-// Copyright (c) 2025, Alpha Associates (T) Limited and contributors
+// Copyright (c) 2026, Alpha Integrated Management System
 // For license information, please see license.txt
 
 frappe.query_reports["SLA Compliance Overview"] = {

@@ -1,3 +1,5 @@
+<!-- Copyright (c) 2026, Alpha Integrated Management System -->
+
 # AIMS End-to-End UI Test Checklist
 
 Login as **Administrator** on `aims.local`. Tick off each step as you go.

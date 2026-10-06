@@ -1,3 +1,5 @@
+# Copyright (c) 2026, Alpha Integrated Management System
+
 from frappe.model.document import Document
 from frappe.utils import today
 import frappe

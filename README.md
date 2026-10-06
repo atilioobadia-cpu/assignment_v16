@@ -1,3 +1,5 @@
+<!-- Copyright (c) 2026, Alpha Integrated Management System -->
+
 # AIMS — Alpha Assignment Management System
 
 <p align="center">
@@ -155,6 +157,10 @@ For issues, feature requests, or contributions, please open a ticket on the [Git
 
 ## License
 
-Proprietary — Alpha Associates (T) Limited. All rights reserved.
+Copyright (c) 2026, Alpha Integrated Management System
 
-This software is confidential and may not be reproduced, distributed, or transmitted without the express written permission of Alpha Associates (T) Limited.
+Proprietary — Alpha Integrated Management System. All rights reserved.
+
+This software is confidential and may not be reproduced, distributed, transmitted, sold, sublicensed, or used without the express written permission of Alpha Integrated Management System.
+
+See [`license.txt`](license.txt) for the full terms.

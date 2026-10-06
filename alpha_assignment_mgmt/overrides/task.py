@@ -1,3 +1,5 @@
+# Copyright (c) 2026, Alpha Integrated Management System
+
 import frappe
 import json
 from frappe.utils import now_datetime, getdate

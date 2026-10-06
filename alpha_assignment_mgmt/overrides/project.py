@@ -1,3 +1,5 @@
+# Copyright (c) 2026, Alpha Integrated Management System
+
 import frappe
 from frappe.utils import today
 from alpha_assignment_mgmt.overrides.billing import create_sales_order

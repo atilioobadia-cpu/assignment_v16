@@ -1,3 +1,5 @@
+// Copyright (c) 2026, Alpha Integrated Management System
+
 // CEO Dashboard - Top 5 / Bottom 5 Employee Performance
 // Loaded globally via app_include_js, renders only on CEO workspace page.
 

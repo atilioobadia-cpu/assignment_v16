@@ -1,3 +1,5 @@
+# Copyright (c) 2026, Alpha Integrated Management System
+
 """End-to-end test: Customer -> Origination -> Workflow -> Project -> Tasks -> Document Requests -> Timesheet"""
 
 import frappe

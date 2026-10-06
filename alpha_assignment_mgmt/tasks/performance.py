@@ -1,3 +1,5 @@
+# Copyright (c) 2026, Alpha Integrated Management System
+
 import frappe
 from frappe.utils import today, add_days
 
